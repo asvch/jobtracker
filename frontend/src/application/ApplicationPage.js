@@ -242,6 +242,9 @@ const ApplicationPage = () => {
             // Update the application id
             application.id = data.id;
             setApplicationList((prevApplicationList) => [...prevApplicationList, application]);
+
+            // Display an alert for new application added successfully
+            alert('New application added successfully!');
           })
           .catch((error) => {
             // Handle error
@@ -278,7 +281,7 @@ const ApplicationPage = () => {
       }
       setSelectedApplication(null);
     },
-    []
+    [setApplicationList]
   );
 
   const handleDeleteApplication = (application) => {

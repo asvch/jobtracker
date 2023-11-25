@@ -8,16 +8,29 @@ const CustomProfileModal = (props) => {
   const { profile, setProfile, setModalOpen, updateProfile } = props;
   const [data, setData] = useState(profile);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // new state for error message
+  const [skills, setSkills] = useState(data[CONSTANTS.PROFILE.SKILLS]);
+  const [experienceLevel, setExperienceLevel] = useState(data[CONSTANTS.PROFILE.EXPERIENCE_LEVEL]);
+  const [location, setLocation] = useState(data[CONSTANTS.PROFILE.LOCATION]);
 
-  const handleSave = () => {
-    if (data[CONSTANTS.PROFILE.NAME] == "") {
+  const handleSave = async () => {
+    if (
+      data[CONSTANTS.PROFILE.NAME] === "" ||
+      skills === "" ||
+      experienceLevel === "" ||
+      location === ""
+    ) {
       setError(true);
+      setErrorMessage("Please fill in all required fields."); // set error message
     } else {
-      axios
-        .post(
+      try {
+        await axios.post(
           "http://127.0.0.1:5000/updateProfile",
           {
             ...data,
+            [CONSTANTS.PROFILE.SKILLS]: skills,
+            [CONSTANTS.PROFILE.EXPERIENCE_LEVEL]: experienceLevel,
+            [CONSTANTS.PROFILE.LOCATION]: location,
           },
           {
             headers: {
@@ -25,17 +38,15 @@ const CustomProfileModal = (props) => {
               Authorization: `Bearer ${localStorage.getItem("userId")}`,
             },
           }
-        )
-        .then((res) => {
-          // setProfile({ ...profile, ...data });
-          updateProfile({ ...profile, ...data });
-          console.log(data);
-          setModalOpen(false);
-        })
-        .catch((err) => {
-          console.log(err.message);
-          setModalOpen(false);
-        });
+        );
+
+        updateProfile({ ...profile, ...data });
+        console.log(data);
+        setModalOpen(false);
+      } catch (err) {
+        console.log(err.message);
+        setModalOpen(false);
+      }
     }
   };
 
@@ -51,6 +62,11 @@ const CustomProfileModal = (props) => {
         ></button>
       </ModalHeader>
       <ModalBody>
+        {error && (
+          <div style={{ color: "red", fontSize: 12, marginBottom: 10 }}>
+            {errorMessage}
+          </div>
+        )}
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>
@@ -70,59 +86,7 @@ const CustomProfileModal = (props) => {
               </span>
             )}
           </Form.Group>
-          <Form.Group className="my-3">
-            <Form.Label>University</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter university"
-              value={data[CONSTANTS.PROFILE.UNIVERSITY]}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [CONSTANTS.PROFILE.UNIVERSITY]: e.target.value,
-                })
-              }
-            />
-          </Form.Group>
-          <Form.Group className="my-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              value={data[CONSTANTS.PROFILE.EMAIL]}
-              onChange={(e) =>
-                setData({ ...data, [CONSTANTS.PROFILE.EMAIL]: e.target.value })
-              }
-            />
-          </Form.Group>
-          <Form.Group className="my-3">
-            <Form.Label>Address</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter address"
-              value={data[CONSTANTS.PROFILE.ADDRESS]}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [CONSTANTS.PROFILE.ADDRESS]: e.target.value,
-                })
-              }
-            />
-          </Form.Group>
-          <Form.Group className="my-3">
-            <Form.Label>Contact</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter contact"
-              value={data[CONSTANTS.PROFILE.CONTACT]}
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  [CONSTANTS.PROFILE.CONTACT]: e.target.value,
-                })
-              }
-            />
-          </Form.Group>
+          {/* Add Form.Group sections for other fields here */}
         </Form>
       </ModalBody>
       <ModalFooter>
