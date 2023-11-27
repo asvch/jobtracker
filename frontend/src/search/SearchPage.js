@@ -14,6 +14,10 @@ const columns = [
     id: "jobTitle",
   },
   {
+    label: "Job Link",
+    id: "jobLink",
+  },
+  {
     label: "Location",
     id: "location",
   },
@@ -32,30 +36,7 @@ export default class SearchPage extends Component {
     super(props);
     this.state = {
       searchText: "",
-      rows: [
-        // {
-        //   benefits: [
-        //     "A stipend of $8,000 for ten weeks is available for up to two summer legal interns, but candidates are required to document attempts to secure funding through their law schools or external sources",
-        //     "Any final stipend amount will be offset by amounts received through these external funding sources",
-        //   ],
-        //   companyName: "ACLU - Internships",
-        //   date: "3 days ago",
-        //   jobTitle: "Legal Internship Program",
-        //   location: "  Raleigh, NC   ",
-        //   qualifications: [
-        //     "Completed first year of law school before the internship commences",
-        //     "Ability to conduct thorough legal and factual research in a fast-paced litigation environment on short deadline, identify relevant authorities, and succinctly summarize findings",
-        //     "Clear, direct writing and oral communication style, and ability to explain complex legal concepts in plain language",
-        //     "Ability to take direction well and work collaboratively as part of a multidisciplinary team of other law students, supervising attorneys, and non-attorney staff members",
-        //     "Deep respect for others' lived experiences, humility, and ability to work with, learn from, and interact respectfully with people from backgrounds different from your own",
-        //     "Commitment to civil rights and civil liberties issues and the mission of the ACLU, especially if coupled with a desire to work in the public interest after law school",
-        //   ],
-        //   responsibilities: [
-        //     "The internship is full-time and requires a 10-week commitment",
-        //     "Conducting legal and policy research on a range of topics",
-        //   ],
-        // },
-      ],
+      rows: [],
       salary: "",
       addedList: [],
       showJobDesc: false,
@@ -83,6 +64,7 @@ export default class SearchPage extends Component {
           return {
             id: i,
             jobTitle: d.jobTitle,
+            jobLink: d.jobLink,
             companyName: d.companyName,
             location: d.location,
             date: d.date,
@@ -263,6 +245,16 @@ export default class SearchPage extends Component {
                   <tr key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
+
+                      if (column.id === "jobLink") {
+                        // Render the jobLink column as HTML
+                        return (
+                          <td className="p-3" key={column.id}>
+                            <div dangerouslySetInnerHTML={{ __html: value }} />
+                          </td>
+                        );
+                      }
+                      
                       if (column.id !== "func") {
                         return (
                           <td className="p-3" key={column.id}>

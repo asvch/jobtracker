@@ -352,10 +352,6 @@ def create_app():
                     random_job_level + random_location + "&ibp=htl;jobs"
                 print(query)
 
-                inner_div = mydivs[0].find("div", class_="KGjGe")
-                if inner_div:
-                    data_share_url = inner_div.get("data-share-url")
-                    # print(data_share_url)
 
             else:
                 query = "https://www.google.com/search?q=" + "sde usa" + "&ibp=htl;jobs"
@@ -492,7 +488,7 @@ def create_app():
 
         # parsing searching results to DataFrame and return
         df = pd.DataFrame(
-            columns=["jobTitle", "companyName", "location", "date", "qualifications", "responsibilities", "benefits"])
+            columns=["jobTitle", "jobLink","companyName", "location", "date", "qualifications", "responsibilities", "benefits"])
         mydivs = soup.find_all("div", class_="PwjeAc")
 
         for i, div in enumerate(mydivs):
@@ -502,9 +498,14 @@ def create_app():
             df.at[i, "location"] = div.find("div", {"class": "Qk80Jf"}).text
             df.at[i, "date"] = div.find_all(
                 "span", {"class": "LL4CDc"}, limit=1)[0].text
-            # linkedin_apply_link = div.find("a", class_="pMhGee Co68jc j0vryd")
-            # if linkedin_apply_link:
-            #     df.at[i, "jobLink"] = linkedin_apply_link.get("href")
+            
+            apply_link = div.find("a", class_="pMhGee Co68jc j0vryd")
+            if apply_link:
+                link_href = apply_link.get("href")
+                link_text = apply_link.get("title")
+                clickable_link = f'<a href="{link_href}" target="_blank">{link_text}</a>'
+
+                df.at[i, "jobLink"] = clickable_link
 
             # Collect Job Description Details
             desc = div.find_all("div", {"class": "JxVj3d"})

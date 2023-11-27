@@ -94,7 +94,7 @@ const Recommendations = () => {
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href={job["data-share-url"]}
+                href={job["jobLink"]}
               >
                 <button
                   type="button"
