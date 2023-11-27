@@ -4,6 +4,7 @@ The flask application for our program
 # importing required python libraries
 from flask import Flask, jsonify, request, send_file, redirect, url_for, session
 from flask_mongoengine import MongoEngine
+from markupsafe import escape
 from flask_cors import CORS, cross_origin
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options

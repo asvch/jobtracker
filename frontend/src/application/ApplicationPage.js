@@ -11,6 +11,8 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
   const [date, setDate] = useState();
   const [jobLink, setJobLink] = useState();
   const [isCreate, setIsCreate] = useState();
+  const [notes, setNotes] = useState('');
+  const [updates, setUpdates] = useState('');
 
   const findStatus = (value) => {
     let status = ''
@@ -98,6 +100,24 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                         </div>
                       </Card.Text>
                     </Col>
+                    <Col sm={12} mb={3} mb-sm={0}>
+                      <Card.Text style={{ fontSize: "14px" }}>
+                        <div style={{ display: "flex" }}>
+                          <div>Notes: </div>
+                          <div>{jobListing.notes}</div>
+                          </div>
+                          </Card.Text>
+                      </Col>
+                      <Col sm={12} mb={3} mb-sm={0}>
+                      <Card.Text style={{ fontSize: "14px" }}>
+                        <div style={{ display: "flex" }}>
+                          <div>Updates: </div>
+                          <div>{jobListing.updates}</div>
+                          </div>
+                          </Card.Text>
+                      </Col>  
+                      
+                      
                   </Row>
                 </Card.Body>
               </Card>
@@ -139,6 +159,14 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                   <label className='col-form-label'>Location</label>
                   <input type='text' className='form-control' id='location' placeholder='Location' value={location} onChange={(e) => setLocation(e.target.value)} />
                 </div>
+                <div className='form-group'>
+            <label className='col-form-label'>Notes</label>
+            <textarea className='form-control' id='notes' placeholder='Add notes...' value={notes} onChange={(e) => setNotes(e.target.value)} />
+          </div>
+          <div className='form-group'>
+            <label className='col-form-label'>Updates</label>
+            <textarea className='form-control' id='updates' placeholder='Add updates...' value={updates} onChange={(e) => setUpdates(e.target.value)} />
+          </div>
 
                 <div className='input-group mb-3'>
                   <div className='input-group-prepend'>
@@ -173,7 +201,7 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
             let date = document.querySelector("#date").value
             let status = document.querySelector("#status").value
             let jobLink = document.querySelector("#jobLink").value
-            handleUpdateDetails(selectedApplication?.id, jobTitle, companyName, location, date, status, jobLink);
+            handleUpdateDetails(selectedApplication?.id, jobTitle, companyName, location, date, status, jobLink, notes, updates);
             setCloseModal(true);
           }
           }>
@@ -211,7 +239,7 @@ const ApplicationPage = () => {
   };
 
   const handleUpdateDetails = useCallback(
-    (id, job, company, location, date, status, jobLink) => {
+    (id, job, company, location, date, status, jobLink, notes, updates) => {
       let application = {
         id: id ? id : null,
         jobTitle: job,
@@ -219,7 +247,9 @@ const ApplicationPage = () => {
         location: location,
         date: date,
         status: status,
-        jobLink: jobLink
+        jobLink: jobLink,
+        notes: notes, 
+        updates: updates
       }
 
       if (application.id === null) {
