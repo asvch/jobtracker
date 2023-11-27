@@ -29,6 +29,10 @@ export default class Sidebar extends Component {
             <i class="fas fa-file-alt left-nav-icon"></i>
             <span class="left-nav-label">Applications</span>
           </div>
+          <div onClick={() => this.props.switchPage('MyApplicationPage')}>
+            <i class="fas fa-user-alt left-nav-icon"></i>
+            <span class="left-nav-label">MyApplication</span>
+          </div>
           <div onClick={() => this.props.switchPage('ProfilePage')}>
             <i class="fas fa-user-alt left-nav-icon"></i>
             <span class="left-nav-label">Profile</span>
@@ -37,6 +41,7 @@ export default class Sidebar extends Component {
             <i class="fas fa-sign-out-alt left-nav-icon"></i>
             <span class="left-nav-label">LogOut</span>
           </div>
+
         </div>
       </div>
     )

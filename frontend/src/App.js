@@ -21,6 +21,7 @@ export default class App extends React.Component {
       ManageResumePage: <ManageResumePage />,
       ProfilePage: <ProfilePage />,
       MatchesPage: <MatchesPage />,
+      MyApplicationPage:<MyApplicationPage />
     };
     this.state = {
       currentPage: <LoginPage />,
