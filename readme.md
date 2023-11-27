@@ -202,7 +202,11 @@ Please see our CONTRIBUTING.md for instructions on how to contribute to the repo
 
 ## Team Members
 
-- Sakshi Mahadik
-- Jaiwin Shah
-- Om Jain
-- Jay Shah
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/riyagori1203"><img src="https://avatars.githubusercontent.com/u/66380988?s=400&u=abc90228fe33cf1be71f80eec8aa74213134dea9&v=4" width="75px;" alt=""/><br /><sub><b>Riya Gori</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Kashika08"><img src="https://avatars.githubusercontent.com/u/43812511?v=4" width="75px;" alt=""/><br /><sub><b>Kashika Malick</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/sps-bit"><img src="https://avatars.githubusercontent.com/u/71579349?v=4" width="75px;" alt=""/><br /><sub><b>Sweta Shinde</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/sinchanashetty11"><img src="https://avatars.githubusercontent.com/u/73926660?v=4" width="75px;" alt=""/><br /><sub><b>Sinchana Shetty</b></sub></a><br /></td>
+  </tr>
+</table>
