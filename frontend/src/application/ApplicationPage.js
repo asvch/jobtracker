@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Col, Container, Row, Modal } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
+import { Card, Col, Container, Row, Modal, Button } from 'react-bootstrap';
 
 const ApplicationsList = ({ applicationList, handleCardClick, selectedApplication, handleUpdateDetails, handleDeleteApplication }) => {
   const [closeModal, setCloseModal] = useState(true);
@@ -11,55 +10,96 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
   const [date, setDate] = useState();
   const [jobLink, setJobLink] = useState();
   const [isCreate, setIsCreate] = useState();
+  const [searchCriteria, setSearchCriteria] = useState({
+    jobTitle: '',
+    companyName: '',
+    location: '',
+    status: '',
+  });
   const [notes, setNotes] = useState('');
   const [updates, setUpdates] = useState('');
 
   const findStatus = (value) => {
-    let status = ''
-    if (value === '1')
-      status = 'Wish List';
-    else if (value === '2')
-      status = 'Waiting for referral';
-    else if (value === '3')
-      status = 'Applied';
-    else if (value === '4')
-      status = 'Rejected';
+    let status = '';
+    if (value === '1') status = 'Wish List';
+    else if (value === '2') status = 'Waiting for referral';
+    else if (value === '3') status = 'Applied';
+    else if (value === '4') status = 'Rejected';
 
     return status;
-  }
+  };
+
+  const filteredApplications = applicationList.filter((jobListing) => {
+    const titleMatch = jobListing.jobTitle.toLowerCase().includes(searchCriteria.jobTitle.toLowerCase());
+    const companyMatch = jobListing.companyName.toLowerCase().includes(searchCriteria.companyName.toLowerCase());
+    const locationMatch = jobListing.location.toLowerCase().includes(searchCriteria.location.toLowerCase());
+    const statusMatch = jobListing.status === searchCriteria.status || searchCriteria.status === '';
+
+    return titleMatch && companyMatch && locationMatch && statusMatch;
+  });
 
   return (
     <>
-      <Button style={{ marginLeft: "11%", marginTop: "4%", backgroundColor: "#296E85" }} size="lg" onClick={() => {
-        handleCardClick(null);
-        setCloseModal(false);
-        setIsCreate(true);
-        setJob(null);
-        setCompany(null);
-        setLocation(null);
-        setStatus(null);
-        setDate(null);
-        setStatus(null);
-        setJobLink(null);
-      }}>
+   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+  <div style={{ marginRight: '20px' }}>
+    <label>Job Title:</label>
+    <input type="text" value={searchCriteria.jobTitle} onChange={(e) => setSearchCriteria({ ...searchCriteria, jobTitle: e.target.value })} />
+  </div>
+
+  <div style={{ marginRight: '20px' }}>
+    <label>Company Name:</label>
+    <input type="text" value={searchCriteria.companyName} onChange={(e) => setSearchCriteria({ ...searchCriteria, companyName: e.target.value })} />
+  </div>
+
+  <div style={{ marginRight: '20px' }}>
+    <label>Location:</label>
+    <input type="text" value={searchCriteria.location} onChange={(e) => setSearchCriteria({ ...searchCriteria, location: e.target.value })} />
+  </div>
+
+  <div>
+    <label>Status:</label>
+    <select value={searchCriteria.status} onChange={(e) => setSearchCriteria({ ...searchCriteria, status: e.target.value })}>
+      <option value="">All</option>
+      <option value="1">Wish List</option>
+      <option value="2">Waiting for referral</option>
+      <option value="3">Applied</option>
+      <option value="4">Rejected</option>
+    </select>
+  </div>
+</div>
+
+
+
+      <Button
+        style={{ marginLeft: '11%', marginTop: '4%', backgroundColor: '#296E85' }}
+        size="lg"
+        onClick={() => {
+          handleCardClick(null);
+          setCloseModal(false);
+          setIsCreate(true);
+          setJob(null);
+          setCompany(null);
+          setLocation(null);
+          setStatus(null);
+          setDate(null);
+          setStatus(null);
+          setJobLink(null);
+        }}
+      >
         + Add New Application
       </Button>
-      <Container style={{ marginTop: "20px" }}>
+      <Container style={{ marginTop: '20px' }}>
         <Row>
-          {applicationList.map((jobListing) => (
-            <Col
-              key={jobListing.id}
-              md={12}
-              style={{ marginBottom: "20px" }}
-            >
+          {filteredApplications.map((jobListing) => (
+            <Col key={jobListing.id} md={12} style={{ marginBottom: '20px' }}>
               <Card
                 style={{
-                  marginLeft: "10%",
-                  borderColor: "#ccc",
-                  borderRadius: "5px",
-                  boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-                  transition: "0.3s",
-                  cursor: "pointer",
+                  marginLeft: '10%',
+                  borderColor: '#ccc',
+                  borderRadius: '5px',
+                  boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+                  transition: '0.3s',
+                  cursor: 'pointer',
                 }}
                 onClick={() => {
                   handleCardClick(jobListing);
@@ -74,27 +114,23 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                   setIsCreate(false);
                 }}
               >
-                <Card.Body style={{ padding: "20px" }}>
+                <Card.Body style={{ padding: '20px' }}>
                   <Row>
                     <Col sm={6} mb={3} mb-sm={0}>
-                      <Card.Title style={{ fontSize: "20px" }}>
-                        {jobListing?.jobTitle}
-                      </Card.Title>
-                      <Card.Subtitle style={{ fontSize: "16px" }}>
-                        {jobListing?.companyName}
-                      </Card.Subtitle>
+                      <Card.Title style={{ fontSize: '20px' }}>{jobListing?.jobTitle}</Card.Title>
+                      <Card.Subtitle style={{ fontSize: '16px' }}>{jobListing?.companyName}</Card.Subtitle>
                     </Col>
                     <Col sm={6} mb={3} mb-sm={0}>
-                      <Card.Text style={{ fontSize: "14px" }}>
-                        <div style={{ display: "flex" }}>
+                      <Card.Text style={{ fontSize: '14px' }}>
+                        <div style={{ display: 'flex' }}>
                           <div>Location: </div>
                           <div>{jobListing.location}</div>
                         </div>
-                        <div style={{ display: "flex" }}>
+                        <div style={{ display: 'flex' }}>
                           <div>Date: </div>
                           <div>{jobListing.date}</div>
                         </div>
-                        <div style={{ display: "flex" }}>
+                        <div style={{ display: 'flex' }}>
                           <div>Status: </div>
                           <div>{findStatus(jobListing.status)}</div>
                         </div>
@@ -132,28 +168,28 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
           <Modal.Title>Update Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {
-            (
-              <>
-                <div className="form-group">
-                  <label className='col-form-label'>Job Title</label>
-                  <input type="text" className="form-control" id="jobTitle" placeholder="Job Title" value={job} onChange={(e) => setJob(e.target.value)} />
-                </div>
+          {(
+            <>
+              <div className="form-group">
+                <label className="col-form-label">Job Title</label>
+                <input type="text" className="form-control" id="jobTitle" placeholder="Job Title" value={job} onChange={(e) => setJob(e.target.value)} />
+              </div>
 
-                <div className="form-group">
-                  <label className='col-form-label'>Company Name</label>
-                  <input type="text" className="form-control" id="companyName" placeholder="Company Name" value={company} onChange={(e) => setCompany(e.target.value)} />
-                </div>
+              <div className="form-group">
+                <label className="col-form-label">Company Name</label>
+                <input type="text" className="form-control" id="companyName" placeholder="Company Name" value={company} onChange={(e) => setCompany(e.target.value)} />
+              </div>
 
-                <div className='form-group'>
-                  <label className='col-form-label'>Date</label>
-                  <input type='date' className='form-control' id='date' value={date} onChange={(e) => setDate(e.target.value)} />
-                </div>
+              <div className="form-group">
+                <label className="col-form-label">Date</label>
+                <input type="date" className="form-control" id="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              </div>
 
-                <div className='form-group'>
-                  <label className='col-form-label'>Job Link</label>
-                  <input type='text' className='form-control' id='jobLink' placeholder='Job Link' value={jobLink} onChange={(e) => setJobLink(e.target.value)} />
-                </div>
+              <div className="form-group">
+                <label className="col-form-label">Job Link</label>
+                <input type="text" className="form-control" id="jobLink" placeholder="Job Link" value={jobLink} onChange={(e) => setJobLink(e.target.value)} />
+              </div>
+
 
                 <div className='form-group'>
                   <label className='col-form-label'>Location</label>
@@ -168,30 +204,34 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
             <textarea className='form-control' id='updates' placeholder='Add updates...' value={updates} onChange={(e) => setUpdates(e.target.value)} />
           </div>
 
-                <div className='input-group mb-3'>
-                  <div className='input-group-prepend'>
-                    <label className='input-group-text'>Application Type</label>
-                  </div>
-                  <select className='custom-select' id='status' value={status} onChange={(e) => setStatus(e.target.value)}>
-                    <option>Choose...</option>
-                    <option value='1'>Wish list</option>
-                    <option value='2'>Waiting Referral</option>
-                    <option value='3'>Applied</option>
-                    <option value='4'>Rejected</option>
-                  </select>
+              <div className="input-group mb-3">
+                <div className="input-group-prepend">
+                  <label className="input-group-text">Application Type</label>
                 </div>
-              </>
-            )}
+                <select className="custom-select" id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <option>Choose...</option>
+                  <option value="1">Wish list</option>
+                  <option value="2">Waiting Referral</option>
+                  <option value="3">Applied</option>
+                  <option value="4">Rejected</option>
+                </select>
+              </div>
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
           {!isCreate && (
             <>
-              <Button variant="danger" onClick={(e) => {
-                e.preventDefault();
-                handleDeleteApplication(selectedApplication);
-                setCloseModal(true);
-              }}>
+              <Button
+                variant="danger"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDeleteApplication(selectedApplication);
+                  setCloseModal(true);
+                }}
+              >
                 Delete
+
               </Button> </>)}
           <Button variant="success" onClick={(e) => {
             e.preventDefault();
@@ -205,6 +245,7 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
             setCloseModal(true);
           }
           }>
+
             Save Changes
           </Button>
         </Modal.Footer>
@@ -279,7 +320,7 @@ const ApplicationPage = () => {
           .catch((error) => {
             // Handle error
             console.error('Error:', error);
-            alert('Adding application failed!')
+            alert('Adding application failed!');
           });
       } else {
         fetch('http://127.0.0.1:5000/applications/' + application.id, {
@@ -306,7 +347,7 @@ const ApplicationPage = () => {
           .catch((error) => {
             // Handle error
             console.error('Error:', error);
-            alert('Update Failed!')
+            alert('Update Failed!');
           });
       }
       setSelectedApplication(null);
@@ -334,18 +375,20 @@ const ApplicationPage = () => {
       .catch((error) => {
         // Handle error
         console.error('Error:', error);
-        alert('Error while deleting the application!')
+        alert('Error while deleting the application!');
       });
     setISChanged(false);
     setSelectedApplication(null);
-  }
+  };
 
-  return <ApplicationsList
-    applicationList={applicationList}
-    handleCardClick={handleCardClick}
-    selectedApplication={selectedApplication}
-    handleUpdateDetails={handleUpdateDetails}
-    handleDeleteApplication={handleDeleteApplication}
-  />;
+  return (
+    <ApplicationsList
+      applicationList={applicationList}
+      handleCardClick={handleCardClick}
+      selectedApplication={selectedApplication}
+      handleUpdateDetails={handleUpdateDetails}
+      handleDeleteApplication={handleDeleteApplication}
+    />
+  );
 };
 export default ApplicationPage;
