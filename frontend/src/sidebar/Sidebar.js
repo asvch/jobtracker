@@ -4,8 +4,10 @@ import '@fortawesome/fontawesome-free/css/fontawesome.css'
 import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
 import '@fortawesome/fontawesome-free/js/brands'
+import { CONSTANTS } from "../data/Constants";
 
 import '../static/Sidebar.css'
+
 export default class Sidebar extends Component {
   render() {
     return (

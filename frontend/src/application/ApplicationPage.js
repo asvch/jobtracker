@@ -16,6 +16,8 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
     location: '',
     status: '',
   });
+  const [notes, setNotes] = useState('');
+  const [updates, setUpdates] = useState('');
 
   const findStatus = (value) => {
     let status = '';
@@ -134,6 +136,24 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                         </div>
                       </Card.Text>
                     </Col>
+                    <Col sm={12} mb={3} mb-sm={0}>
+                      <Card.Text style={{ fontSize: "14px" }}>
+                        <div style={{ display: "flex" }}>
+                          <div>Notes: </div>
+                          <div>{jobListing.notes}</div>
+                          </div>
+                          </Card.Text>
+                      </Col>
+                      <Col sm={12} mb={3} mb-sm={0}>
+                      <Card.Text style={{ fontSize: "14px" }}>
+                        <div style={{ display: "flex" }}>
+                          <div>Updates: </div>
+                          <div>{jobListing.updates}</div>
+                          </div>
+                          </Card.Text>
+                      </Col>  
+                      
+                      
                   </Row>
                 </Card.Body>
               </Card>
@@ -170,10 +190,19 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                 <input type="text" className="form-control" id="jobLink" placeholder="Job Link" value={jobLink} onChange={(e) => setJobLink(e.target.value)} />
               </div>
 
-              <div className="form-group">
-                <label className="col-form-label">Location</label>
-                <input type="text" className="form-control" id="location" placeholder="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
-              </div>
+
+                <div className='form-group'>
+                  <label className='col-form-label'>Location</label>
+                  <input type='text' className='form-control' id='location' placeholder='Location' value={location} onChange={(e) => setLocation(e.target.value)} />
+                </div>
+                <div className='form-group'>
+            <label className='col-form-label'>Notes</label>
+            <textarea className='form-control' id='notes' placeholder='Add notes...' value={notes} onChange={(e) => setNotes(e.target.value)} />
+          </div>
+          <div className='form-group'>
+            <label className='col-form-label'>Updates</label>
+            <textarea className='form-control' id='updates' placeholder='Add updates...' value={updates} onChange={(e) => setUpdates(e.target.value)} />
+          </div>
 
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
@@ -202,23 +231,21 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
                 }}
               >
                 Delete
-              </Button>{' '}
-            </>
-          )}
-          <Button
-            variant="success"
-            onClick={(e) => {
-              e.preventDefault();
-              let jobTitle = document.querySelector('#jobTitle').value;
-              let companyName = document.querySelector('#companyName').value;
-              let location = document.querySelector('#location').value;
-              let date = document.querySelector('#date').value;
-              let status = document.querySelector('#status').value;
-              let jobLink = document.querySelector('#jobLink').value;
-              handleUpdateDetails(selectedApplication?.id, jobTitle, companyName, location, date, status, jobLink);
-              setCloseModal(true);
-            }}
-          >
+
+              </Button> </>)}
+          <Button variant="success" onClick={(e) => {
+            e.preventDefault();
+            let jobTitle = document.querySelector("#jobTitle").value
+            let companyName = document.querySelector("#companyName").value
+            let location = document.querySelector("#location").value
+            let date = document.querySelector("#date").value
+            let status = document.querySelector("#status").value
+            let jobLink = document.querySelector("#jobLink").value
+            handleUpdateDetails(selectedApplication?.id, jobTitle, companyName, location, date, status, jobLink, notes, updates);
+            setCloseModal(true);
+          }
+          }>
+
             Save Changes
           </Button>
         </Modal.Footer>
@@ -253,7 +280,7 @@ const ApplicationPage = () => {
   };
 
   const handleUpdateDetails = useCallback(
-    (id, job, company, location, date, status, jobLink) => {
+    (id, job, company, location, date, status, jobLink, notes, updates) => {
       let application = {
         id: id ? id : null,
         jobTitle: job,
@@ -262,7 +289,9 @@ const ApplicationPage = () => {
         date: date,
         status: status,
         jobLink: jobLink,
-      };
+        notes: notes, 
+        updates: updates
+      }
 
       if (application.id === null) {
         fetch('http://127.0.0.1:5000/applications', {
@@ -285,7 +314,7 @@ const ApplicationPage = () => {
             application.id = data.id;
             setApplicationList((prevApplicationList) => [...prevApplicationList, application]);
 
-            // Display an alert for a new application added successfully
+            // Display an alert for new application added successfully
             alert('New application added successfully!');
           })
           .catch((error) => {

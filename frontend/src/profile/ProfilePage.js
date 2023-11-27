@@ -21,8 +21,43 @@ const ProfilePage = (props) => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [jobModeModalOpen, setJobModeModalOpen] = useState(false);
 
-  // const [profile, setProfile] = useState(props.profile);
+  const [alertShown, setAlertShown] = useState(false);
+
   const profile = props.profile;
+  useEffect(() => {
+    handleSkillsModalOpen();
+    handleLocationModalOpen();
+    handleExpLevelModalOpen();
+  }, []);
+  const handleSkillsModalOpen = () => {
+    if (profile[CONSTANTS.PROFILE.SKILLS].length === 0) {
+      setSkillsModalOpen(true);
+    } 
+  };
+
+  const handleExpLevelModalOpen = () => {
+    if (!profile[CONSTANTS.PROFILE.EXPERIENCE_LEVEL] || profile[CONSTANTS.PROFILE.EXPERIENCE_LEVEL].length === 0) {
+      setExpLevelModalOpen(true);
+    } 
+  };
+
+  const handleLocationModalOpen = () => {
+    if (!profile[CONSTANTS.PROFILE.PREFERRED_LOCATIONS] || profile[CONSTANTS.PROFILE.PREFERRED_LOCATIONS].length === 0) {
+      setLocationModalOpen(true);
+    } 
+  };
+
+  // useEffect(() => {
+  //   if (!profile[CONSTANTS.PROFILE.SKILLS] && alertShown) {
+  //     alert("Skills field is required.");
+  //   }
+  //   if (!profile[CONSTANTS.PROFILE.EXPERIENCE_LEVEL] && alertShown) {
+  //     alert("Experience Level field is required.");
+  //   }
+  //   if (!profile[CONSTANTS.PROFILE.PREFERRED_LOCATIONS] && alertShown) {
+  //     alert("Locations field is required.");
+  //   }
+  // }, [profile, alertShown]);
 
   return (
     <div className="container" style={{ marginLeft: "8%", marginTop: "4%" }}>
@@ -54,7 +89,7 @@ const ProfilePage = (props) => {
                 }}
               >
                 <span style={{ fontSize: 60, letterSpacing: 1.2 }}>
-                  {profile.fullName }
+                  {profile.fullName}
                 </span>
               </div>
             </div>
@@ -115,6 +150,7 @@ const ProfilePage = (props) => {
                     size="1x"
                     onClick={() => setSkillsModalOpen(true)}
                     cursor="pointer"
+                    disabled={!profile[CONSTANTS.PROFILE.SKILLS]}
                   />
                 </div>
               </div>
@@ -124,7 +160,6 @@ const ProfilePage = (props) => {
                     className="badge rounded-pill m-1 py-2 px-3"
                     style={{
                       border: "2px solid",
-                      // backgroundColor: "#0096c7",
                       backgroundColor: "#296e85",
                       fontSize: 16,
                       fontWeight: "normal",
@@ -151,6 +186,7 @@ const ProfilePage = (props) => {
                   size="1x"
                   onClick={() => setExpLevelModalOpen(true)}
                   cursor="pointer"
+                  disabled={!profile[CONSTANTS.PROFILE.EXPERIENCE_LEVEL]}
                 />
               </div>
               <div className="d-flex flex-wrap">
@@ -160,7 +196,6 @@ const ProfilePage = (props) => {
                       className="badge rounded-pill m-1 py-2 px-3"
                       style={{
                         border: "2px solid",
-                        // backgroundColor: "#0096c7",
                         backgroundColor: "#296e85",
                         fontSize: 16,
                         fontWeight: "normal",
@@ -188,6 +223,7 @@ const ProfilePage = (props) => {
                   size="1x"
                   onClick={() => setLocationModalOpen(true)}
                   cursor="pointer"
+                  disabled={!profile[CONSTANTS.PROFILE.PREFERRED_LOCATIONS]}
                 />
               </div>
               <div className="d-flex flex-wrap">
@@ -197,7 +233,6 @@ const ProfilePage = (props) => {
                       className="badge rounded-pill m-1 py-2 px-3"
                       style={{
                         border: "2px solid",
-                        // backgroundColor: "#0096c7",
                         backgroundColor: "#296e85",
                         fontSize: 16,
                         fontWeight: "normal",
@@ -211,41 +246,6 @@ const ProfilePage = (props) => {
               </div>
             </div>
           </div>
-          {/* <div
-            className="card my-3 p-2"
-            style={{
-              boxShadow: "0px 5px 12px 0px rgba(0,0,0,0.1)",
-            }}
-          >
-            <div className="card-body">
-              <div className="d-flex justify-content-between px-0 mb-3">
-                <h4 className="card-title mb-0 mx-1">Mode of job</h4>
-                <FontAwesomeIcon
-                  icon={faPenToSquare}
-                  size="1x"
-                  onClick={() => setJobModeModalOpen(true)}
-                  cursor="pointer"
-                />
-              </div>
-              <div className="d-flex flex-wrap">
-                {profile.modes.map((ele, index) => (
-                  <span
-                    className="badge rounded-pill m-1 py-2 px-3"
-                    style={{
-                      border: "2px solid",
-                      // backgroundColor: "#0096c7",
-                      backgroundColor: "#296e85",
-                      fontSize: 16,
-                      fontWeight: "normal",
-                    }}
-                    key={index}
-                  >
-                    {ele.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
       {locationModalOpen && (
@@ -253,7 +253,6 @@ const ProfilePage = (props) => {
           name={CONSTANTS.PROFILE.PREFERRED_LOCATIONS}
           options={CONSTANTS.COUNTRIES}
           profile={props.profile}
-          // setProfile={setProfile}
           setModalOpen={setLocationModalOpen}
           updateProfile={props.updateProfile}
         />
@@ -263,7 +262,6 @@ const ProfilePage = (props) => {
           name={CONSTANTS.PROFILE.SKILLS}
           options={CONSTANTS.SKILLS}
           profile={props.profile}
-          // setProfile={setProfile}
           setModalOpen={setSkillsModalOpen}
           updateProfile={props.updateProfile}
         />
@@ -271,10 +269,8 @@ const ProfilePage = (props) => {
       {ExpLevelModalOpen && (
         <ExperienceLevelModal
           name={CONSTANTS.PROFILE.EXPERIENCE_LEVEL}
-          
           options={CONSTANTS.EXPERIENCE_LEVEL}
           profile={props.profile}
-          // setProfile={setProfile}
           setModalOpen={setExpLevelModalOpen}
           updateProfile={props.updateProfile}
         />
@@ -284,7 +280,6 @@ const ProfilePage = (props) => {
           name={CONSTANTS.PROFILE.JOB_MODE}
           options={CONSTANTS.JOB_MODES}
           profile={props.profile}
-          // setProfile={setProfile}
           setModalOpen={setJobModeModalOpen}
           updateProfile={props.updateProfile}
         />
@@ -292,12 +287,10 @@ const ProfilePage = (props) => {
       {profileModalOpen && (
         <ProfileModal
           profile={props.profile}
-          // setProfile={setProfile}
           setModalOpen={setProfileModalOpen}
           updateProfile={props.updateProfile}
         />
       )}
-      {/* <JobDescription /> */}
     </div>
   );
 };
