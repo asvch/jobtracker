@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Col, Container, Row, Card } from 'react-bootstrap';
+import { Col, Container, Row, Card, Button } from 'react-bootstrap';
 
 const findStatus = (value) => {
   let status = '';
@@ -12,39 +12,58 @@ const findStatus = (value) => {
 };
 
 const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, handleDeleteApplication }) => {
-  return (
-    <Container>
-      <Row>
-        {Object.keys(applicationLists).map((status) => (
-          <Col key={status} md={3} style={{ marginBottom: '20px' }}>
-            <h3>{status}</h3>
-            {applicationLists[status].map((jobListing) => (
-              <Card
-                key={jobListing.id}
-                style={{
-                  borderColor: '#ccc',
-                  borderRadius: '5px',
-                  boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-                  transition: '0.3s',
-                  cursor: 'pointer',
-                }}
-                onClick={() => handleCardClick(jobListing)}
-              >
-                <Card.Body style={{ padding: '20px' }}>
-                  {/* Your existing Card content */}
-                  <div>
-                    <strong>{jobListing?.jobTitle}</strong>
-                  </div>
-                  {/* ... (Other details you want to display) */}
-                </Card.Body>
-              </Card>
-            ))}
-          </Col>
-        ))}
-      </Row>
-    </Container>
-  );
-};
+    const [expandedCardId, setExpandedCardId] = useState(null);
+  
+    const toggleCardExpansion = (id) => {
+      setExpandedCardId((prevId) => (prevId === id ? null : id));
+    };
+  
+    return (
+      <Container>
+        <Row>
+          {Object.keys(applicationLists).map((status) => (
+            <Col key={status} md={3} style={{ marginBottom: '20px' }}>
+              <h3>{status}</h3>
+              {applicationLists[status].map((jobListing) => (
+                <Card
+                  key={jobListing.id}
+                  style={{
+                    borderColor: '#ccc',
+                    borderRadius: '5px',
+                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+                    transition: '0.3s',
+                    cursor: 'pointer',
+                    marginBottom: '10px',
+                  }}
+                >
+                  <Card.Body style={{ padding: '20px' }}>
+                    <div>
+                      <strong>{jobListing?.jobTitle}</strong> - {jobListing?.companyName}
+                    </div>
+                    {expandedCardId === jobListing.id && (
+                      <>
+                        <div>
+                          <strong>Location:</strong> {jobListing?.location}
+                        </div>
+                        <div>
+                          <strong>Date:</strong> {jobListing?.date}
+                        </div>
+                        {/* Add more details as needed */}
+                      </>
+                    )}
+                    <Button onClick={() => toggleCardExpansion(jobListing.id)}>
+                      {expandedCardId === jobListing.id ? 'Collapse' : 'Expand'}
+                    </Button>
+                  </Card.Body>
+                </Card>
+              ))}
+            </Col>
+          ))}
+        </Row>
+      </Container>
+    );
+  };
+  
 
 const ApplicationPage = () => {
   const [applicationList, setApplicationList] = useState([]);
