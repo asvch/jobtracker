@@ -19,44 +19,52 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
     };
   
     return (
-      <Container>
+      <Container style={{ marginTop: '20px', marginBottom: '20px', marginLeft: '20px' }}>
         <Row>
-          {Object.keys(applicationLists).map((status) => (
+          {['Wish List', 'Waiting for referral', 'Applied', 'Rejected'].map((status) => (
             <Col key={status} md={3} style={{ marginBottom: '20px' }}>
-              <h3>{status}</h3>
-              {applicationLists[status].map((jobListing) => (
-                <Card
-                  key={jobListing.id}
-                  style={{
-                    borderColor: '#ccc',
-                    borderRadius: '5px',
-                    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-                    transition: '0.3s',
-                    cursor: 'pointer',
-                    marginBottom: '10px',
-                  }}
-                >
-                  <Card.Body style={{ padding: '20px' }}>
-                    <div>
-                      <strong>{jobListing?.jobTitle}</strong> - {jobListing?.companyName}
-                    </div>
-                    {expandedCardId === jobListing.id && (
-                      <>
-                        <div>
-                          <strong>Location:</strong> {jobListing?.location}
-                        </div>
-                        <div>
-                          <strong>Date:</strong> {jobListing?.date}
-                        </div>
-                        {/* Add more details as needed */}
-                      </>
-                    )}
-                    <Button onClick={() => toggleCardExpansion(jobListing.id)}>
-                      {expandedCardId === jobListing.id ? 'Collapse' : 'Expand'}
-                    </Button>
-                  </Card.Body>
-                </Card>
-              ))}
+              <Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
+                <Card.Header as="h5" style={{ backgroundColor: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
+                  {status}
+                </Card.Header>
+                <Card.Body style={{ padding: '20px' }}>
+                  {applicationLists &&
+                    applicationLists[status] &&
+                    applicationLists[status].map((jobListing) => (
+                      <div key={jobListing.id} style={{ marginBottom: '10px' }}>
+                        <Card
+                          style={{
+                            borderColor: '#ccc',
+                            borderRadius: '5px',
+                            boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
+                            transition: '0.3s',
+                            cursor: 'pointer',
+                            marginBottom: '10px',
+                          }}
+                        >
+                          <Card.Body style={{ padding: '20px' }}>
+                            <div>
+                              <strong>{jobListing?.jobTitle}</strong> - {jobListing?.companyName}
+                            </div>
+                            {expandedCardId === jobListing.id && (
+                              <>
+                                <div>
+                                  <strong>Location:</strong> {jobListing?.location}
+                                </div>
+                                <div>
+                                  <strong>Date:</strong> {jobListing?.date}
+                                </div>
+                              </>
+                            )}
+                            <Button onClick={() => toggleCardExpansion(jobListing.id)}>
+                              {expandedCardId === jobListing.id ? 'Collapse' : 'Expand'}
+                            </Button>
+                          </Card.Body>
+                        </Card>
+                      </div>
+                    ))}
+                </Card.Body>
+              </Card>
             </Col>
           ))}
         </Row>
