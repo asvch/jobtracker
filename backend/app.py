@@ -351,10 +351,10 @@ def create_app():
                     random_job_level + random_location + "&ibp=htl;jobs"
                 print(query)
 
-                # inner_div = mydivs[0].find("div", class_="KGjGe")
-                # if inner_div:
-                #     data_share_url = inner_div.get("data-share-url")
-                #     print(data_share_url)
+                inner_div = mydivs[0].find("div", class_="KGjGe")
+                if inner_div:
+                    data_share_url = inner_div.get("data-share-url")
+                    # print(data_share_url)
 
             else:
                 query = "https://www.google.com/search?q=" + "sde usa" + "&ibp=htl;jobs"
@@ -367,7 +367,7 @@ def create_app():
                 job = {}
                 inner_div = div.find("div", class_="KGjGe")
                 if inner_div:
-                    job["data-share-url"] = inner_div.get("data-share-url")
+                    job["jobLink"] = inner_div.get("data-share-url")
                 job["jobTitle"] = div.find(
                     "div", {"class": "BjJfJf PUpOsf"}).text
                 print(job["jobTitle"])
@@ -501,6 +501,9 @@ def create_app():
             df.at[i, "location"] = div.find("div", {"class": "Qk80Jf"}).text
             df.at[i, "date"] = div.find_all(
                 "span", {"class": "LL4CDc"}, limit=1)[0].text
+            # linkedin_apply_link = div.find("a", class_="pMhGee Co68jc j0vryd")
+            # if linkedin_apply_link:
+            #     df.at[i, "jobLink"] = linkedin_apply_link.get("href")
 
             # Collect Job Description Details
             desc = div.find_all("div", {"class": "JxVj3d"})
