@@ -23,12 +23,8 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 ## Table of contents
 
 - [Basic Design](#basic-design)
-- [Demo](#demo)
-- [Improvements](#improvements)
-  - [Whats New](#whats-new)
-- [Roadmap](#roadmap)
+- [Improvements and Feature Additions](#improvements-and-feature-additions)
 - [Future Scope](#future-scope)
-- [Explanation](#explanation)
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
   - [Requirements](#requirements)
@@ -47,7 +43,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 ![Basic Design](https://github.com/prithvish-doshi-17/application-tracking-system/blob/main/resources/Overall%20Design.PNG)
 
-# Improvements and Feature Additions
+## Improvements and Feature Additions
 
 ## 1) Apply via job portals:
 To enhance user interaction and simplify the application process, the platform includes direct links for applying for each job listing from the corresponding job board where the job was originally posted. These links enable users to seamlessly connect with the job poster and apply to the job, facilitating a direct and efficient application process. This feature not only saves users valuable time but also improves the overall user experience by eliminating unnecessary steps and ensuring a smoother journey through the platform. With a single click, users can initiate the application process, contributing to a more user-friendly and streamlined platform.
@@ -118,6 +114,7 @@ Implemented web scraping to enhance user interaction, enabling direct access to 
 - Add a feature that allows users to attach these reminders to their Google calendar.
 - Incorporate notifications for upcoming deadlines.
 - Include a link to the university’s career fair page.
+- Drag and drop functionality to change the status of the applications in MyApplications page.
 
 ## Modules:
 
