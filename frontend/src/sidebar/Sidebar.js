@@ -31,7 +31,7 @@ export default class Sidebar extends Component {
           </div>
           <div onClick={() => this.props.switchPage('MyApplicationPage')}>
             <i class="fas fa-user-alt left-nav-icon"></i>
-            <span class="left-nav-label">MyApplication</span>
+            <span class="left-nav-label">MyApplications</span>
           </div>
           <div onClick={() => this.props.switchPage('ProfilePage')}>
             <i class="fas fa-user-alt left-nav-icon"></i>
