@@ -28,15 +28,21 @@ Move Cards: Applications can be represented as cards, with each card moving acro
 Visualize Progress: The board provides a visual representation of the overall status of your job applications.
 Prioritize: Applicants can prioritize applications in the Wishlist column and focus on applying for those positions.
 Identify Bottlenecks: If many applications are stuck in a particular column, it may indicate a bottleneck or an area that needs attention in the job search process.
+<img width="1286" alt="Screenshot 2023-11-27 at 9 06 38 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/6358758a-c5de-43fd-831a-27d7bb822831">
+
 
 
 
 ## 3) Filtering applications: 
 To enhance user convenience, especially for students managing a multitude of applications, the inclusion of filters is crucial. These filters enable users to categorize applications based on their status—such as accepted, rejected, waitlisted, wish-listed, or awaiting referrals. Additionally, the filter functionality extends to sorting applications based on location, job title, and even the company name, providing a comprehensive and efficient way to organize and navigate through the application process.
+<img width="1286" alt="Screenshot 2023-11-27 at 9 08 47 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/627a673d-c0d7-4e5e-b95d-9ef8212fb65d">
+
 
 ## 4) Adding Notes to Applications:
 Applicant Tracking Systems (ATS) traditionally cater to hiring professionals, but an innovative addition involves enabling applicants to add notes and updates to their applications. The integration of a notes feature is a powerful tool that enables users, particularly applicants, to add real-time, personalized notes and updates for each application. This dynamic feature allows candidates to actively document their application journey, noting essential dates, interactions, and any pertinent details they find important. By doing so, applicants maintain a heightened sense of organization and stay well-informed throughout the entire hiring process.
 The real-time nature of this notes feature becomes a valuable asset for applicants. It empowers them to reflect on their progress and express their thoughts, motivations, and distinctive qualifications instantaneously.
+<img width="1086" alt="Screenshot 2023-11-27 at 9 12 50 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/e17415bd-9a70-41f4-8048-e530fbdccbbb">
+
 
 ## 5) Setting preferences: 
 Upon logging in, the application empowers users to establish their preferences promptly. This includes selecting their experience level from a dropdown menu, specifying preferred locations, and indicating proficiency in various skills through an intuitive pop-up interface. These defined parameters play a pivotal role in generating precise predictions and aligning the user's requirements with the most suitable job opportunities.
