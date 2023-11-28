@@ -10,6 +10,7 @@ import ProfilePage from "./profile/ProfilePage";
 import axios from "axios";
 import fetch from "./api/handler";
 import MatchesPage from "./matches/MatchesPage";
+import MyApplicationPage from "./application/MyApplicationPage";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ export default class App extends React.Component {
       ManageResumePage: <ManageResumePage />,
       ProfilePage: <ProfilePage />,
       MatchesPage: <MatchesPage />,
+      MyApplicationPage:<MyApplicationPage />
     };
     this.state = {
       currentPage: <LoginPage />,
