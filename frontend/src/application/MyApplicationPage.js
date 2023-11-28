@@ -24,7 +24,20 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
           {['Wish List', 'Waiting for referral', 'Applied', 'Rejected'].map((status) => (
             <Col key={status} md={3} style={{ marginBottom: '20px' }}>
               <Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
-                <Card.Header as="h5" style={{ backgroundColor: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
+                <Card.Header as="h5" style={{ backgroundColor: 
+                status === 'Wish List'
+                ? '#ffff00' // Light Apricot for Wish List
+                : status === 'Waiting for referral'
+                ? '#0000ff' // Light Blue for Waiting for referral
+                : status === 'Applied'
+                ? '#90EE90' // Light Green for Applied
+                : status === 'Rejected'
+                ? '#FF0000' // Light Salmon for Rejected
+                : '', // Default color
+            borderBottom: '1px solid #dee2e6',
+            color: 'black',
+                    borderBottom: '1px solid #dee2e6' }}>
+                  
                   {status}
                 </Card.Header>
                 <Card.Body style={{ padding: '20px' }}>
