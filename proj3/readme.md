@@ -46,12 +46,17 @@ The real-time nature of this notes feature becomes a valuable asset for applican
 
 ## 5) Setting preferences: 
 Upon logging in, the application empowers users to establish their preferences promptly. This includes selecting their experience level from a dropdown menu, specifying preferred locations, and indicating proficiency in various skills through an intuitive pop-up interface. These defined parameters play a pivotal role in generating precise predictions and aligning the user's requirements with the most suitable job opportunities.
+<img width="1440" alt="Screenshot 2023-11-27 at 9 16 52 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/5426d481-254f-4173-8fe5-fcff931bd03e">
+
 
 ## 6) Added Job links: 
 Implemented web scraping to enhance user interaction, enabling direct access to recommended job matches. This eliminates the need for users, particularly students, to manually search for their desired positions again. The incorporation of direct job links saves significant time and streamlines the user experience.
+<img width="1440" alt="Screenshot 2023-11-27 at 9 19 01 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/8328b1aa-514f-4bc9-9384-e0c0612a6790">
+
 
 ## 7) Error Handling:
    a) Resolved the issue where only half of the countries were initially visible for location on the website. The error has been addressed, and the website now displays the entire list of countries. As a result, the website is functioning correctly, and users can access the complete list of countries for location purposes.
+   
    
    b) Previously, certain pages were redirecting to undefined or error pages, a practice deemed undesirable for a high-quality application. All errors within the application have now been effectively addressed, ensuring users are seamlessly redirected to the appropriate pages.
 
