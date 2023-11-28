@@ -23,6 +23,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 ## Table of contents
 
 - [Basic Design](#basic-design)
+- [Demo Video](#demo-video)
 - [Improvements and Feature Additions](#improvements-and-feature-additions)
 - [Future Scope](#future-scope)
 - [Technologies Used](#technologies-used)
@@ -39,9 +40,13 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 - [How to Contribute](#how-to-contribute)
 - [Team Members](#team-members)
 
-## Basic Design:
+## Basic Design
 
 ![Basic Design](https://github.com/prithvish-doshi-17/application-tracking-system/blob/main/resources/Overall%20Design.PNG)
+
+## Demo Video
+
+https://drive.google.com/file/d/1N096pIbiZH9cPoxaPnRfjno452qQZjZ9/view
 
 ## Improvements and Feature Additions
 
