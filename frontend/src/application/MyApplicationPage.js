@@ -28,7 +28,7 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
                 status === 'Wish List'
                 ? '#ffff00' // Light Apricot for Wish List
                 : status === 'Waiting for referral'
-                ? '#0000ff' // Light Blue for Waiting for referral
+                ? '#b3afff' // Light Blue for Waiting for referral
                 : status === 'Applied'
                 ? '#90EE90' // Light Green for Applied
                 : status === 'Rejected'
