@@ -19,7 +19,7 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
     };
   
     return (
-      <Container style={{ marginTop: '20px', marginBottom: '20px', marginLeft: '20px' }}>
+      <Container style={{ marginTop: '20px', marginBottom: '20px', marginLeft: '110px' }}>
         <Row>
           {['Wish List', 'Waiting for referral', 'Applied', 'Rejected'].map((status) => (
             <Col key={status} md={3} style={{ marginBottom: '20px' }}>

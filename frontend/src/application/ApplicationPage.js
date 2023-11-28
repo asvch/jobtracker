@@ -41,7 +41,7 @@ const ApplicationsList = ({ applicationList, handleCardClick, selectedApplicatio
   return (
     <>
    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-  <div style={{ marginRight: '20px' }}>
+  <div style={{ marginRight: '20px', marginLeft:'110px' }}>
     <label>Job Title:</label>
     <input type="text" value={searchCriteria.jobTitle} onChange={(e) => setSearchCriteria({ ...searchCriteria, jobTitle: e.target.value })} />
   </div>
