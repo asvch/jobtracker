@@ -1,4 +1,4 @@
-# Improvements:
+# Improvements and Feature Additions
 
 ## 1) Apply directly:
 To optimize user interaction and streamline the application process, the application incorporates a direct "Apply Now" button for each job listing. This feature not only saves valuable time for users but also enhances the overall user experience by providing a seamless and efficient means to apply for jobs. Users can now initiate the application process with a single click, eliminating unnecessary steps and ensuring a smoother and more user-friendly journey through the platform.
