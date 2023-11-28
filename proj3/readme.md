@@ -2,6 +2,8 @@
 
 ## 1) Apply via job portals:
 To enhance user interaction and simplify the application process, the platform includes direct links for applying for each job listing from the corresponding job board where the job was originally posted. These links enable users to seamlessly connect with the job poster and apply to the job, facilitating a direct and efficient application process. This feature not only saves users valuable time but also improves the overall user experience by eliminating unnecessary steps and ensuring a smoother journey through the platform. With a single click, users can initiate the application process, contributing to a more user-friendly and streamlined platform.
+![WhatsApp Image 2023-11-27 at 7 52 12 PM](https://github.com/Kashika08/application-tracking-system/assets/73926660/2ec9ad8b-656a-43c1-b876-c188c8ad7a97)
+
 
 ## 2) Added a new page for My Applications:
 This page is a visual board that helps manage work in progress and optimize workflow. It is a useful way to organize and visualize the different stages of your job application process.
