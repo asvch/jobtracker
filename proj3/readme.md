@@ -21,7 +21,6 @@ This can serve as a reminder of potential job opportunities, and applicants can 
 _Waiting for Referral:_
 In this column, applicants can track positions for which they are waiting for a referral or some kind of internal recommendation.
 Networking and referrals are crucial in the job search process, and this column helps candidates keep track of such opportunities.
-How to Use the Kanban Board:
 
 Move Cards: Applications can be represented as cards, with each card moving across the columns as the application progresses.
 Visualize Progress: The board provides a visual representation of the overall status of your job applications.
