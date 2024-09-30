@@ -27,6 +27,7 @@ from authlib.integrations.flask_client import OAuth
 from authlib.common.security import generate_token
 import os
 from mongoengine.connection import get_db, connect
+import sys
 
 existing_endpoints = ["/applications", "/resume"]
 
@@ -44,12 +45,12 @@ def create_app():
     CORS(app)
 
     # get all the variables from the application.yml file
-    with open("application.yml") as f:
-        info = yaml.load(f, Loader=yaml.FullLoader)
-        GOOGLE_CLIENT_ID = info["GOOGLE_CLIENT_ID"]
-        GOOGLE_CLIENT_SECRET = info["GOOGLE_CLIENT_SECRET"]
-        CONF_URL = info["CONF_URL"]
-        app.secret_key = info['SECRET_KEY']
+    # with open("application.yml") as f:
+    #     info = yaml.load(f, Loader=yaml.FullLoader)
+    #     GOOGLE_CLIENT_ID = info["GOOGLE_CLIENT_ID"]
+    #     GOOGLE_CLIENT_SECRET = info["GOOGLE_CLIENT_SECRET"]
+    #     CONF_URL = info["CONF_URL"]
+    #     app.secret_key = info['SECRET_KEY']
 
     app.config["CORS_HEADERS"] = "Content-Type"
 
@@ -359,17 +360,14 @@ def create_app():
             page = requests.get(query, headers=headers)
             soup = BeautifulSoup(page.text, "html.parser")
             # KGjGe - div class to get url
-            mydivs = soup.find_all("div", class_="PwjeAc")
+            mydivs = soup.find_all("div", class_="mqj2af")
             for div in mydivs:
                 job = {}
-                inner_div = div.find("div", class_="KGjGe")
-                if inner_div:
-                    job["jobLink"] = inner_div.get("data-share-url")
+                job["jobLink"] = div.find("a", class_="MQUd2b").get("href")
                 job["jobTitle"] = div.find(
-                    "div", {"class": "BjJfJf PUpOsf"}).text
-                print(job["jobTitle"])
-                job["companyName"] = div.find("div", {"class": "vNEEBe"}).text
-                job["location"] = div.find("div", {"class": "Qk80Jf"}).text
+                    "div", {"class": "tNxQIb PUpOsf"}).text
+                job["companyName"] = div.find("div", {"class": "wHYlTd MKCbgd a3jPc"}).text
+                job["location"] = div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"}).text.split("•")[0].split("via")[0]
                 recommendedJobs.append(job)
             print(recommendedJobs)
             return jsonify(recommendedJobs)
@@ -489,20 +487,20 @@ def create_app():
         # parsing searching results to DataFrame and return
         df = pd.DataFrame(
             columns=["jobTitle", "jobLink","companyName", "location", "date", "qualifications", "responsibilities", "benefits"])
-        mydivs = soup.find_all("div", class_="PwjeAc")
+        mydivs = soup.find_all("div", class_="mqj2af")
 
         for i, div in enumerate(mydivs):
             df.at[i, "jobTitle"] = div.find(
-                "div", {"class": "BjJfJf PUpOsf"}).text
-            df.at[i, "companyName"] = div.find("div", {"class": "vNEEBe"}).text
-            df.at[i, "location"] = div.find("div", {"class": "Qk80Jf"}).text
+                "div", {"class": "tNxQIb PUpOsf"}).text
+            df.at[i, "companyName"] = div.find("div", {"class": "wHYlTd MKCbgd a3jPc"}).text
+            df.at[i, "location"] = div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"}).text.split("•")[0]
             df.at[i, "date"] = div.find_all(
-                "span", {"class": "LL4CDc"}, limit=1)[0].text
+                "span", {"class": "Yf9oye"}, limit=1)[0].text
             
-            apply_link = div.find("a", class_="pMhGee Co68jc j0vryd")
+            apply_link = div.find("a", class_="MQUd2b")
             if apply_link:
                 link_href = apply_link.get("href")
-                link_text = apply_link.get("title")
+                link_text = apply_link.get("title") or "Apply"
                 clickable_link = f'<a href="{link_href}" target="_blank">{link_text}</a>'
 
                 df.at[i, "jobLink"] = clickable_link
@@ -713,18 +711,27 @@ def create_app():
 app = create_app()
 
 
-with open("application.yml") as f:
-    info = yaml.load(f, Loader=yaml.FullLoader)
-    username = info["username"]
-    password = info["password"]
-    # ca=certifi.where()
-    app.config["MONGODB_SETTINGS"] = {
+# with open("application.yml") as f:
+#     info = yaml.load(f, Loader=yaml.FullLoader)
+#     username = info["username"]
+#     password = info["password"]
+#     # ca=certifi.where()
+#     app.config["MONGODB_SETTINGS"] = {
+#         "db": "appTracker",
+        
+#         # "host": f"mongodb+srv://{username}:{password}@cluster0.r0056lg.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
+#         "host": f"mongodb://{username}:{password}@db:27017/mydatabase?retryWrites=true&w=majority"
+
+#     }
+
+app.config["MONGODB_SETTINGS"] = {
         "db": "appTracker",
         
         # "host": f"mongodb+srv://{username}:{password}@cluster0.r0056lg.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
-        "host": f"mongodb+srv://{username}:{password}@seproject.p1kzzaz.mongodb.net/?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
+        "host": f"mongodb://db:27017/mydatabase"
 
     }
+
 db = MongoEngine()
 db.init_app(app)
 

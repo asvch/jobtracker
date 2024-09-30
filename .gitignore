@@ -564,6 +564,5 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 
-*.yml
 
 backend/application.yml
