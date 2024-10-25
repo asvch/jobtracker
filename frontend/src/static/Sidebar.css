@@ -1,58 +1,58 @@
 .left-nav {
-    position: fixed;
-    width: 9%;
-    background-color: #296E85;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 30px;
-  }
-  .left-nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    height: 80%;
-    margin-top: 10%;
-  }
-  
-  .left-nav-icon {
-    font-size: 28px;
-    color: #fff;
-    transition: color 0.3s ease;
-  }
-  
-  .left-nav-label {
-    font-size: 14px;
-    color: #fff;
-    margin-top: 6px;
-    transition: color 0.3s ease;
-  }
-  
-  .left-nav-item div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    padding: 10px;
-  }
-  
-  .left-nav-item div:hover {
-    background-color: #1d1d1d;
-  }
-  
-  .left-nav-item div:hover .left-nav-icon {
-    color: #007bff;
-  }
-  
-  .left-nav-item div:hover .left-nav-label {
-    color: #007bff;
-  }
+	position: fixed;
+	width: 9%;
+	background-color: #296e85;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 30px;
+}
+.left-nav-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+	height: 80%;
+	margin-top: 10%;
+}
 
-  .division {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #555;
-    padding-bottom: 10px;
-  }
+.left-nav-icon {
+	font-size: 28px;
+	color: #fff;
+	transition: color 0.3s ease;
+}
+
+.left-nav-label {
+	font-size: 14px;
+	color: #fff;
+	margin-top: 6px;
+	transition: color 0.3s ease;
+}
+
+.left-nav-item div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	padding: 10px;
+}
+
+.left-nav-item div:hover {
+	background-color: #1d1d1d;
+}
+
+.left-nav-item div:hover .left-nav-icon {
+	color: #007bff;
+}
+
+.left-nav-item div:hover .left-nav-label {
+	color: #007bff;
+}
+
+.division {
+	margin-bottom: 20px;
+	border-bottom: 1px solid #555;
+	padding-bottom: 10px;
+}
