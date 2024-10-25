@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { Modal, ModalBody, ModalDialog, ModalFooter } from 'react-bootstrap';
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import axios from 'axios';
+import { baseApiURL } from '../api/base.ts';
 
 const CustomModal = (props) => {
 	const { options, name, profile, setProfile, setModalOpen, updateProfile } = props;
@@ -12,7 +13,7 @@ const CustomModal = (props) => {
 		console.log({ [name]: data });
 		axios
 			.post(
-				'http://127.0.0.1:5000/updateProfile',
+				`${baseApiURL}/updateProfile`,
 				{
 					[name]: data
 				},

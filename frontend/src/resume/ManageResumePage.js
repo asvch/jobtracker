@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import '../static/resume.css';
+import { baseApiURL } from '../api/base.ts';
 
 export default class ManageResumePage extends Component {
 	constructor(props) {
@@ -17,7 +18,7 @@ export default class ManageResumePage extends Component {
 
 	getFiles() {
 		$.ajax({
-			url: 'http://127.0.0.1:5000/resume',
+			url: `${baseApiURL}/resume`,
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -52,7 +53,7 @@ export default class ManageResumePage extends Component {
 		//console.log(formData);
 
 		$.ajax({
-			url: 'http://127.0.0.1:5000/resume',
+			url: `${baseApiURL}/resume`,
 			method: 'POST',
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('token'),
@@ -71,7 +72,7 @@ export default class ManageResumePage extends Component {
 
 	downloadResume() {
 		$.ajax({
-			url: 'http://127.0.0.1:5000/resume',
+			url: `${baseApiURL}/resume`,
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('token'),

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import { getToken, signUp, storeToken } from '../api/loginHandler';
+import { baseApiURL } from '../api/base.ts';
 
 export default class LoginPage extends Component {
 	constructor(props) {
@@ -47,7 +48,7 @@ export default class LoginPage extends Component {
 	};
 
 	handleSignupGoogle = () => {
-		window.open('http://127.0.0.1:5000/users/signupGoogle'); // Google oauth url
+		window.open(`${baseApiURL}/users/signupGoogle`); // Google oauth url
 	};
 
 	componentDidMount() {

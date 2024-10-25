@@ -3,6 +3,7 @@ import $ from 'jquery';
 import SearchCard from './SearchCard';
 import JobDescription from '../Modals/JobDescription';
 import { Spinner } from 'react-bootstrap';
+import { baseApiURL } from '../api/base.ts';
 
 const columns = [
 	{
@@ -52,7 +53,7 @@ export default class SearchPage extends Component {
 		}
 		this.setState({ searching: true });
 		$.ajax({
-			url: 'http://127.0.0.1:5000/search',
+			url: `${baseApiURL}/search`,
 			method: 'get',
 			data: {
 				keywords: this.state.searchText,
@@ -123,7 +124,7 @@ export default class SearchPage extends Component {
 		// console.log(job)
 
 		$.ajax({
-			url: 'http://127.0.0.1:5000/applications',
+			url: `${baseApiURL}/applications`,
 			method: 'POST',
 			data: JSON.stringify({
 				application: job

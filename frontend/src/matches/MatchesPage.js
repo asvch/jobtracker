@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { baseApiURL } from '../api/base.ts';
 
 const Recommendations = () => {
 	const [recommendedJobs, setRecommendedJobs] = useState([]);
@@ -9,7 +10,7 @@ const Recommendations = () => {
 
 	const fetchRecommendations = async () => {
 		try {
-			const response = await fetch('http://127.0.0.1:5000/getRecommendations', {
+			const response = await fetch(`${baseApiURL}/getRecommendations`, {
 				headers: {
 					Authorization: 'Bearer ' + localStorage.getItem('token'),
 					'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',

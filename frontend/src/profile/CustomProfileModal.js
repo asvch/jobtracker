@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Modal, ModalBody, ModalFooter, Form } from 'react-bootstrap';
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import { CONSTANTS } from '../data/Constants';
+import { baseApiURL } from '../api/base.ts';
 
 const CustomProfileModal = (props) => {
 	const { profile, setProfile, setModalOpen, updateProfile } = props;
@@ -20,7 +21,7 @@ const CustomProfileModal = (props) => {
 		} else {
 			try {
 				await axios.post(
-					'http://127.0.0.1:5000/updateProfile',
+					`${baseApiURL}/updateProfile`,
 					{
 						...data,
 						[CONSTANTS.PROFILE.SKILLS]: skills,
