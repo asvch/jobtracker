@@ -278,18 +278,26 @@ def create_app():
         try:
             userid = get_userid_from_header()
             user = Users.objects(id=userid).first()
-            profileInformation = {}
-            profileInformation["skills"] = user["skills"]
-            profileInformation["job_levels"] = user["job_levels"]
-            profileInformation["locations"] = user["locations"]
-            profileInformation["institution"] = user["institution"]
-            profileInformation["phone_number"] = user["phone_number"]
-            profileInformation["address"] = user["address"]
-            profileInformation["email"] = user["email"]
-            profileInformation["fullName"] = user["fullName"]
 
-            return jsonify(profileInformation)
-        except:
+            FIELDS_TO_EXCLUDE = [
+                "id",
+                "_id",
+                "username",
+                "password",
+                "authTokens",
+                "applications",
+                "resume",
+            ]
+
+            cleaned_user = {
+                key: value
+                for key, value in user.to_mongo().items()
+                if key not in FIELDS_TO_EXCLUDE
+            }
+
+            return jsonify(cleaned_user), 200
+        except Exception as err:
+            print(err)
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/updateProfile", methods=["POST"])
