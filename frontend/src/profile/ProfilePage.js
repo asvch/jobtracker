@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './CustomModal';
+import CustomProfileModal from './CustomProfileModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CONSTANTS } from '../data/Constants';
 import { faEnvelope, faLocationDot, faPenToSquare, faPhone } from '@fortawesome/free-solid-svg-icons';
@@ -26,6 +27,10 @@ const ProfilePage = (props) => {
 				setModalOpen: closeModal,
 				updateProfile: props.updateProfile
 			};
+
+			if (activeModal === 'profile') {
+				return <CustomProfileModal {...modalProps} />;
+			}
 
 			return <Modal {...modalProps} />;
 		}
