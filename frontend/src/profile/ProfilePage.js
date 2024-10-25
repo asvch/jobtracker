@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from './CustomModal';
+import Modal from './CustomModal.tsx';
 import CustomProfileModal from './CustomProfileModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CONSTANTS } from '../data/Constants';
