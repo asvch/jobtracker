@@ -413,7 +413,7 @@ def create_app():
                 "phone_number": user.phone_number,
                 "address": user.address,
                 "locations": user.locations,
-                "jobLevels": user.job_levels,
+                "job_levels": user.job_levels,
                 "email": user.email,
             }
             return jsonify(
