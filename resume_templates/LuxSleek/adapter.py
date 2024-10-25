@@ -3,12 +3,12 @@ import jinja2
 
 def generate_cv(profile):
     data = {
-        "name": profile.name,
+        "name": profile.fullName,
         "avatar": "pfp.png",
         "profile_description": profile.summary,
         "email": profile.email,
-        "phone": profile.phone,
-        "github": "profile.github",
+        "phone": profile.phone_number,
+        "github": profile.github,
         "address": profile.address,
         "citizenship": profile.citizenship,
         "family_status": profile.family_status,

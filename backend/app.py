@@ -1,6 +1,7 @@
 """
 The flask application for our program
 """
+
 # importing required python libraries
 from flask import Flask, jsonify, request, send_file, redirect, url_for, session
 from flask_mongoengine import MongoEngine
@@ -28,6 +29,9 @@ from authlib.common.security import generate_token
 import os
 from mongoengine.connection import get_db, connect
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 existing_endpoints = ["/applications", "/resume"]
 
@@ -162,35 +166,33 @@ def create_app():
     def signupGoogle():
 
         oauth.register(
-            name='google',
+            name="google",
             client_id=GOOGLE_CLIENT_ID,
             client_secret=GOOGLE_CLIENT_SECRET,
             server_metadata_url=CONF_URL,
-            client_kwargs={
-                'scope': 'openid email profile'
-            },
-            nonce='foobar'
+            client_kwargs={"scope": "openid email profile"},
+            nonce="foobar",
         )
 
         # Redirect to google_auth function
-        redirect_uri = url_for('authorized', _external=True)
+        redirect_uri = url_for("authorized", _external=True)
         print(redirect_uri)
 
-        session['nonce'] = generate_token()
-        return oauth.google.authorize_redirect(redirect_uri, nonce=session['nonce'])
+        session["nonce"] = generate_token()
+        return oauth.google.authorize_redirect(redirect_uri, nonce=session["nonce"])
 
-    @app.route('/users/signupGoogle/authorized')
+    @app.route("/users/signupGoogle/authorized")
     def authorized():
         token = oauth.google.authorize_access_token()
-        user = oauth.google.parse_id_token(token, nonce=session['nonce'])
-        session['user'] = user
+        user = oauth.google.parse_id_token(token, nonce=session["nonce"])
+        session["user"] = user
 
         user_exists = Users.objects(email=user["email"]).first()
 
         users_email = user["email"]
         full_name = user["given_name"] + " " + user["family_name"]
 
-        if user['email_verified']:
+        if user["email_verified"]:
             if user_exists is None:
                 userSave = Users(
                     id=get_new_user_id(),
@@ -202,22 +204,25 @@ def create_app():
                     job_levels=[],
                     locations=[],
                     phone_number="",
-                    address=""
+                    address="",
                 )
                 userSave.save()
-                unique_id = userSave['id']
+                unique_id = userSave["id"]
             else:
-                unique_id = user_exists['id']
+                unique_id = user_exists["id"]
 
-        userSaved = Users.objects(email=user['email']).first()
+        userSaved = Users.objects(email=user["email"]).first()
         expiry = datetime.now() + timedelta(days=1)
         expiry_str = expiry.strftime("%m/%d/%Y, %H:%M:%S")
-        token_whole = str(unique_id) + "." + token['access_token']
-        auth_tokens_new = userSaved['authTokens'] + \
-            [{"token": token_whole, "expiry": expiry_str}]
+        token_whole = str(unique_id) + "." + token["access_token"]
+        auth_tokens_new = userSaved["authTokens"] + [
+            {"token": token_whole, "expiry": expiry_str}
+        ]
         userSaved.update(authTokens=auth_tokens_new)
 
-        return redirect(f"http://127.0.0.1:3000/?token={token_whole}&expiry={expiry_str}&userId={unique_id}")
+        return redirect(
+            f"http://127.0.0.1:3000/?token={token_whole}&expiry={expiry_str}&userId={unique_id}"
+        )
 
     @app.route("/users/signup", methods=["POST"])
     def sign_up():
@@ -255,7 +260,7 @@ def create_app():
                 phone_number="",
                 address="",
                 institution="",
-                email=""
+                email="",
             )
             user.save()
             # del user.to_json()["password", "authTokens"]
@@ -302,24 +307,6 @@ def create_app():
             for key in data.keys():
                 user[key] = data[key]
 
-            # if data["skills"]:
-            #     user.skills = data["skills"]
-
-            # if data["job_levels"]:
-            #     user.job_levels = data["job_levels"]
-
-            # if data["locations"]:
-            #     user.locations = data["locations"]
-
-            # if data["institution"]:
-            #     user.institution = data["institution"]
-
-            # if data["phone_number"]:
-            #     user.phone_number = data["phone_number"]
-
-            # if data["address"]:
-            #     user.address = data["address"]
-
             user.save()
             return jsonify(user.to_json()), 200
 
@@ -340,19 +327,28 @@ def create_app():
             job_levels_sets = [x["value"] for x in user["job_levels"]]
             locations_set = [x["value"] for x in user["locations"]]
             recommendedJobs = []
-            headers = {"User-Agent":
-                       #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
-                       user_agent.random,
-                       "Referrer": "https://www.google.com/"
-                       }
-            if len(skill_sets) > 0 or len(job_levels_sets) > 0 or len(locations_set) > 0:
+            headers = {
+                "User-Agent":
+                #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+                user_agent.random,
+                "Referrer": "https://www.google.com/",
+            }
+            if (
+                len(skill_sets) > 0
+                or len(job_levels_sets) > 0
+                or len(locations_set) > 0
+            ):
                 random_skill = random.choice(skill_sets)
                 random_job_level = random.choice(job_levels_sets)
                 random_location = random.choice(locations_set)
-                query = "https://www.google.com/search?q=" + random_skill + \
-                    random_job_level + random_location + "&ibp=htl;jobs"
+                query = (
+                    "https://www.google.com/search?q="
+                    + random_skill
+                    + random_job_level
+                    + random_location
+                    + "&ibp=htl;jobs"
+                )
                 print(query)
-
 
             else:
                 query = "https://www.google.com/search?q=" + "sde usa" + "&ibp=htl;jobs"
@@ -364,10 +360,15 @@ def create_app():
             for div in mydivs:
                 job = {}
                 job["jobLink"] = div.find("a", class_="MQUd2b").get("href")
-                job["jobTitle"] = div.find(
-                    "div", {"class": "tNxQIb PUpOsf"}).text
-                job["companyName"] = div.find("div", {"class": "wHYlTd MKCbgd a3jPc"}).text
-                job["location"] = div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"}).text.split("•")[0].split("via")[0]
+                job["jobTitle"] = div.find("div", {"class": "tNxQIb PUpOsf"}).text
+                job["companyName"] = div.find(
+                    "div", {"class": "wHYlTd MKCbgd a3jPc"}
+                ).text
+                job["location"] = (
+                    div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"})
+                    .text.split("•")[0]
+                    .split("via")[0]
+                )
                 recommendedJobs.append(job)
             print(recommendedJobs)
             return jsonify(recommendedJobs)
@@ -403,7 +404,6 @@ def create_app():
                 {"token": token, "expiry": expiry_str}
             ]
             user.update(authTokens=auth_tokens_new)
-            
 
             profileInfo = {
                 "id": user.id,
@@ -414,9 +414,11 @@ def create_app():
                 "address": user.address,
                 "locations": user.locations,
                 "jobLevels": user.job_levels,
-                "email": user.email
+                "email": user.email,
             }
-            return jsonify({"profile": profileInfo, "token": token, "expiry": expiry_str})
+            return jsonify(
+                {"profile": profileInfo, "token": token, "expiry": expiry_str}
+            )
         except:
             return jsonify({"error": "Internal server error"}), 500
 
@@ -457,8 +459,7 @@ def create_app():
             if request.args.get("keywords")
             else "random_test_keyword"
         )
-        salary = request.args.get(
-            "salary") if request.args.get("salary") else ""
+        salary = request.args.get("salary") if request.args.get("salary") else ""
         keywords = keywords.replace(" ", "+")
         if keywords == "random_test_keyword":
             return json.dumps({"label": str("successful test search")})
@@ -475,50 +476,66 @@ def create_app():
             url = "https://www.google.com/search?q=" + keywords + "&ibp=htl;jobs"
 
         print(user_agent.random)
-        headers = {"User-Agent":
-                   #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
-                   user_agent.random,
-                   "Referrer": "https://www.google.com/"
-                   }
+        headers = {
+            "User-Agent":
+            #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+            user_agent.random,
+            "Referrer": "https://www.google.com/",
+        }
 
         page = requests.get(url, headers=headers)
         soup = BeautifulSoup(page.text, "html.parser")
 
         # parsing searching results to DataFrame and return
         df = pd.DataFrame(
-            columns=["jobTitle", "jobLink","companyName", "location", "date", "qualifications", "responsibilities", "benefits"])
+            columns=[
+                "jobTitle",
+                "jobLink",
+                "companyName",
+                "location",
+                "date",
+                "qualifications",
+                "responsibilities",
+                "benefits",
+            ]
+        )
         mydivs = soup.find_all("div", class_="mqj2af")
 
         for i, div in enumerate(mydivs):
-            df.at[i, "jobTitle"] = div.find(
-                "div", {"class": "tNxQIb PUpOsf"}).text
-            df.at[i, "companyName"] = div.find("div", {"class": "wHYlTd MKCbgd a3jPc"}).text
-            df.at[i, "location"] = div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"}).text.split("•")[0]
-            df.at[i, "date"] = div.find_all(
-                "span", {"class": "Yf9oye"}, limit=1)[0].text
-            
+            df.at[i, "jobTitle"] = div.find("div", {"class": "tNxQIb PUpOsf"}).text
+            df.at[i, "companyName"] = div.find(
+                "div", {"class": "wHYlTd MKCbgd a3jPc"}
+            ).text
+            df.at[i, "location"] = div.find(
+                "div", {"class": "wHYlTd FqK3wc MKCbgd"}
+            ).text.split("•")[0]
+            df.at[i, "date"] = div.find_all("span", {"class": "Yf9oye"}, limit=1)[
+                0
+            ].text
+
             apply_link = div.find("a", class_="MQUd2b")
             if apply_link:
                 link_href = apply_link.get("href")
                 link_text = apply_link.get("title") or "Apply"
-                clickable_link = f'<a href="{link_href}" target="_blank">{link_text}</a>'
+                clickable_link = (
+                    f'<a href="{link_href}" target="_blank">{link_text}</a>'
+                )
 
                 df.at[i, "jobLink"] = clickable_link
 
             # Collect Job Description Details
             desc = div.find_all("div", {"class": "JxVj3d"})
             for ele in desc:
-                arr = list(x.text for x in ele.find_all(
-                    "div", {"class": "nDgy9d"}))
+                arr = list(x.text for x in ele.find_all("div", {"class": "nDgy9d"}))
                 title = ele.find("div", {"class": "iflMsb"}).text
                 if arr:
                     df.at[i, str(title).lower()] = arr
-        missingCols = list(
-            (df.loc[:, df.isnull().sum(axis=0).astype(bool)]).columns)
+        missingCols = list((df.loc[:, df.isnull().sum(axis=0).astype(bool)]).columns)
 
         for col in missingCols:
-            df.loc[df[col].isnull(), [col]] = df.loc[df[col].isnull(
-            ), col].apply(lambda x: [])
+            df.loc[df[col].isnull(), [col]] = df.loc[df[col].isnull(), col].apply(
+                lambda x: []
+            )
         # df.loc[df["benefits"].isnull(), ["benefits"]] = df.loc[df["benefits"].isnull(), "benefits"].apply(lambda x: [])
         return jsonify(df.to_dict("records"))
 
@@ -658,14 +675,16 @@ def create_app():
             user = Users.objects(id=userid).first()
             if not user.resume.read():
                 # There is no file
-                user.resume.put(file, filename=file.filename,
-                                content_type="application/pdf")
+                user.resume.put(
+                    file, filename=file.filename, content_type="application/pdf"
+                )
                 user.save()
                 return jsonify({"message": "resume successfully uploaded"}), 200
             else:
                 # There is a file, we are replacing it
                 user.resume.replace(
-                    file, filename=file.filename, content_type="application/pdf")
+                    file, filename=file.filename, content_type="application/pdf"
+                )
                 user.save()
                 return jsonify({"message": "resume successfully replaced"}), 200
         except Exception as e:
@@ -718,19 +737,17 @@ app = create_app()
 #     # ca=certifi.where()
 #     app.config["MONGODB_SETTINGS"] = {
 #         "db": "appTracker",
-        
+
 #         # "host": f"mongodb+srv://{username}:{password}@cluster0.r0056lg.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
 #         "host": f"mongodb://{username}:{password}@db:27017/mydatabase?retryWrites=true&w=majority"
 
 #     }
 
 app.config["MONGODB_SETTINGS"] = {
-        "db": "appTracker",
-        
-        # "host": f"mongodb+srv://{username}:{password}@cluster0.r0056lg.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
-        "host": f"mongodb://db:27017/mydatabase"
-
-    }
+    "db": "appTracker",
+    # "host": f"mongodb+srv://{username}:{password}@cluster0.r0056lg.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
+    "host": f"mongodb://{os.getenv("DB_HOSTNAME") or "localhost"}:27017/mydatabase",
+}
 
 db = MongoEngine()
 db.init_app(app)
@@ -755,6 +772,17 @@ class Users(db.Document):
     institution = db.StringField()
     phone_number = db.StringField()
     address = db.StringField()
+
+    ## Additional resume fields
+    picture = db.StringField()
+    summary = db.StringField()
+    github = db.StringField()
+    citizenship = db.StringField()
+    family_status = db.StringField()
+    languages = db.ListField()
+    experiences = db.ListField()
+    education = db.ListField()
+    hobbies = db.ListField()
 
     def to_json(self):
         """
@@ -800,17 +828,17 @@ def get_new_application_id(user_id):
 
     return new_id + 1
 
+
 # def build_preflight_response():
-    # response = make_response()
-    # response.headers.add("Access-Control-Allow-Origin", "*")
-    # response.headers.add('Access-Control-Allow-Headers', "*")
-    # response.headers.add('Access-Control-Allow-Methods', "*")
-    # return response
+# response = make_response()
+# response.headers.add("Access-Control-Allow-Origin", "*")
+# response.headers.add('Access-Control-Allow-Headers', "*")
+# response.headers.add('Access-Control-Allow-Methods', "*")
+# return response
 # def build_actual_response(response):
-    # response.headers.add("Access-Control-Allow-Origin", "*")
-    # return response
+# response.headers.add("Access-Control-Allow-Origin", "*")
+# return response
 
 
 if __name__ == "__main__":
     app.run()
-    

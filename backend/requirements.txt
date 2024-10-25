@@ -97,3 +97,4 @@ wrapt
 wtforms
 z3-solver
 zipp
+jinja2
