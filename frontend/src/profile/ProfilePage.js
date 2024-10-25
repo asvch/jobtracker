@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Modal from './CustomModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CONSTANTS } from '../data/Constants';
@@ -14,20 +14,6 @@ const ProfilePage = (props) => {
 		{ name: CONSTANTS.PROFILE.EXPERIENCE_LEVEL, label: 'Experience Level', options: CONSTANTS.EXPERIENCE_LEVEL },
 		{ name: CONSTANTS.PROFILE.PREFERRED_LOCATIONS, label: 'Preferred Locations', options: CONSTANTS.COUNTRIES }
 	];
-
-	useEffect(() => {
-		handleModalOpen();
-	}, []);
-
-	const handleModalOpen = () => {
-		if (profile[CONSTANTS.PROFILE.SKILLS]?.length === 0) {
-			setActiveModal(CONSTANTS.PROFILE.SKILLS);
-		} else if (!profile[CONSTANTS.PROFILE.EXPERIENCE_LEVEL]?.length) {
-			setActiveModal(CONSTANTS.PROFILE.EXPERIENCE_LEVEL);
-		} else if (!profile[CONSTANTS.PROFILE.PREFERRED_LOCATIONS]?.length) {
-			setActiveModal(CONSTANTS.PROFILE.PREFERRED_LOCATIONS);
-		}
-	};
 
 	const closeModal = () => setActiveModal('');
 

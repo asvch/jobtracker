@@ -37,7 +37,7 @@ const CustomModal = (props) => {
 	return (
 		<Modal show={true} centered size='lg'>
 			<ModalHeader style={{ backgroundColor: '#296E85', color: '#fff' }}>
-				<h5 class='modal-title'>Set preferences</h5>
+				<h5 class='modal-title'>Set {name}</h5>
 				<button
 					type='button'
 					class='btn-close'
