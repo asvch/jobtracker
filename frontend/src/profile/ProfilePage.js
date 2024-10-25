@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from './CustomModal.tsx';
+import Modal, { ModalType } from './CustomModal.tsx';
 import CustomProfileModal from './CustomProfileModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CONSTANTS } from '../data/Constants';
@@ -13,17 +13,26 @@ const ProfilePage = (props) => {
 	const fields = [
 		{ name: CONSTANTS.PROFILE.SKILLS, label: 'Skills', options: CONSTANTS.SKILLS },
 		{ name: CONSTANTS.PROFILE.EXPERIENCE_LEVEL, label: 'Experience Level', options: CONSTANTS.EXPERIENCE_LEVEL },
-		{ name: CONSTANTS.PROFILE.PREFERRED_LOCATIONS, label: 'Preferred Locations', options: CONSTANTS.COUNTRIES }
+		{ name: CONSTANTS.PROFILE.PREFERRED_LOCATIONS, label: 'Preferred Locations', options: CONSTANTS.COUNTRIES },
+		{ name: CONSTANTS.PROFILE.SUMMARY, label: 'Summary' },
+		{ name: CONSTANTS.PROFILE.GITHUB, label: 'GitHub Username' },
+		{ name: CONSTANTS.PROFILE.CITIZENSHIP, label: 'Citizenship' },
+		{ name: CONSTANTS.PROFILE.FAMILY_STATUS, label: 'Family Status' },
+		{ name: CONSTANTS.PROFILE.LANGUAGES, label: 'Languages', options: CONSTANTS.LANGUAGES },
+		{ name: CONSTANTS.PROFILE.HOBBIESS, label: 'Hobbies', options: CONSTANTS.HOBBIES }
 	];
 
 	const closeModal = () => setActiveModal('');
 
 	const renderModal = () => {
 		if (activeModal) {
+			const options = fields.find((field) => field.name === activeModal)?.options;
+
 			const modalProps = {
 				name: activeModal,
-				options: fields.find((field) => field.name === activeModal)?.options,
+				options,
 				profile,
+				type: options ? ModalType.LIST : ModalType.TEXT,
 				setModalOpen: closeModal,
 				updateProfile: props.updateProfile
 			};
@@ -105,20 +114,22 @@ const ProfilePage = (props) => {
 									/>
 								</div>
 								<div className='d-flex flex-wrap'>
-									{profile[name]?.map((ele, index) => (
-										<span
-											className='badge rounded-pill m-1 py-2 px-3'
-											style={{
-												border: '2px solid',
-												backgroundColor: '#296e85',
-												fontSize: 16,
-												fontWeight: 'normal'
-											}}
-											key={index}
-										>
-											{ele.label}
-										</span>
-									))}
+									{(Array.isArray(profile[name]) ? profile[name].map((v) => v.label) : [profile[name]])?.map(
+										(name, index) => (
+											<span
+												className='badge rounded-pill m-1 py-2 px-3'
+												style={{
+													border: '2px solid',
+													backgroundColor: '#296e85',
+													fontSize: 16,
+													fontWeight: 'normal'
+												}}
+												key={index}
+											>
+												{name}
+											</span>
+										)
+									)}
 								</div>
 							</div>
 						</div>
