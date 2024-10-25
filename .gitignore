@@ -563,3 +563,8 @@ FodyWeavers.xsd
 
 
 backend/application.yml
+
+templates/**/generated*
+templates/**/*.aux
+templates/**/*.fls
+templates/**/*.fdb_latexmk
