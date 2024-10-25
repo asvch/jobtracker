@@ -564,8 +564,8 @@ FodyWeavers.xsd
 
 backend/application.yml
 
-templates/**/generated*
-templates/**/*.aux
-templates/**/*.fls
-templates/**/*.fdb_latexmk
-templates/**/*.out
+resume_templates/**/generated*
+resume_templates/**/*.aux
+resume_templates/**/*.fls
+resume_templates/**/*.fdb_latexmk
+resume_templates/**/*.out
