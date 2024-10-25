@@ -7,7 +7,8 @@
 \usepackage[stretch = 25, shrink = 25, tracking=true, letterspace=30]{microtype}  
 \usepackage{graphicx}        
 \usepackage{xcolor}          
-\usepackage{marvosym}        
+\usepackage{marvosym}
+\usepackage{hyperref}
 
 \usepackage{enumitem}        
 \setlist{parsep = 0pt, topsep = 0pt, partopsep = 1pt, itemsep = 1pt, leftmargin = 6mm}
@@ -46,9 +47,9 @@
 \raggedright
 \vspace*{2.5ex}
 
-\Large {{ name }} \normalsize 
+\Large{{'{'}}{{ name }}{{'}'}} \normalsize 
 
-\null\hfill\includegraphics[width=0.65\textwidth]{oval-transparent.png}\hfill\null
+\null\hfill\includegraphics[width=0.65\textwidth]{{'{'}}{{ avatar }}{{'}'}}\hfill\null
 
 \vspace*{0.5ex} 
 
@@ -59,19 +60,19 @@
 \small 
 \MVAt\ {{ email }} \\[0.4ex]
 \Mobilefone\ {{ phone }} \\[0.5ex]
-\Mundus\ \href{{ github }}{github.com/WillyWonka} \\[0.1ex]
+\Mundus\ \href{{'{'}}https://github.com/{{ github }}{{'}'}}{{'{'}}github.com/{{ github }}{{'}'}} \\[0.1ex]
 \Letter\ {{ address }}
 \normalsize
 
 \headleft{Personal information}
-Citizenship: \textbf{{ citizenship }} \\[0.5ex]
-Family: \textbf{{ family_status }} \\[0.5ex]
+Citizenship: \textbf{{'{'}}{{ citizenship }}{{'}'}} \\[0.5ex]
+Family: \textbf{{'{'}}{{ family_status }}{{'}'}} \\[0.5ex]
 Languages: \textbf{{'{'}}{{ languages | join(', ') }}{{'}'}}
 
 \headleft{Skills}
 \begin{itemize}
     {% for skill in skills %}
-    \item {{ skill }}
+    \item{{'{'}}{{ skill }}{{'}'}}
     {% endfor %}
 \end{itemize} 
 
@@ -87,28 +88,25 @@ Languages: \textbf{{'{'}}{{ languages | join(', ') }}{{'}'}}
 
 \headright{Experience}
 {% for exp in experience %}
-\textsc{{ exp.title }} at \textit{{ exp.company }}. \dates{{ exp.dates }} \\
-\smaller{{ exp.description }}
+\textsc{{'{'}}{{ exp.title }}{{'}'}} at \textit{{'{'}}{{ exp.company }}{{'}'}}. \dates{{'{'}}{{ exp.dates }}{{'}'}} \\
+{% for bullet in exp.description %}
+\smaller{{'{'}}{{ bullet }}{{'}'}}
+{% endfor %}
 \is
 {% endfor %}
 
 \headright{Education}
 {% for edu in education %}
-\textsc{{ edu.degree }}. {{ edu.specialization }} \textit{{ edu.institution }}. \dates{{ edu.dates }} \\
-\smaller{{ edu.thesis }}
-\is
+\textsc{{'{'}}{{ edu.degree }}{{'}'}} \textit{{'{'}}{{ edu.institution }}{{'}'}}. \dates{{'{'}}{{ edu.dates }}{{'}'}} \\
+{% for bullet in edu.description %}
+\smaller{{'{'}}{{ bullet }}{{'}'}}
 {% endfor %}
-
-\headright{Additional education}
-{% for add_edu in additional_education %}
-\textsc{{ add_edu.title }}. \textit{{ add_edu.institution }}. \dates{{ add_edu.dates }} \\
-\smaller{{ add_edu.details }}
 \is
 {% endfor %}
 
 \headright{Hobbies}
 {% for hobby in hobbies %}
-\textit{{ hobby }}
+\textit{{'{'}}{{ hobby }}{{'}'}}
 {% endfor %}
 \end{minipage}
 

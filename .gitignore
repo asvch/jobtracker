@@ -568,3 +568,4 @@ templates/**/generated*
 templates/**/*.aux
 templates/**/*.fls
 templates/**/*.fdb_latexmk
+templates/**/*.out
