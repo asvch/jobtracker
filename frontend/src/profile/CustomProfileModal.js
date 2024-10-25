@@ -46,6 +46,13 @@ const CustomProfileModal = (props) => {
 		}
 	};
 
+	const fields = [
+		{ label: 'Name', key: CONSTANTS.PROFILE.NAME },
+		{ label: 'Email', key: CONSTANTS.PROFILE.EMAIL },
+		{ label: 'Phone', key: CONSTANTS.PROFILE.CONTACT },
+		{ label: 'Address', key: CONSTANTS.PROFILE.ADDRESS }
+	];
+
 	return (
 		<Modal show={true} centered>
 			<ModalHeader>
@@ -55,18 +62,22 @@ const CustomProfileModal = (props) => {
 			<ModalBody>
 				{error && <div style={{ color: 'red', fontSize: 12, marginBottom: 10 }}>{errorMessage}</div>}
 				<Form>
-					<Form.Group className='mb-3'>
-						<Form.Label>
-							Name<span style={{ color: 'red' }}>*</span>
-						</Form.Label>
-						<Form.Control
-							type='text'
-							placeholder='Enter name'
-							value={data[CONSTANTS.PROFILE.NAME]}
-							onChange={(e) => setData({ ...data, [CONSTANTS.PROFILE.NAME]: e.target.value })}
-						/>
-						{error && <span style={{ color: 'red', fontSize: 12 }}>This field is required</span>}
-					</Form.Group>
+					{fields.map((field) => (
+						<Form.Group className='mb-3'>
+							<Form.Label>
+								{field.label}
+								<span style={{ color: 'red' }}>*</span>
+							</Form.Label>
+							<Form.Control
+								type='text'
+								placeholder={`Enter ${field.label.toLowerCase()}`}
+								value={data[field.key]}
+								onChange={(e) => setData({ ...data, [field.key]: e.target.value })}
+							/>
+							{error && <span style={{ color: 'red', fontSize: 12 }}>This field is required</span>}
+						</Form.Group>
+					))}
+
 					{/* Add Form.Group sections for other fields here */}
 				</Form>
 			</ModalBody>
