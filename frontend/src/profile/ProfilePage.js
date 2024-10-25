@@ -18,8 +18,8 @@ const ProfilePage = (props) => {
 		{ name: CONSTANTS.PROFILE.GITHUB, label: 'GitHub Username' },
 		{ name: CONSTANTS.PROFILE.CITIZENSHIP, label: 'Citizenship' },
 		{ name: CONSTANTS.PROFILE.FAMILY_STATUS, label: 'Family Status' },
-		{ name: CONSTANTS.PROFILE.LANGUAGES, label: 'Languages', options: CONSTANTS.LANGUAGES },
-		{ name: CONSTANTS.PROFILE.HOBBIESS, label: 'Hobbies', options: CONSTANTS.HOBBIES }
+		{ name: CONSTANTS.PROFILE.LANGUAGES, label: 'Languages', options: CONSTANTS.SPOKEN_LANGUAGES },
+		{ name: CONSTANTS.PROFILE.HOBBIES, label: 'Hobbies', options: CONSTANTS.HOBBIES }
 	];
 
 	const closeModal = () => setActiveModal('');

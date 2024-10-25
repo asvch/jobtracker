@@ -13,7 +13,7 @@ const PROFILE = {
 	CITIZENSHIP: 'citizenship',
 	FAMILY_STATUS: 'family_status',
 	LANGUAGES: 'languages',
-	HOBBIESS: 'hobbies'
+	HOBBIES: 'hobbies'
 };
 
 const HOBBIES = [
