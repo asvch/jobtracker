@@ -12,75 +12,95 @@ const findStatus = (value) => {
 	else if (value === '2') status = 'Waiting for referral';
 	else if (value === '3') status = 'Applied';
 	else if (value === '4') status = 'Rejected';
+	else if (value === '5') status = 'Interview';
+	else if (value === '6') status = 'No Response';
+	else if (value === '7') status = 'Offer';
+	else if (value === '8') status = 'No Offer';
+	else if (value === '9') status = 'Offer Accepted';
+	else if (value === '10') status = 'Offer Declined';
 
 	return status;
 };
 
 const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, handleDeleteApplication }) => {
 	const [expandedCardId, setExpandedCardId] = useState(null);
+	const chartRef = useRef(null);
+	const chartInstance = useRef(null); // Ref to hold the chart instance
+
+	const colors = {
+		Applications: 'purple',
+		Applied: '#90EE90',
+		Rejected: '#FF0000',
+		'Wish List': '#ffff00',
+		'Waiting for referral': '#b3afff',
+		Interview: 'orange',
+		'No Response': 'grey',
+		Offer: 'green',
+		'No Offer': 'red',
+		'Offer Accepted': 'green',
+		'Offer Declined': 'red'
+	};
+
+	const statusFrom = {
+		'Wish List': 'Applications',
+		'Waiting for referral': 'Applications',
+		Applied: 'Applications',
+		Rejected: 'Applied',
+		Interview: 'Applied',
+		'No Response': 'Applied',
+		Offer: 'Interview',
+		'No Offer': 'Interview',
+		'Offer Accepted': 'Offer',
+		'Offer Declined': 'Offer'
+	};
+
+	// Prepare data only if applicationLists is available
+	const filteredData = [];
+	if (applicationLists) {
+		Object.keys(applicationLists).forEach((status) => {
+			const applications = applicationLists[status];
+			applications.forEach(() => {
+				filteredData.push({
+					from: statusFrom[status],
+					to: status,
+					flow: 1
+				});
+			});
+		});
+	}
+
+	// Reinitialize the chart whenever applicationLists changes
+	useEffect(() => {
+		if (applicationLists && filteredData.length > 0) {
+			const ctx = chartRef.current.getContext('2d');
+
+			// Destroy previous chart instance if it exists
+			if (chartInstance.current) {
+				chartInstance.current.destroy();
+			}
+
+			chartInstance.current = new Chart(ctx, {
+				type: 'sankey',
+				data: {
+					datasets: [
+						{
+							label: 'ATS Flow',
+							data: filteredData,
+							colorFrom: (c) => colors[c.dataset.data[c.dataIndex].from],
+							colorTo: (c) => colors[c.dataset.data[c.dataIndex].to],
+							colorMode: 'gradient',
+							alpha: 0.5,
+							size: 'max'
+						}
+					]
+				}
+			});
+		}
+	}, [applicationLists]);
 
 	const toggleCardExpansion = (id) => {
 		setExpandedCardId((prevId) => (prevId === id ? null : id));
 	};
-
-	const chartRef = useRef(null);
-
-	useEffect(() => {
-		const colors = {
-			Applications: 'purple',
-			Applied: '#90EE90', // Light Green for Applied
-			Rejected: '#FF0000', // Red for Rejected
-			'Wish List': '#ffff00', // Yellow for Wish List
-			'Waiting for referral': '#b3afff', // Light Blue for Waiting for referral
-			Interview: 'orange',
-			'No Response': 'grey',
-			Offer: 'green',
-			'No Offer': 'red',
-			'Offer Accepted': 'green',
-			'Offer Declined': 'red'
-		};
-
-		const getHover = (key) => colors[key];
-		const getColor = (key) => colors[key];
-
-		const ctx = chartRef.current.getContext('2d');
-
-		const chart = new Chart(ctx, {
-			type: 'sankey',
-			data: {
-				datasets: [
-					{
-						label: 'ATS Flow',
-						data: [
-							{ from: 'Applications', to: 'Waiting for referral', flow: 10 },
-							{ from: 'Applications', to: 'Wish List', flow: 15 },
-							{ from: 'Applications', to: 'Applied', flow: 25 },
-							{ from: 'Applied', to: 'Rejected', flow: 6 },
-							{ from: 'Applied', to: 'Interview', flow: 10 },
-							{ from: 'Applied', to: 'No Response', flow: 9 },
-							{ from: 'Interview', to: 'Offer', flow: 6 },
-							{ from: 'Interview', to: 'Rejected', flow: 4 },
-							{ from: 'Offer', to: 'Offer Accepted', flow: 5 },
-							{ from: 'Offer', to: 'Offer Declined', flow: 1 }
-						],
-
-						colorFrom: (c) => getColor(c.dataset.data[c.dataIndex].from),
-						colorTo: (c) => getColor(c.dataset.data[c.dataIndex].to),
-
-						colorMode: 'gradient',
-						alpha: 0.5,
-						size: 'max',
-						// no overlap
-						overlap: 0
-					}
-				]
-			}
-		});
-
-		return () => {
-			chart.destroy(); // Clean up on component unmount
-		};
-	}, []);
 
 	return (
 		<Container style={{ marginTop: '20px', marginBottom: '20px', marginLeft: '110px' }}>
@@ -88,32 +108,22 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 				<canvas ref={chartRef} />
 			</Row>
 			<Row>
-				{['Wish List', 'Waiting for referral', 'Applied', 'Rejected'].map((status) => (
+				{Object.keys(applicationLists).map((status) => (
 					<Col key={status} md={3} style={{ marginBottom: '20px' }}>
-						<Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
-							<Card.Header
-								as='h5'
-								style={{
-									backgroundColor:
-										status === 'Wish List'
-											? '#ffff00'
-											: status === 'Waiting for referral'
-												? '#b3afff'
-												: status === 'Applied'
-													? '#90EE90'
-													: status === 'Rejected'
-														? '#FF0000'
-														: '',
-									borderBottom: '1px solid #dee2e6',
-									color: 'black'
-								}}
-							>
-								{status}
-							</Card.Header>
-							<Card.Body style={{ padding: '20px' }}>
-								{applicationLists &&
-									applicationLists[status] &&
-									applicationLists[status].map((jobListing) => (
+						{applicationLists[status] && (
+							<Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
+								<Card.Header
+									as='h5'
+									style={{
+										backgroundColor: colors[status],
+										borderBottom: '1px solid #dee2e6',
+										color: 'black'
+									}}
+								>
+									{status}
+								</Card.Header>
+								<Card.Body style={{ padding: '20px' }}>
+									{applicationLists[status].map((jobListing) => (
 										<div key={jobListing.id} style={{ marginBottom: '10px' }}>
 											<Card
 												style={{
@@ -146,8 +156,9 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 											</Card>
 										</div>
 									))}
-							</Card.Body>
-						</Card>
+								</Card.Body>
+							</Card>
+						)}
 					</Col>
 				))}
 			</Row>
