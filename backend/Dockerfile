@@ -10,7 +10,7 @@ COPY requirements.txt /app/
 # Install dependencies specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# TODO: @cyril install pdflatex cli
+RUN apt update && apt install -y texlive
 
 # Copy the rest of the application code
 COPY . /app

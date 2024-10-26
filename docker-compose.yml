@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     networks:
       - app-network
+    volumes:
+      - ./resume_templates:/resume_templates
 
   backend:
     build:
@@ -14,16 +16,18 @@ services:
       dockerfile: Dockerfile
     networks:
       - app-network
+    volumes:
+      - ./resume_templates:/resume_templates
 
   db:
     image: mongo:5.0
     ports:
       - '27017:27017'
     volumes:
-      - mongo-data:/data/db  # Persistent volume for MongoDB data
+      - mongo-data:/data/db # Persistent volume for MongoDB data
     networks:
       - app-network
-  
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     command: tunnel --no-autoupdate run ats
@@ -36,7 +40,7 @@ services:
       - backend
 
 volumes:
-  mongo-data:  # Named volume for persistent storage
+  mongo-data: # Named volume for persistent storage
 
 networks:
   app-network:

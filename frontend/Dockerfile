@@ -1,22 +1,30 @@
 # Step 1: Build the React app
-FROM node:18 as build
+FROM node:18 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
 
+RUN npm install -g pnpm
+
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm install --silent
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application code
 COPY . .
 
-# TODO: @cyril - Copy sample.pdf for each template to the public folder
+RUN mkdir -p public/resume-templates && \
+    for dir in /resume_templates/*; do \
+        if [ -d "$dir" ]; then \
+            folder_name=$(basename "$dir"); \
+            cp "$dir/sample.pdf" "public/resume-templates/${folder_name}.pdf"; \
+        fi; \
+    done
 
 # Build the React app for production
-RUN npm run build
+RUN pnpm build
 
 # Step 2: Serve the static files using nginx
 FROM nginx:alpine
