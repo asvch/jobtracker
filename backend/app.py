@@ -60,8 +60,6 @@ def create_app():
     #     CONF_URL = info["CONF_URL"]
     #     app.secret_key = info['SECRET_KEY']
 
-    app.config["CORS_HEADERS"] = "Content-Type"
-
     oauth = OAuth(app)
 
     @app.errorhandler(404)

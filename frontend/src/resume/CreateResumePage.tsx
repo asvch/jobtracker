@@ -28,8 +28,8 @@ const CreateResumePage = () => {
 	};
 
 	return (
-		<>
-			<div style={{ marginTop: '6%', marginLeft: '10%', textAlign: 'center' }}>Choose a template</div>
+		<div style={{ marginTop: '6%', marginLeft: '10%' }}>
+			<div style={{ textAlign: 'center' }}>Choose a template</div>
 			<div style={{ display: 'flex', flexDirection: 'row', marginTop: '2%' }}>
 				{templates.map((template) => (
 					<div style={{ marginRight: '20px' }} key={template}>
@@ -43,7 +43,7 @@ const CreateResumePage = () => {
 					</div>
 				))}
 			</div>
-		</>
+		</div>
 	);
 };
 
