@@ -30,7 +30,6 @@ def convert(profile):
             for edu in profile.education
         ],
         "hobbies": [hobby["label"] for hobby in profile.hobbies],
-        # TODO: @cyril add achievements section
     }
 
     return data

@@ -23,7 +23,7 @@ const CreateResumePage = () => {
 				document.body.removeChild(anchor);
 			}
 
-			//TODO: @cyril Loading indicators
+			//TODO: Loading indicators?
 		});
 	};
 
