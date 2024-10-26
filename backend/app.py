@@ -769,13 +769,18 @@ def create_app():
 
             # TODO: @cyil add cleanup for temp_dir
 
-            return send_file(
+            resp = send_file(
                 pdf_file_path, as_attachment=True, mimetype="application/pdf"
             )
 
+            return resp
         except Exception as e:
             print(e)
             return jsonify({"error": "Internal server error"}), 500
+        finally:
+            # Cleanup the temp directory
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
 
     @app.route("/resume", methods=["GET"])
     def get_resume():
