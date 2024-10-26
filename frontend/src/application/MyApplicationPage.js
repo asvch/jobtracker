@@ -1,6 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Col, Container, Row, Card, Button } from 'react-bootstrap';
 import { baseApiURL } from '../api/base.ts';
+import { Chart, registerables } from 'chart.js';
+import { SankeyController, Flow } from 'chartjs-chart-sankey';
+
+Chart.register(SankeyController, Flow, ...registerables);
 
 const findStatus = (value) => {
 	let status = '';
@@ -19,8 +23,70 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 		setExpandedCardId((prevId) => (prevId === id ? null : id));
 	};
 
+	const chartRef = useRef(null);
+
+	useEffect(() => {
+		const colors = {
+			Applications: 'purple',
+			Applied: '#90EE90', // Light Green for Applied
+			Rejected: '#FF0000', // Red for Rejected
+			'Wish List': '#ffff00', // Yellow for Wish List
+			'Waiting for referral': '#b3afff', // Light Blue for Waiting for referral
+			Interview: 'orange',
+			'No Response': 'grey',
+			Offer: 'green',
+			'No Offer': 'red',
+			'Offer Accepted': 'green',
+			'Offer Declined': 'red'
+		};
+
+		const getHover = (key) => colors[key];
+		const getColor = (key) => colors[key];
+
+		const ctx = chartRef.current.getContext('2d');
+
+		const chart = new Chart(ctx, {
+			type: 'sankey',
+			data: {
+				datasets: [
+					{
+						label: 'ATS Flow',
+						data: [
+							{ from: 'Applications', to: 'Waiting for referral', flow: 10 },
+							{ from: 'Applications', to: 'Wish List', flow: 15 },
+							{ from: 'Applications', to: 'Applied', flow: 25 },
+							{ from: 'Applied', to: 'Rejected', flow: 6 },
+							{ from: 'Applied', to: 'Interview', flow: 10 },
+							{ from: 'Applied', to: 'No Response', flow: 9 },
+							{ from: 'Interview', to: 'Offer', flow: 6 },
+							{ from: 'Interview', to: 'Rejected', flow: 4 },
+							{ from: 'Offer', to: 'Offer Accepted', flow: 5 },
+							{ from: 'Offer', to: 'Offer Declined', flow: 1 }
+						],
+
+						colorFrom: (c) => getColor(c.dataset.data[c.dataIndex].from),
+						colorTo: (c) => getColor(c.dataset.data[c.dataIndex].to),
+
+						colorMode: 'gradient',
+						alpha: 0.5,
+						size: 'max',
+						// no overlap
+						overlap: 0
+					}
+				]
+			}
+		});
+
+		return () => {
+			chart.destroy(); // Clean up on component unmount
+		};
+	}, []);
+
 	return (
 		<Container style={{ marginTop: '20px', marginBottom: '20px', marginLeft: '110px' }}>
+			<Row style={{ marginBottom: '40px' }}>
+				<canvas ref={chartRef} />
+			</Row>
 			<Row>
 				{['Wish List', 'Waiting for referral', 'Applied', 'Rejected'].map((status) => (
 					<Col key={status} md={3} style={{ marginBottom: '20px' }}>
@@ -30,17 +96,16 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 								style={{
 									backgroundColor:
 										status === 'Wish List'
-											? '#ffff00' // Light Apricot for Wish List
+											? '#ffff00'
 											: status === 'Waiting for referral'
-												? '#b3afff' // Light Blue for Waiting for referral
+												? '#b3afff'
 												: status === 'Applied'
-													? '#90EE90' // Light Green for Applied
+													? '#90EE90'
 													: status === 'Rejected'
-														? '#FF0000' // Light Salmon for Rejected
-														: '', // Default color
+														? '#FF0000'
+														: '',
 									borderBottom: '1px solid #dee2e6',
-									color: 'black',
-									borderBottom: '1px solid #dee2e6'
+									color: 'black'
 								}}
 							>
 								{status}
