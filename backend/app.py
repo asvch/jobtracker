@@ -30,6 +30,10 @@ import os
 from mongoengine.connection import get_db, connect
 import sys
 from dotenv import load_dotenv
+import shutil
+import jinja2
+
+from util import load_and_run_function
 
 load_dotenv()
 
@@ -46,7 +50,7 @@ def create_app():
     """
     app = Flask(__name__)
     # # make flask support CORS
-    CORS(app)
+    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
     # get all the variables from the application.yml file
     # with open("application.yml") as f:
@@ -699,6 +703,80 @@ def create_app():
             print(e)
             return jsonify({"error": "Internal server error"}), 500
 
+    @app.route("/resumeTemplates", methods=["GET"])
+    def get_resume_templates():
+        """
+        Returns a list of available resume templates
+        """
+        try:
+            base_path = "../resume_templates"
+            templates_names = [
+                d
+                for d in os.listdir(base_path)
+                if os.path.isdir(os.path.join(base_path, d))
+                and os.path.exists(os.path.join(base_path, d, "sample.pdf"))
+            ]
+
+            return templates_names, 200
+
+        except:
+            return jsonify({"error": "Internal server error"}), 500
+
+    @app.route("/generateResume", methods=["POST"])
+    def generate_resume():
+        """
+        Generates a resume based on the provided template and user data
+        """
+        try:
+            userid = get_userid_from_header()
+            user = Users.objects(id=userid).first()
+            data = json.loads(request.data)
+            template_name = data.get("templateName")
+
+            # Make a temp workspace
+            temp_dir = f"/tmp/{uuid.uuid4()}"
+            os.makedirs(temp_dir, exist_ok=True)
+
+            # Copy the template files to the temp directory
+            template_dir = f"../resume_templates/{template_name}"
+            for item in os.listdir(template_dir):
+                s = os.path.join(template_dir, item)
+                d = os.path.join(temp_dir, item)
+                if not os.path.isdir(s):
+                    shutil.copy2(s, d)
+
+            # Load the template
+            env = jinja2.Environment(loader=jinja2.FileSystemLoader(temp_dir))
+            template = env.get_template("src.tex")
+
+            # Transform user data into a format suitable for the template
+            data = load_and_run_function(
+                os.path.join(template_dir, "adapter.py"), "convert", user
+            )
+
+            rendered_tex = template.render(data)
+
+            # Save the rendered LaTeX to a file
+            tex_file_path = os.path.join(temp_dir, "output.tex")
+            with open(tex_file_path, "w") as tex_file:
+                tex_file.write(rendered_tex)
+
+            # Compile the LaTeX file to PDF
+            os.system(f"pdflatex -output-directory={temp_dir} {tex_file_path}")
+
+            # Send the generated PDF back to the user
+            pdf_file_path = os.path.join(temp_dir, "output.pdf")
+
+            # TODO: @cyil add cleanup for temp_dir
+
+            return send_file(
+                pdf_file_path, as_attachment=True, mimetype="application/pdf"
+            )
+
+        except Exception as e:
+            print(e)
+            return jsonify({"error": "Internal server error"}), 500
+
     @app.route("/resume", methods=["GET"])
     def get_resume():
         """
@@ -846,7 +924,6 @@ def get_new_application_id(user_id):
 # def build_actual_response(response):
 # response.headers.add("Access-Control-Allow-Origin", "*")
 # return response
-
 
 if __name__ == "__main__":
     app.run()

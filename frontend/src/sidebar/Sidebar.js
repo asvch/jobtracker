@@ -13,23 +13,24 @@ const options = [
 	{ label: 'Matches', icon: 'fas fa-check-double', page: 'MatchesPage' },
 	{ label: 'New Application', icon: 'fas fa-file-alt', page: 'ApplicationPage' },
 	{ label: 'My Applications', icon: 'fas fa-user-alt', page: 'MyApplicationPage' },
-	{ label: 'Profile', icon: 'fas fa-user-alt', page: 'ProfilePage' }
+	{ label: 'Profile', icon: 'fas fa-user-alt', page: 'ProfilePage' },
+	{ label: 'Create Resume', icon: 'fas fa-file', page: 'CreateResumePage' }
 ];
 
 export default class Sidebar extends Component {
 	render() {
 		return (
-			<div class='left-nav'>
-				<div class='left-nav-item'>
+			<div className='left-nav'>
+				<div className='left-nav-item'>
 					{options.map((option) => (
-						<div onClick={() => this.props.switchPage(option.page)}>
-							<i class={`${option.icon} fas left-nav-icon`}></i>
-							<span class='left-nav-label'>{option.label}</span>
+						<div key={option.label} onClick={() => this.props.switchPage(option.page)}>
+							<i className={`${option.icon} fas left-nav-icon`}></i>
+							<span className='left-nav-label'>{option.label}</span>
 						</div>
 					))}
 					<div onClick={() => this.props.handleLogout()}>
-						<i class='fas fa-sign-out-alt left-nav-icon'></i>
-						<span class='left-nav-label'>LogOut</span>
+						<i className='fas fa-sign-out-alt left-nav-icon'></i>
+						<span className='left-nav-label'>LogOut</span>
 					</div>
 				</div>
 			</div>

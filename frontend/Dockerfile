@@ -13,6 +13,8 @@ RUN npm install --silent
 # Copy the rest of the application code
 COPY . .
 
+# TODO: @cyril - Copy sample.pdf for each template to the public folder
+
 # Build the React app for production
 RUN npm run build
 

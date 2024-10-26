@@ -1,7 +1,4 @@
-import jinja2
-
-
-def generate_cv(profile):
+def convert(profile):
     data = {
         "name": profile.fullName,
         "avatar": "pfp.png",
@@ -12,8 +9,8 @@ def generate_cv(profile):
         "address": profile.address,
         "citizenship": profile.citizenship,
         "family_status": profile.family_status,
-        "languages": profile.languages,
-        "skills": profile.skills,
+        "languages": [lang["label"] for lang in profile.languages],
+        "skills": [s["label"] for s in profile.skills],
         "experience": [
             {
                 "title": exp.title,
@@ -32,17 +29,8 @@ def generate_cv(profile):
             }
             for edu in profile.education
         ],
-        "hobbies": profile.hobbies,
+        "hobbies": [hobby["label"] for hobby in profile.hobbies],
         # TODO: @cyril add achievements section
     }
 
-    # Set up the Jinja2 environment
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
-    template = env.get_template("src.tex")
-
-    # Render the template with data
-    rendered_cv = template.render(data)
-
-    # Save to a .tex file
-    with open("out.tex", "w") as f:
-        f.write(rendered_cv)
+    return data
