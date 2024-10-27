@@ -770,7 +770,9 @@ def create_app():
                 tex_file.write(rendered_tex)
 
             # Compile the LaTeX file to PDF
-            os.system(f"pdflatex -output-directory={temp_dir} {tex_file_path}")
+            os.system(
+                f"pdflatex -interaction=nonstopmode -output-directory={temp_dir} {tex_file_path}"
+            )
 
             # Send the generated PDF back to the user
             pdf_file_path = os.path.join(temp_dir, "output.pdf")
@@ -778,6 +780,8 @@ def create_app():
             resp = send_file(
                 pdf_file_path, as_attachment=True, mimetype="application/pdf"
             )
+
+            shutil.copy(tex_file_path, f"/Users/cyril/Downloads/t.tex")
 
             return resp
         except Exception as e:

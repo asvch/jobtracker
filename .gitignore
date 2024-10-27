@@ -569,3 +569,5 @@ resume_templates/**/*.aux
 resume_templates/**/*.fls
 resume_templates/**/*.fdb_latexmk
 resume_templates/**/*.out
+resume_templates/**/*.log
+resume_templates/**/*.gz
