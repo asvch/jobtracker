@@ -1,3 +1,14 @@
+from datetime import datetime
+
+
+def format_date(date_str):
+    if not date_str:
+        return ""
+
+    date_obj = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+    return date_obj.strftime("%b %Y")
+
+
 def convert(profile):
     data = {
         "name": profile.fullName,
@@ -13,19 +24,19 @@ def convert(profile):
         "skills": [s["label"] for s in profile.skills],
         "experience": [
             {
-                "title": exp.title,
-                "company": exp.name,
-                "dates": f"{exp.start_date}--{exp.end_date or "present"}",
-                "description": exp.bullets,
+                "title": exp["title"],
+                "company": exp["companyName"],
+                "dates": f"{format_date(exp['startDate'])}--{format_date(exp['endDate']) or 'present'}",
+                "description": exp["bullets"],
             }
             for exp in profile.experiences
         ],
         "education": [
             {
-                "degree": "edu.degree",
-                "institution": edu.name,
-                "dates": f"{edu.start_date}--{edu.end_date or "present"}",
-                "description": edu.bullets,
+                "degree": edu["degree"],
+                "institution": edu["institutionName"],
+                "dates": f"{format_date(edu['startDate'])}--{format_date(edu['endDate']) or "present"}",
+                "description": edu["bullets"],
             }
             for edu in profile.education
         ],
