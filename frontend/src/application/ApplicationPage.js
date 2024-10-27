@@ -29,9 +29,11 @@ const ApplicationsList = ({
 	const findStatus = (value) => {
 		let status = '';
 		if (value === '1') status = 'Wish List';
-		else if (value === '2') status = 'Waiting for referral';
-		else if (value === '3') status = 'Applied';
+		else if (value === '2') status = 'Waiting for Referral';
+		else if (value === '3') status = 'No Response';
 		else if (value === '4') status = 'Rejected';
+		else if (value === '5') status = 'Accepted';
+		else if (value === '6') status = 'Took an Interview';
 
 		return status;
 	};
@@ -90,10 +92,12 @@ const ApplicationsList = ({
 						onChange={(e) => setSearchCriteria({ ...searchCriteria, status: e.target.value })}
 					>
 						<option value=''>All</option>
-						<option value='1'>Wish List</option>
-						<option value='2'>Waiting for referral</option>
-						<option value='3'>Applied</option>
+						<option value='1'>Wish list</option>
+						<option value='2'>Waiting for Referral</option>
+						<option value='3'>No Response</option>
 						<option value='4'>Rejected</option>
+						<option value='5'>Accepted</option>
+						<option value='6'>Took an Interview</option>
 					</select>
 				</div>
 			</div>
@@ -287,9 +291,11 @@ const ApplicationsList = ({
 								>
 									<option>Choose...</option>
 									<option value='1'>Wish list</option>
-									<option value='2'>Waiting Referral</option>
-									<option value='3'>Applied</option>
+									<option value='2'>Waiting for Referral</option>
+									<option value='3'>No Response</option>
 									<option value='4'>Rejected</option>
+									<option value='5'>Accepted</option>
+									<option value='6'>Took an Interview</option>
 								</select>
 							</div>
 						</>

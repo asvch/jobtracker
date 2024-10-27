@@ -1,61 +1,62 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": false,
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.0",
-    "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/free-brands-svg-icons": "^6.4.2",
-    "@fortawesome/free-regular-svg-icons": "^6.4.2",
-    "@fortawesome/free-solid-svg-icons": "^6.4.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "axios": "^0.24.0",
-    "bootstrap": "^4.6.0",
-    "d3": "7.0.4",
-    "jquery": "3.6.0",
-    "react": "^17.0.2",
-    "react-bootstrap": "^1.6.4",
-    "react-dom": "^17.0.2",
-    "react-scripts": "^5.0.1",
-    "react-select": "^5.7.7",
-    "web-vitals": "^1.0.1"
-  },
-  "scripts": {
-    "pre-deploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@types/jest": "^29.5.14",
-    "@types/node": "^22.8.0",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "gh-pages": "^3.2.3",
-    "prettier": "^3.3.3",
-    "typescript": "^5.6.3"
-  }
+	"name": "frontend",
+	"version": "0.1.0",
+	"private": false,
+	"dependencies": {
+		"@fortawesome/fontawesome-free": "^5.12.0",
+		"@fortawesome/fontawesome-svg-core": "^6.4.2",
+		"@fortawesome/free-brands-svg-icons": "^6.4.2",
+		"@fortawesome/free-regular-svg-icons": "^6.4.2",
+		"@fortawesome/free-solid-svg-icons": "^6.4.2",
+		"@fortawesome/react-fontawesome": "^0.2.0",
+		"@testing-library/jest-dom": "^5.11.4",
+		"@testing-library/react": "^11.1.0",
+		"@testing-library/user-event": "^12.1.10",
+		"axios": "^0.24.0",
+		"bootstrap": "^4.6.0",
+		"chartjs-chart-sankey": "^0.13.0",
+		"d3": "7.0.4",
+		"jquery": "3.6.0",
+		"react": "^17.0.2",
+		"react-bootstrap": "^1.6.4",
+		"react-dom": "^17.0.2",
+		"react-scripts": "^5.0.1",
+		"react-select": "^5.7.7",
+		"web-vitals": "^1.0.1"
+	},
+	"scripts": {
+		"pre-deploy": "npm run build",
+		"deploy": "gh-pages -d build",
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@types/jest": "^29.5.14",
+		"@types/node": "^22.8.0",
+		"@types/react": "^18.3.12",
+		"@types/react-dom": "^18.3.1",
+		"gh-pages": "^3.2.3",
+		"prettier": "^3.3.3",
+		"typescript": "^5.6.3"
+	}
 }
