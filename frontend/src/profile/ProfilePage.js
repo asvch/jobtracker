@@ -23,8 +23,6 @@ const ProfilePage = (props) => {
 		{ name: CONSTANTS.PROFILE.HOBBIES, label: 'Hobbies', options: CONSTANTS.HOBBIES }
 	];
 
-	//TODO: @cyril, do CRUD for PFP |||| projects, and achievements,
-
 	const closeModal = () => setActiveModal('');
 
 	const renderModal = () => {

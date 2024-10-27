@@ -775,8 +775,6 @@ def create_app():
             # Send the generated PDF back to the user
             pdf_file_path = os.path.join(temp_dir, "output.pdf")
 
-            # TODO: @cyil add cleanup for temp_dir
-
             resp = send_file(
                 pdf_file_path, as_attachment=True, mimetype="application/pdf"
             )
