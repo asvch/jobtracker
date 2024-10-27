@@ -17,7 +17,6 @@ from io import BytesIO
 from fake_useragent import UserAgent
 import pandas as pd
 import matplotlib.pyplot as plt
-from sankeyflow import Sankey
 import json
 from datetime import datetime, timedelta
 import yaml
@@ -820,16 +819,30 @@ def create_app():
 
 app = create_app()
 
+if os.path.exists("application.yml"):
+    with open("application.yml") as f:
+        info = yaml.load(f, Loader=yaml.FullLoader)
+        username = info["username"]
+        password = info["password"]
 
-with open("application.yml") as f:
-    info = yaml.load(f, Loader=yaml.FullLoader)
-    username = info["username"]
-    password = info["password"]
+        app.config["MONGODB_SETTINGS"] = {
+            "db": "appTracker",
+            "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
+        }
+elif os.getenv("MONGODB_USERNAME") and os.getenv("MONGODB_PASSWORD"):
+    username = os.getenv("MONGODB_USERNAME")
+    password = os.getenv("MONGODB_PASSWORD")
 
     app.config["MONGODB_SETTINGS"] = {
         "db": "appTracker",
         "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
     }
+else:
+    app.config["MONGODB_SETTINGS"] = {
+        "db": "appTracker",
+        "host": f"mongodb://{os.getenv("DB_HOSTNAME") or "localhost"}:27017/mydatabase",
+    }
+
 
 db = MongoEngine()
 db.init_app(app)
