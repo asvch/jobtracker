@@ -4,6 +4,7 @@ import CustomProfileModal from './CustomProfileModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CONSTANTS } from '../data/Constants';
 import { faEnvelope, faLocationDot, faPenToSquare, faPhone } from '@fortawesome/free-solid-svg-icons';
+import ExperiencePane from './ExperiencePane.tsx';
 
 const ProfilePage = (props) => {
 	const [activeModal, setActiveModal] = useState('');
@@ -22,7 +23,7 @@ const ProfilePage = (props) => {
 		{ name: CONSTANTS.PROFILE.HOBBIES, label: 'Hobbies', options: CONSTANTS.HOBBIES }
 	];
 
-	//TODO: @cyril, do CRUD for experience, education, projects, and achievements
+	//TODO: @cyril, do CRUD for  education,, PFP |||| projects, and achievements,
 
 	const closeModal = () => setActiveModal('');
 
@@ -102,6 +103,16 @@ const ProfilePage = (props) => {
 					</div>
 				</div>
 				<div className='col-8 px-0'>
+					<ExperiencePane
+						experiences={profile.experiences.map((exp) => ({
+							...exp,
+							startDate: new Date(exp.startDate),
+							endDate: new Date(exp.endDate)
+						}))}
+						updateExperiences={(experiences) => {
+							props.updateProfile({ ...profile, experiences });
+						}}
+					/>
 					{fields.map(({ name, label }) => (
 						<div className='card my-3 p-2' style={{ boxShadow: '0px 5px 12px 0px rgba(0,0,0,0.1)' }} key={name}>
 							<div className='card-body'>

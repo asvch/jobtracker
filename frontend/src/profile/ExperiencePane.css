@@ -1,0 +1,105 @@
+.card {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.experience-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.experience-item input,
+.experience-item textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.experience-item input[type='date'] {
+    max-width: 200px;
+}
+
+.experience-item ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.experience-item li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.experience-item button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #ff4d4f;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+.experience-item button:hover {
+    background-color: #e33b3f;
+}
+
+button.add-bullet {
+    background-color: #1890ff;
+    margin-top: 10px;
+    border-radius: 4px;
+    color: white;
+}
+
+button.add-bullet:hover {
+    background-color: #0f75d3;
+}
+
+form {
+    margin-top: 30px;
+}
+
+form h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+form input,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #52c41a;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #389e0d;
+}
