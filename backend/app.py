@@ -15,6 +15,8 @@ from bson.json_util import dumps
 from io import BytesIO
 from fake_useragent import UserAgent
 import pandas as pd
+import matplotlib.pyplot as plt
+from sankeyflow import Sankey
 import json
 from datetime import datetime, timedelta
 import yaml
@@ -711,25 +713,14 @@ def create_app():
 app = create_app()
 
 
-# with open("application.yml") as f:
-#     info = yaml.load(f, Loader=yaml.FullLoader)
-#     username = info["username"]
-#     password = info["password"]
-#     # ca=certifi.where()
-#     app.config["MONGODB_SETTINGS"] = {
-#         "db": "appTracker",
-        
-#         # "host": f"mongodb+srv://{username}:{password}@cluster0.r0056lg.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
-#         "host": f"mongodb://{username}:{password}@db:27017/mydatabase?retryWrites=true&w=majority"
+with open("application.yml") as f:
+    info = yaml.load(f, Loader=yaml.FullLoader)
+    username = info["username"]
+    password = info["password"]
 
-#     }
-
-app.config["MONGODB_SETTINGS"] = {
+    app.config["MONGODB_SETTINGS"] = {
         "db": "appTracker",
-        
-        # "host": f"mongodb+srv://{username}:{password}@cluster0.r0056lg.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
-        "host": f"mongodb://db:27017/mydatabase"
-
+        "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority"
     }
 
 db = MongoEngine()
