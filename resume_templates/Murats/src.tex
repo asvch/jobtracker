@@ -1,0 +1,72 @@
+\documentclass{muratcan_cv}
+
+\setname{{'{'}}{{ firstName }}{{'}'}}{{'{'}}{{ lastName }}{{'}'}}
+\setaddress{
+    {{ address }}
+}
+\setmobile{
+    {{ phone }}
+}
+\setmail{
+    {{ email }}
+}
+\setgithubaccount{{'{'}}https://github.com/{{ github }}{{'}'}} %you can play with color of the template (red is also nice..)
+\setthemecolor{red} %you can play with color of the template (red is also nice..)
+
+\begin{document}
+%Set variables
+%You can add sections, texts, explanations just by copying the style below. Replace the dummy texts "\lipsum[1][x-x]\par" with actual texts.
+%Create header
+\headerview
+\vspace{1ex}
+%Sections
+%
+% Summary
+\addblocktext{Summary}{
+{{ summary }}
+}
+%
+%Education
+\section{Education} 
+    {% for edu in education %}
+    \datedexperience{{'{'}}{{ edu.institution }}{{'}'}}{{'{'}}{{ edu.dates }}{{'}'}} 
+    \explanation{{'{'}}{{ edu.degree }}{{'}'}} 
+    \explanationdetail{
+        {% for detail in edu.description %}
+        \coloredbullet % 
+         {{'{'}}{{ detail }}{{'}'}}
+        {% endfor %}
+    }
+    {% endfor %}
+%
+% Experience
+\section{Experience}
+    {% for exp in experience %}
+    \datedexperience{{'{'}}{{ exp.company }}{{'}'}}{{'{'}}{{ exp.dates }}{{'}'}}
+    \explanation{{'{'}}{{ exp.title }}{{'}'}} 
+    \explanationdetail{
+        {% for detail in exp.description %}
+        \coloredbullet % 
+         {{'{'}}{{ detail }}{{'}'}}
+        {% endfor %}
+    }
+    {% endfor %}
+%
+% Skills
+\section{Skills}
+    %
+    \newcommand{\skill}{
+        {{ skills | join(' \cpshalf ') }}
+    }
+    %
+    \createskills{\skill}
+%
+% Experience
+\section{Hobbies}
+    \createbullets{
+        {{ hobbies | join(', ') }}
+    }
+%
+%Footnote
+\createfootnote
+\end{document}
