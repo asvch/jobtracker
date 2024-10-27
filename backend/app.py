@@ -7,16 +7,12 @@ from flask import Flask, jsonify, request, send_file, redirect, url_for, session
 from flask_mongoengine import MongoEngine
 from markupsafe import escape
 from flask_cors import CORS, cross_origin
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from itertools import islice
-from webdriver_manager.chrome import ChromeDriverManager
 from bson.json_util import dumps
 from io import BytesIO
 from fake_useragent import UserAgent
 import pandas as pd
-import matplotlib.pyplot as plt
 import json
 from datetime import datetime, timedelta
 import yaml
@@ -28,11 +24,10 @@ import random
 from authlib.integrations.flask_client import OAuth
 from authlib.common.security import generate_token
 import os
-from mongoengine.connection import get_db, connect
-import sys
 from dotenv import load_dotenv
 import shutil
 import jinja2
+import base64
 
 from util import load_and_run_function
 
@@ -752,6 +747,20 @@ def create_app():
             data = load_and_run_function(
                 os.path.join(template_dir, "adapter.py"), "convert", user
             )
+
+            # save the user's profile picture as "pfp.png" in the temp directory
+            raw_user_picture = user.picture
+
+            if raw_user_picture and raw_user_picture.startswith(
+                "data:image/png;base64,"
+            ):
+                raw_user_picture = raw_user_picture.replace(
+                    "data:image/png;base64,", ""
+                )
+
+                with open(os.path.join(temp_dir, "pfp.png"), "wb") as file:
+                    image_data = base64.b64decode(raw_user_picture)
+                    file.write(image_data)
 
             rendered_tex = template.render(data)
 

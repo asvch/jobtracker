@@ -67,19 +67,28 @@ const ProfilePage = (props) => {
 							style={{ position: 'absolute', top: '15', right: '15' }}
 						/>
 						<div className='text-center my-3'>
-							<div
-								className='text-center mt-3 d-inline-flex justify-content-center align-items-center'
-								style={{
-									height: '200px',
-									width: '200px',
-									borderRadius: '100%',
-									backgroundColor: '#296E85',
-									color: '#fff',
-									boxShadow: '0px 5px 12px 10px rgba(0,0,0,0.1)'
-								}}
-							>
-								<span style={{ fontSize: 60, letterSpacing: 1.2 }}>{profile.fullName}</span>
-							</div>
+							{profile.picture ? (
+								<img
+									src={profile.picture}
+									alt='Profile'
+									className='rounded-circle'
+									style={{ width: '200px', height: '200px' }}
+								/>
+							) : (
+								<div
+									className='text-center mt-3 d-inline-flex justify-content-center align-items-center'
+									style={{
+										height: '200px',
+										width: '200px',
+										borderRadius: '100%',
+										backgroundColor: '#296E85',
+										color: '#fff',
+										boxShadow: '0px 5px 12px 10px rgba(0,0,0,0.1)'
+									}}
+								>
+									<span style={{ fontSize: 60, letterSpacing: 1.2 }}>{profile.fullName}</span>
+								</div>
+							)}
 						</div>
 						<div className='text-center mt-3'>
 							<h3 className='card-title mb-1'>{profile[CONSTANTS.PROFILE.NAME] || ''}</h3>

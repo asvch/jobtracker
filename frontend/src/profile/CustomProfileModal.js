@@ -1,18 +1,35 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Modal, ModalBody, ModalFooter, Form } from 'react-bootstrap';
+import { Modal, ModalBody, ModalFooter, Form, Button } from 'react-bootstrap';
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import { CONSTANTS } from '../data/Constants';
 import { baseApiURL } from '../api/base.ts';
 
+const convertFileToBase64 = (file) => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+
+		reader.onload = () => {
+			resolve(reader.result); // This will contain the Base64 string
+		};
+
+		reader.onerror = () => {
+			reject(new Error('Failed to convert file to Base64'));
+		};
+
+		reader.readAsDataURL(file); // Read the file as a Data URL (Base64)
+	});
+};
+
 const CustomProfileModal = (props) => {
-	const { profile, setProfile, setModalOpen, updateProfile } = props;
+	const { profile, setModalOpen, updateProfile } = props;
 	const [data, setData] = useState(profile);
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState(''); // new state for error message
-	const [skills, setSkills] = useState(data[CONSTANTS.PROFILE.SKILLS]);
-	const [experienceLevel, setExperienceLevel] = useState(data[CONSTANTS.PROFILE.EXPERIENCE_LEVEL]);
-	const [location, setLocation] = useState(data[CONSTANTS.PROFILE.LOCATION]);
+
+	const skills = data[CONSTANTS.PROFILE.SKILLS];
+	const experienceLevel = data[CONSTANTS.PROFILE.EXPERIENCE_LEVEL];
+	const location = data[CONSTANTS.PROFILE.LOCATION];
 
 	const handleSave = async () => {
 		if (data[CONSTANTS.PROFILE.NAME] === '' || skills === '' || experienceLevel === '' || location === '') {
@@ -62,6 +79,22 @@ const CustomProfileModal = (props) => {
 			<ModalBody>
 				{error && <div style={{ color: 'red', fontSize: 12, marginBottom: 10 }}>{errorMessage}</div>}
 				<Form>
+					<Form.Group className='mb-3' controlId='formFile'>
+						<Form.Label>Profile Picture</Form.Label>
+						<Form.Control
+							type='file'
+							accept='.png'
+							onChange={async (e) => {
+								const b64Image = await convertFileToBase64(e.target.files[0]);
+								setData({ ...data, picture: b64Image });
+							}}
+						/>
+						{profile.picture && (
+							<Button variant='danger' onClick={() => setData({ ...data, picture: undefined })}>
+								Delete
+							</Button>
+						)}
+					</Form.Group>
 					{fields.map((field) => (
 						<Form.Group className='mb-3'>
 							<Form.Label>
