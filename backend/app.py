@@ -1,22 +1,18 @@
 """
 The flask application for our program
 """
+
 # importing required python libraries
 from flask import Flask, jsonify, request, send_file, redirect, url_for, session
 from flask_mongoengine import MongoEngine
 from markupsafe import escape
 from flask_cors import CORS, cross_origin
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from itertools import islice
-from webdriver_manager.chrome import ChromeDriverManager
 from bson.json_util import dumps
 from io import BytesIO
 from fake_useragent import UserAgent
 import pandas as pd
-import matplotlib.pyplot as plt
-from sankeyflow import Sankey
 import json
 from datetime import datetime, timedelta
 import yaml
@@ -28,8 +24,14 @@ import random
 from authlib.integrations.flask_client import OAuth
 from authlib.common.security import generate_token
 import os
-from mongoengine.connection import get_db, connect
-import sys
+from dotenv import load_dotenv
+import shutil
+import jinja2
+import base64
+
+from util import load_and_run_function
+
+load_dotenv()
 
 existing_endpoints = ["/applications", "/resume"]
 
@@ -44,7 +46,7 @@ def create_app():
     """
     app = Flask(__name__)
     # # make flask support CORS
-    CORS(app)
+    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
     # get all the variables from the application.yml file
     # with open("application.yml") as f:
@@ -53,8 +55,6 @@ def create_app():
     #     GOOGLE_CLIENT_SECRET = info["GOOGLE_CLIENT_SECRET"]
     #     CONF_URL = info["CONF_URL"]
     #     app.secret_key = info['SECRET_KEY']
-
-    app.config["CORS_HEADERS"] = "Content-Type"
 
     oauth = OAuth(app)
 
@@ -164,35 +164,33 @@ def create_app():
     def signupGoogle():
 
         oauth.register(
-            name='google',
+            name="google",
             client_id=GOOGLE_CLIENT_ID,
             client_secret=GOOGLE_CLIENT_SECRET,
             server_metadata_url=CONF_URL,
-            client_kwargs={
-                'scope': 'openid email profile'
-            },
-            nonce='foobar'
+            client_kwargs={"scope": "openid email profile"},
+            nonce="foobar",
         )
 
         # Redirect to google_auth function
-        redirect_uri = url_for('authorized', _external=True)
+        redirect_uri = url_for("authorized", _external=True)
         print(redirect_uri)
 
-        session['nonce'] = generate_token()
-        return oauth.google.authorize_redirect(redirect_uri, nonce=session['nonce'])
+        session["nonce"] = generate_token()
+        return oauth.google.authorize_redirect(redirect_uri, nonce=session["nonce"])
 
-    @app.route('/users/signupGoogle/authorized')
+    @app.route("/users/signupGoogle/authorized")
     def authorized():
         token = oauth.google.authorize_access_token()
-        user = oauth.google.parse_id_token(token, nonce=session['nonce'])
-        session['user'] = user
+        user = oauth.google.parse_id_token(token, nonce=session["nonce"])
+        session["user"] = user
 
         user_exists = Users.objects(email=user["email"]).first()
 
         users_email = user["email"]
         full_name = user["given_name"] + " " + user["family_name"]
 
-        if user['email_verified']:
+        if user["email_verified"]:
             if user_exists is None:
                 userSave = Users(
                     id=get_new_user_id(),
@@ -204,22 +202,25 @@ def create_app():
                     job_levels=[],
                     locations=[],
                     phone_number="",
-                    address=""
+                    address="",
                 )
                 userSave.save()
-                unique_id = userSave['id']
+                unique_id = userSave["id"]
             else:
-                unique_id = user_exists['id']
+                unique_id = user_exists["id"]
 
-        userSaved = Users.objects(email=user['email']).first()
+        userSaved = Users.objects(email=user["email"]).first()
         expiry = datetime.now() + timedelta(days=1)
         expiry_str = expiry.strftime("%m/%d/%Y, %H:%M:%S")
-        token_whole = str(unique_id) + "." + token['access_token']
-        auth_tokens_new = userSaved['authTokens'] + \
-            [{"token": token_whole, "expiry": expiry_str}]
+        token_whole = str(unique_id) + "." + token["access_token"]
+        auth_tokens_new = userSaved["authTokens"] + [
+            {"token": token_whole, "expiry": expiry_str}
+        ]
         userSaved.update(authTokens=auth_tokens_new)
 
-        return redirect(f"http://127.0.0.1:3000/?token={token_whole}&expiry={expiry_str}&userId={unique_id}")
+        return redirect(
+            f"http://127.0.0.1:3000/?token={token_whole}&expiry={expiry_str}&userId={unique_id}"
+        )
 
     @app.route("/users/signup", methods=["POST"])
     def sign_up():
@@ -257,7 +258,7 @@ def create_app():
                 phone_number="",
                 address="",
                 institution="",
-                email=""
+                email="",
             )
             user.save()
             # del user.to_json()["password", "authTokens"]
@@ -275,18 +276,26 @@ def create_app():
         try:
             userid = get_userid_from_header()
             user = Users.objects(id=userid).first()
-            profileInformation = {}
-            profileInformation["skills"] = user["skills"]
-            profileInformation["job_levels"] = user["job_levels"]
-            profileInformation["locations"] = user["locations"]
-            profileInformation["institution"] = user["institution"]
-            profileInformation["phone_number"] = user["phone_number"]
-            profileInformation["address"] = user["address"]
-            profileInformation["email"] = user["email"]
-            profileInformation["fullName"] = user["fullName"]
 
-            return jsonify(profileInformation)
-        except:
+            FIELDS_TO_EXCLUDE = [
+                "id",
+                "_id",
+                "username",
+                "password",
+                "authTokens",
+                "applications",
+                "resume",
+            ]
+
+            cleaned_user = {
+                key: value
+                for key, value in user.to_mongo().items()
+                if key not in FIELDS_TO_EXCLUDE
+            }
+
+            return jsonify(cleaned_user), 200
+        except Exception as err:
+            print(err)
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/updateProfile", methods=["POST"])
@@ -303,24 +312,6 @@ def create_app():
 
             for key in data.keys():
                 user[key] = data[key]
-
-            # if data["skills"]:
-            #     user.skills = data["skills"]
-
-            # if data["job_levels"]:
-            #     user.job_levels = data["job_levels"]
-
-            # if data["locations"]:
-            #     user.locations = data["locations"]
-
-            # if data["institution"]:
-            #     user.institution = data["institution"]
-
-            # if data["phone_number"]:
-            #     user.phone_number = data["phone_number"]
-
-            # if data["address"]:
-            #     user.address = data["address"]
 
             user.save()
             return jsonify(user.to_json()), 200
@@ -342,19 +333,28 @@ def create_app():
             job_levels_sets = [x["value"] for x in user["job_levels"]]
             locations_set = [x["value"] for x in user["locations"]]
             recommendedJobs = []
-            headers = {"User-Agent":
-                       #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
-                       user_agent.random,
-                       "Referrer": "https://www.google.com/"
-                       }
-            if len(skill_sets) > 0 or len(job_levels_sets) > 0 or len(locations_set) > 0:
+            headers = {
+                "User-Agent":
+                #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+                user_agent.random,
+                "Referrer": "https://www.google.com/",
+            }
+            if (
+                len(skill_sets) > 0
+                or len(job_levels_sets) > 0
+                or len(locations_set) > 0
+            ):
                 random_skill = random.choice(skill_sets)
                 random_job_level = random.choice(job_levels_sets)
                 random_location = random.choice(locations_set)
-                query = "https://www.google.com/search?q=" + random_skill + \
-                    random_job_level + random_location + "&ibp=htl;jobs"
+                query = (
+                    "https://www.google.com/search?q="
+                    + random_skill
+                    + random_job_level
+                    + random_location
+                    + "&ibp=htl;jobs"
+                )
                 print(query)
-
 
             else:
                 query = "https://www.google.com/search?q=" + "sde usa" + "&ibp=htl;jobs"
@@ -366,10 +366,15 @@ def create_app():
             for div in mydivs:
                 job = {}
                 job["jobLink"] = div.find("a", class_="MQUd2b").get("href")
-                job["jobTitle"] = div.find(
-                    "div", {"class": "tNxQIb PUpOsf"}).text
-                job["companyName"] = div.find("div", {"class": "wHYlTd MKCbgd a3jPc"}).text
-                job["location"] = div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"}).text.split("•")[0].split("via")[0]
+                job["jobTitle"] = div.find("div", {"class": "tNxQIb PUpOsf"}).text
+                job["companyName"] = div.find(
+                    "div", {"class": "wHYlTd MKCbgd a3jPc"}
+                ).text
+                job["location"] = (
+                    div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"})
+                    .text.split("•")[0]
+                    .split("via")[0]
+                )
                 recommendedJobs.append(job)
             print(recommendedJobs)
             return jsonify(recommendedJobs)
@@ -405,7 +410,6 @@ def create_app():
                 {"token": token, "expiry": expiry_str}
             ]
             user.update(authTokens=auth_tokens_new)
-            
 
             profileInfo = {
                 "id": user.id,
@@ -415,10 +419,12 @@ def create_app():
                 "phone_number": user.phone_number,
                 "address": user.address,
                 "locations": user.locations,
-                "jobLevels": user.job_levels,
-                "email": user.email
+                "job_levels": user.job_levels,
+                "email": user.email,
             }
-            return jsonify({"profile": profileInfo, "token": token, "expiry": expiry_str})
+            return jsonify(
+                {"profile": profileInfo, "token": token, "expiry": expiry_str}
+            )
         except:
             return jsonify({"error": "Internal server error"}), 500
 
@@ -459,8 +465,7 @@ def create_app():
             if request.args.get("keywords")
             else "random_test_keyword"
         )
-        salary = request.args.get(
-            "salary") if request.args.get("salary") else ""
+        salary = request.args.get("salary") if request.args.get("salary") else ""
         keywords = keywords.replace(" ", "+")
         if keywords == "random_test_keyword":
             return json.dumps({"label": str("successful test search")})
@@ -477,50 +482,66 @@ def create_app():
             url = "https://www.google.com/search?q=" + keywords + "&ibp=htl;jobs"
 
         print(user_agent.random)
-        headers = {"User-Agent":
-                   #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
-                   user_agent.random,
-                   "Referrer": "https://www.google.com/"
-                   }
+        headers = {
+            "User-Agent":
+            #    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+            user_agent.random,
+            "Referrer": "https://www.google.com/",
+        }
 
         page = requests.get(url, headers=headers)
         soup = BeautifulSoup(page.text, "html.parser")
 
         # parsing searching results to DataFrame and return
         df = pd.DataFrame(
-            columns=["jobTitle", "jobLink","companyName", "location", "date", "qualifications", "responsibilities", "benefits"])
+            columns=[
+                "jobTitle",
+                "jobLink",
+                "companyName",
+                "location",
+                "date",
+                "qualifications",
+                "responsibilities",
+                "benefits",
+            ]
+        )
         mydivs = soup.find_all("div", class_="mqj2af")
 
         for i, div in enumerate(mydivs):
-            df.at[i, "jobTitle"] = div.find(
-                "div", {"class": "tNxQIb PUpOsf"}).text
-            df.at[i, "companyName"] = div.find("div", {"class": "wHYlTd MKCbgd a3jPc"}).text
-            df.at[i, "location"] = div.find("div", {"class": "wHYlTd FqK3wc MKCbgd"}).text.split("•")[0]
-            df.at[i, "date"] = div.find_all(
-                "span", {"class": "Yf9oye"}, limit=1)[0].text
-            
+            df.at[i, "jobTitle"] = div.find("div", {"class": "tNxQIb PUpOsf"}).text
+            df.at[i, "companyName"] = div.find(
+                "div", {"class": "wHYlTd MKCbgd a3jPc"}
+            ).text
+            df.at[i, "location"] = div.find(
+                "div", {"class": "wHYlTd FqK3wc MKCbgd"}
+            ).text.split("•")[0]
+            df.at[i, "date"] = div.find_all("span", {"class": "Yf9oye"}, limit=1)[
+                0
+            ].text
+
             apply_link = div.find("a", class_="MQUd2b")
             if apply_link:
                 link_href = apply_link.get("href")
                 link_text = apply_link.get("title") or "Apply"
-                clickable_link = f'<a href="{link_href}" target="_blank">{link_text}</a>'
+                clickable_link = (
+                    f'<a href="{link_href}" target="_blank">{link_text}</a>'
+                )
 
                 df.at[i, "jobLink"] = clickable_link
 
             # Collect Job Description Details
             desc = div.find_all("div", {"class": "JxVj3d"})
             for ele in desc:
-                arr = list(x.text for x in ele.find_all(
-                    "div", {"class": "nDgy9d"}))
+                arr = list(x.text for x in ele.find_all("div", {"class": "nDgy9d"}))
                 title = ele.find("div", {"class": "iflMsb"}).text
                 if arr:
                     df.at[i, str(title).lower()] = arr
-        missingCols = list(
-            (df.loc[:, df.isnull().sum(axis=0).astype(bool)]).columns)
+        missingCols = list((df.loc[:, df.isnull().sum(axis=0).astype(bool)]).columns)
 
         for col in missingCols:
-            df.loc[df[col].isnull(), [col]] = df.loc[df[col].isnull(
-            ), col].apply(lambda x: [])
+            df.loc[df[col].isnull(), [col]] = df.loc[df[col].isnull(), col].apply(
+                lambda x: []
+            )
         # df.loc[df["benefits"].isnull(), ["benefits"]] = df.loc[df["benefits"].isnull(), "benefits"].apply(lambda x: [])
         return jsonify(df.to_dict("records"))
 
@@ -660,19 +681,112 @@ def create_app():
             user = Users.objects(id=userid).first()
             if not user.resume.read():
                 # There is no file
-                user.resume.put(file, filename=file.filename,
-                                content_type="application/pdf")
+                user.resume.put(
+                    file, filename=file.filename, content_type="application/pdf"
+                )
                 user.save()
                 return jsonify({"message": "resume successfully uploaded"}), 200
             else:
                 # There is a file, we are replacing it
                 user.resume.replace(
-                    file, filename=file.filename, content_type="application/pdf")
+                    file, filename=file.filename, content_type="application/pdf"
+                )
                 user.save()
                 return jsonify({"message": "resume successfully replaced"}), 200
         except Exception as e:
             print(e)
             return jsonify({"error": "Internal server error"}), 500
+
+    @app.route("/resumeTemplates", methods=["GET"])
+    def get_resume_templates():
+        """
+        Returns a list of available resume templates
+        """
+        try:
+            base_path = "../resume_templates"
+            templates_names = [
+                d
+                for d in os.listdir(base_path)
+                if os.path.isdir(os.path.join(base_path, d))
+                and os.path.exists(os.path.join(base_path, d, "sample.pdf"))
+            ]
+
+            return templates_names, 200
+
+        except:
+            return jsonify({"error": "Internal server error"}), 500
+
+    @app.route("/generateResume", methods=["POST"])
+    def generate_resume():
+        """
+        Generates a resume based on the provided template and user data
+        """
+        try:
+            userid = get_userid_from_header()
+            user = Users.objects(id=userid).first()
+            data = json.loads(request.data)
+            template_name = data.get("templateName")
+
+            # Make a temp workspace
+            temp_dir = f"/tmp/{uuid.uuid4()}"
+            os.makedirs(temp_dir, exist_ok=True)
+
+            # Copy the template files to the temp directory
+            template_dir = f"../resume_templates/{template_name}"
+            for item in os.listdir(template_dir):
+                s = os.path.join(template_dir, item)
+                d = os.path.join(temp_dir, item)
+                if not os.path.isdir(s):
+                    shutil.copy2(s, d)
+
+            # Load the template
+            env = jinja2.Environment(loader=jinja2.FileSystemLoader(temp_dir))
+            template = env.get_template("src.tex")
+
+            # Transform user data into a format suitable for the template
+            data = load_and_run_function(
+                os.path.join(template_dir, "adapter.py"), "convert", user
+            )
+
+            # save the user's profile picture as "pfp.png" in the temp directory
+            raw_user_picture = user.picture
+
+            if raw_user_picture and raw_user_picture.startswith(
+                "data:image/png;base64,"
+            ):
+                raw_user_picture = raw_user_picture.replace(
+                    "data:image/png;base64,", ""
+                )
+
+                with open(os.path.join(temp_dir, "pfp.png"), "wb") as file:
+                    image_data = base64.b64decode(raw_user_picture)
+                    file.write(image_data)
+
+            rendered_tex = template.render(data)
+
+            # Save the rendered LaTeX to a file
+            tex_file_path = os.path.join(temp_dir, "output.tex")
+            with open(tex_file_path, "w") as tex_file:
+                tex_file.write(rendered_tex)
+
+            # Compile the LaTeX file to PDF
+            os.system(f"pdflatex -output-directory={temp_dir} {tex_file_path}")
+
+            # Send the generated PDF back to the user
+            pdf_file_path = os.path.join(temp_dir, "output.pdf")
+
+            resp = send_file(
+                pdf_file_path, as_attachment=True, mimetype="application/pdf"
+            )
+
+            return resp
+        except Exception as e:
+            print(e)
+            return jsonify({"error": "Internal server error"}), 500
+        finally:
+            # Cleanup the temp directory
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
 
     @app.route("/resume", methods=["GET"])
     def get_resume():
@@ -712,16 +826,30 @@ def create_app():
 
 app = create_app()
 
+if os.path.exists("application.yml"):
+    with open("application.yml") as f:
+        info = yaml.load(f, Loader=yaml.FullLoader)
+        username = info["username"]
+        password = info["password"]
 
-with open("application.yml") as f:
-    info = yaml.load(f, Loader=yaml.FullLoader)
-    username = info["username"]
-    password = info["password"]
+        app.config["MONGODB_SETTINGS"] = {
+            "db": "appTracker",
+            "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
+        }
+elif os.getenv("MONGODB_USERNAME") and os.getenv("MONGODB_PASSWORD"):
+    username = os.getenv("MONGODB_USERNAME")
+    password = os.getenv("MONGODB_PASSWORD")
 
     app.config["MONGODB_SETTINGS"] = {
         "db": "appTracker",
-        "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority"
+        "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
     }
+else:
+    app.config["MONGODB_SETTINGS"] = {
+        "db": "appTracker",
+        "host": f"mongodb://{os.getenv("DB_HOSTNAME") or "localhost"}:27017/mydatabase",
+    }
+
 
 db = MongoEngine()
 db.init_app(app)
@@ -746,6 +874,17 @@ class Users(db.Document):
     institution = db.StringField()
     phone_number = db.StringField()
     address = db.StringField()
+
+    ## Additional resume fields
+    picture = db.StringField()
+    summary = db.StringField()
+    github = db.StringField()
+    citizenship = db.StringField()
+    family_status = db.StringField()
+    languages = db.ListField()
+    experiences = db.ListField()
+    education = db.ListField()
+    hobbies = db.ListField()
 
     def to_json(self):
         """
@@ -791,17 +930,16 @@ def get_new_application_id(user_id):
 
     return new_id + 1
 
-# def build_preflight_response():
-    # response = make_response()
-    # response.headers.add("Access-Control-Allow-Origin", "*")
-    # response.headers.add('Access-Control-Allow-Headers', "*")
-    # response.headers.add('Access-Control-Allow-Methods', "*")
-    # return response
-# def build_actual_response(response):
-    # response.headers.add("Access-Control-Allow-Origin", "*")
-    # return response
 
+# def build_preflight_response():
+# response = make_response()
+# response.headers.add("Access-Control-Allow-Origin", "*")
+# response.headers.add('Access-Control-Allow-Headers', "*")
+# response.headers.add('Access-Control-Allow-Methods', "*")
+# return response
+# def build_actual_response(response):
+# response.headers.add("Access-Control-Allow-Origin", "*")
+# return response
 
 if __name__ == "__main__":
     app.run()
-    

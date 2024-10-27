@@ -563,3 +563,9 @@ FodyWeavers.xsd
 
 
 backend/application.yml
+
+resume_templates/**/generated*
+resume_templates/**/*.aux
+resume_templates/**/*.fls
+resume_templates/**/*.fdb_latexmk
+resume_templates/**/*.out

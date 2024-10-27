@@ -1,12 +1,26 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { Modal, ModalBody, ModalDialog, ModalFooter } from 'react-bootstrap';
+import { Modal, ModalBody, ModalFooter } from 'react-bootstrap';
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import axios from 'axios';
 import { baseApiURL } from '../api/base.ts';
 
-const CustomModal = (props) => {
-	const { options, name, profile, setProfile, setModalOpen, updateProfile } = props;
+export enum ModalType {
+	TEXT,
+	LIST
+}
+
+interface CustomModalProps {
+	options?: string[];
+	name: string;
+	profile: any;
+	setModalOpen: (open: boolean) => void;
+	updateProfile: (profile: any) => void;
+	type: ModalType;
+}
+
+const CustomModal = (props: CustomModalProps) => {
+	const { options, name, profile, setModalOpen, updateProfile, type: modalType } = props;
 	const [data, setData] = useState(profile[name]);
 
 	const handleSave = () => {
@@ -19,7 +33,7 @@ const CustomModal = (props) => {
 				},
 				{
 					headers: {
-						userid: localStorage.getItem('userId'),
+						userid: localStorage.getItem('userId')!,
 						Authorization: `Bearer ${localStorage.getItem('userId')}`
 					}
 				}
@@ -37,24 +51,35 @@ const CustomModal = (props) => {
 	return (
 		<Modal show={true} centered size='lg'>
 			<ModalHeader style={{ backgroundColor: '#296E85', color: '#fff' }}>
-				<h5 class='modal-title'>Set preferences</h5>
+				<h5 className='modal-title'>Set {name}</h5>
 				<button
 					type='button'
-					class='btn-close'
+					className='btn-close'
 					aria-label='Close'
 					onClick={() => setModalOpen(false)}
 					style={{ backgroundColor: '#fff' }}
 				></button>
 			</ModalHeader>
 			<ModalBody>
-				<Select
-					defaultValue={profile[name]}
-					isSearchable
-					isClearable
-					isMulti
-					options={options}
-					onChange={(ele) => setData(ele)}
-				/>
+				{modalType === ModalType.TEXT && (
+					<input
+						type='text'
+						value={data}
+						onChange={(e) => setData(e.target.value)}
+						placeholder={`Enter ${name}`}
+						style={{ border: 'none', outline: 'none', flex: 1 }}
+					/>
+				)}
+				{modalType === ModalType.LIST && (
+					<Select
+						defaultValue={profile[name]}
+						isSearchable
+						isClearable
+						isMulti
+						options={options}
+						onChange={(ele) => setData(ele)}
+					/>
+				)}
 			</ModalBody>
 			<ModalFooter>
 				<button type='button' className='custom-btn px-3 py-2' onClick={handleSave}>

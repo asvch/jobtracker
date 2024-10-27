@@ -11,6 +11,7 @@ import axios from 'axios';
 import fetch from './api/handler';
 import MatchesPage from './matches/MatchesPage';
 import MyApplicationPage from './application/MyApplicationPage';
+import CreateResumePage from './resume/CreateResumePage.tsx';
 import { baseApiURL } from './api/base.ts';
 
 export default class App extends React.Component {
@@ -23,6 +24,7 @@ export default class App extends React.Component {
 			ManageResumePage: <ManageResumePage />,
 			ProfilePage: <ProfilePage />,
 			MatchesPage: <MatchesPage />,
+			CreateResumePage: <CreateResumePage />,
 			MyApplicationPage: <MyApplicationPage />
 		};
 		this.state = {
