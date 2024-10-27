@@ -8,7 +8,7 @@ const date = [
 	},
 	{
 		class: '2',
-		state: 'Waiting for referral',
+		state: 'Waiting for Referral',
 		wordOfDate: 'Referral before '
 	},
 	{

@@ -1,19 +1,120 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Col, Container, Row, Card, Button } from 'react-bootstrap';
 import { baseApiURL } from '../api/base.ts';
+import { Chart, registerables } from 'chart.js';
+import { SankeyController, Flow } from 'chartjs-chart-sankey';
+
+Chart.register(SankeyController, Flow, ...registerables);
 
 const findStatus = (value) => {
 	let status = '';
 	if (value === '1') status = 'Wish List';
-	else if (value === '2') status = 'Waiting for referral';
-	else if (value === '3') status = 'Applied';
+	else if (value === '2') status = 'Waiting for Referral';
+	else if (value === '3') status = 'No Response';
 	else if (value === '4') status = 'Rejected';
+	else if (value === '5') status = 'Accepted';
+	else if (value === '6') status = 'Took an Interview';
 
 	return status;
 };
 
 const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, handleDeleteApplication }) => {
 	const [expandedCardId, setExpandedCardId] = useState(null);
+	const chartRef = useRef(null);
+	const chartInstance = useRef(null); // Ref to hold the chart instance
+
+	const colors = {
+		Applications: 'brown',
+		'Wish List': 'pink',
+		'Waiting for Referral': 'purple',
+		Applied: 'green',
+		Accepted: 'green',
+		Rejected: 'red',
+		'Took an Interview': 'orange',
+		'No Response': 'grey'
+	};
+
+	const statusFrom = {
+		'Wish List': 'Applications',
+		'Waiting for Referral': 'Applications',
+		Applied: 'Applications',
+		Accepted: 'Applied',
+		Rejected: 'Applied',
+		'Took an Interview': 'Applied',
+		'No Response': 'Applied'
+	};
+
+	// Prepare data only if applicationLists is available
+	const filteredData = [];
+	let cnt = 0;
+	let all_cnt = {
+		'Wish List': 0,
+		'Waiting for Referral': 0,
+		Accepted: 0,
+		Rejected: 0,
+		'Took an Interview': 0,
+		'No Response': 0
+	};
+	if (applicationLists) {
+		Object.keys(applicationLists).forEach((status) => {
+			const applications = applicationLists[status];
+			applications.forEach(() => {
+				if (statusFrom[status] === 'Applied') {
+					cnt += 1;
+				}
+				all_cnt[status] += 1;
+			});
+		});
+
+		Object.keys(all_cnt).forEach((status) => {
+			if (all_cnt[status] > 0) {
+				filteredData.push({
+					from: statusFrom[status],
+					to: status,
+					flow: all_cnt[status]
+				});
+			}
+		});
+
+		if (cnt > 0) {
+			filteredData.push({
+				from: 'Applications',
+				to: 'Applied',
+				flow: cnt
+			});
+		}
+	}
+
+	// Reinitialize the chart whenever applicationLists changes
+	useEffect(() => {
+		console.log('applicationLists:', applicationLists);
+		console.log('filteredData:', filteredData);
+
+		if (applicationLists && filteredData.length > 0) {
+			const ctx = chartRef.current.getContext('2d');
+
+			if (chartInstance.current) {
+				chartInstance.current.destroy();
+			}
+
+			chartInstance.current = new Chart(ctx, {
+				type: 'sankey',
+				data: {
+					datasets: [
+						{
+							label: 'ATS Flow',
+							data: filteredData,
+							colorFrom: (c) => colors[c.dataset.data[c.dataIndex].from],
+							colorTo: (c) => colors[c.dataset.data[c.dataIndex].to],
+							colorMode: 'gradient',
+							alpha: 0.5,
+							size: 'max'
+						}
+					]
+				}
+			});
+		}
+	}, [applicationLists]);
 
 	const toggleCardExpansion = (id) => {
 		setExpandedCardId((prevId) => (prevId === id ? null : id));
@@ -21,34 +122,26 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 
 	return (
 		<Container style={{ marginTop: '20px', marginBottom: '20px', marginLeft: '110px' }}>
+			<Row style={{ marginBottom: '40px' }}>
+				<canvas ref={chartRef} />
+			</Row>
 			<Row>
-				{['Wish List', 'Waiting for referral', 'Applied', 'Rejected'].map((status) => (
+				{Object.keys(applicationLists).map((status) => (
 					<Col key={status} md={3} style={{ marginBottom: '20px' }}>
-						<Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
-							<Card.Header
-								as='h5'
-								style={{
-									backgroundColor:
-										status === 'Wish List'
-											? '#ffff00' // Light Apricot for Wish List
-											: status === 'Waiting for referral'
-												? '#b3afff' // Light Blue for Waiting for referral
-												: status === 'Applied'
-													? '#90EE90' // Light Green for Applied
-													: status === 'Rejected'
-														? '#FF0000' // Light Salmon for Rejected
-														: '', // Default color
-									borderBottom: '1px solid #dee2e6',
-									color: 'black',
-									borderBottom: '1px solid #dee2e6'
-								}}
-							>
-								{status}
-							</Card.Header>
-							<Card.Body style={{ padding: '20px' }}>
-								{applicationLists &&
-									applicationLists[status] &&
-									applicationLists[status].map((jobListing) => (
+						{applicationLists[status] && (
+							<Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
+								<Card.Header
+									as='h5'
+									style={{
+										backgroundColor: colors[status],
+										borderBottom: '1px solid #dee2e6',
+										color: 'black'
+									}}
+								>
+									{status}
+								</Card.Header>
+								<Card.Body style={{ padding: '20px' }}>
+									{applicationLists[status].map((jobListing) => (
 										<div key={jobListing.id} style={{ marginBottom: '10px' }}>
 											<Card
 												style={{
@@ -81,8 +174,9 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 											</Card>
 										</div>
 									))}
-							</Card.Body>
-						</Card>
+								</Card.Body>
+							</Card>
+						)}
 					</Col>
 				))}
 			</Row>

@@ -138,7 +138,7 @@ export default class SearchCard extends Component {
 							>
 								<option>Choose...</option>
 								<option value='1'>Wish list</option>
-								<option value='2'>Waiting Referral</option>
+								<option value='2'>Waiting for Referral</option>
 								<option value='3'>Applied</option>
 								<option value='4'>Rejected</option>
 							</select>
