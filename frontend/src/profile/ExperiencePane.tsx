@@ -5,36 +5,67 @@ import fetch from '../api/handler';
 
 export interface ExperiencePaneProps {
 	experiences: Experience[];
-	updateExperiences: (experiences: Experience[]) => void;
+	updateExperiences: (experiences: unknown[]) => void;
+	type: ExperienceType;
+}
+
+export enum ExperienceType {
+	Professional = 'Professional',
+	Academic = 'Academic'
 }
 
 export interface Experience {
 	title: string;
-	companyName: string;
+	subTitle: string;
 	startDate?: Date;
 	endDate?: Date;
 	bullets: string[];
 }
 
-const ExperiencePane = ({ experiences: _experiences, updateExperiences }: ExperiencePaneProps) => {
+const ExperiencePane = ({ experiences: _experiences, updateExperiences, type }: ExperiencePaneProps) => {
 	const [experiences, setExperiences] = useState<Experience[]>(_experiences);
 	const [newExperience, setNewExperience] = useState<Experience>({
 		title: '',
-		companyName: '',
+		subTitle: '',
 		startDate: undefined,
 		endDate: undefined,
 		bullets: ['']
 	});
 
-	const saveUpdates = (newExperiences: Experience[]) => {
+	const saveUpdates = (updated: Experience[]) => {
+		let formatted: unknown[];
+
+		if (type === ExperienceType.Professional) {
+			formatted = updated.map((exp) => ({
+				title: exp.title,
+				companyName: exp.subTitle,
+				startDate: exp.startDate,
+				endDate: exp.endDate,
+				bullets: exp.bullets
+			}));
+		} else {
+			formatted = updated.map((exp) => ({
+				degree: exp.title,
+				institutionName: exp.subTitle,
+				startDate: exp.startDate,
+				endDate: exp.endDate,
+				bullets: exp.bullets
+			}));
+		}
+
+		const body: Record<string, unknown> = {};
+		if (type === ExperienceType.Professional) {
+			body.experiences = formatted;
+		} else {
+			body.education = formatted;
+		}
+
 		fetch({
 			url: '/updateProfile',
 			method: 'POST',
-			body: {
-				experiences: newExperiences
-			}
+			body
 		}).then(() => {
-			updateExperiences(newExperiences);
+			updateExperiences(formatted);
 		});
 	};
 
@@ -81,7 +112,7 @@ const ExperiencePane = ({ experiences: _experiences, updateExperiences }: Experi
 		setExperiences([...experiences, newExperience]);
 		setNewExperience({
 			title: '',
-			companyName: '',
+			subTitle: '',
 			startDate: undefined,
 			endDate: undefined,
 			bullets: ['']
@@ -111,9 +142,11 @@ const ExperiencePane = ({ experiences: _experiences, updateExperiences }: Experi
 		setExperiences(updatedExperiences);
 	};
 
+	console.log(experiences);
+
 	return (
 		<div className='card my-3 p-2' style={{ boxShadow: '0px 5px 12px 0px rgba(0,0,0,0.1)' }}>
-			<h2>Experience</h2>
+			<h2>{type} Experience</h2>
 			{experiences
 				.sort((a, b) => (b.startDate ?? new Date()).getTime() - (a.startDate ?? new Date()).getTime())
 				.map((experience, index) => (
@@ -122,13 +155,13 @@ const ExperiencePane = ({ experiences: _experiences, updateExperiences }: Experi
 							type='text'
 							value={experience.title}
 							onChange={(e) => handleChange(e, 'title', index)}
-							placeholder='Title'
+							placeholder={type === ExperienceType.Professional ? 'Job Title' : 'Degree'}
 						/>
 						<input
 							type='text'
-							value={experience.companyName}
-							onChange={(e) => handleChange(e, 'companyName', index)}
-							placeholder='Company Name'
+							value={experience.subTitle}
+							onChange={(e) => handleChange(e, 'subTitle', index)}
+							placeholder={type === ExperienceType.Professional ? 'Company Name' : 'Institution'}
 						/>
 						<input
 							type='date'
@@ -142,7 +175,7 @@ const ExperiencePane = ({ experiences: _experiences, updateExperiences }: Experi
 							placeholder='End Date'
 						/>
 						<ul>
-							{experience.bullets.map((bullet, bulletIndex) => (
+							{(experience.bullets ?? []).map((bullet, bulletIndex) => (
 								<li key={bulletIndex}>
 									<input
 										type='text'
@@ -160,19 +193,19 @@ const ExperiencePane = ({ experiences: _experiences, updateExperiences }: Experi
 				))}
 
 			<form onSubmit={handleAddExperience}>
-				<h3>Add New Experience</h3>
+				<h3>Add New {type === ExperienceType.Professional ? 'Work experience' : 'Education'}</h3>
 				<input
 					type='text'
 					value={newExperience.title}
 					onChange={(e) => handleChange(e, 'title')}
-					placeholder='Title'
+					placeholder={type === ExperienceType.Professional ? 'Job Title' : 'Degree'}
 					required
 				/>
 				<input
 					type='text'
-					value={newExperience.companyName}
-					onChange={(e) => handleChange(e, 'companyName')}
-					placeholder='Company Name'
+					value={newExperience.subTitle}
+					onChange={(e) => handleChange(e, 'subTitle')}
+					placeholder={type === ExperienceType.Professional ? 'Company Name' : 'Institution'}
 					required
 				/>
 				<input
@@ -192,7 +225,7 @@ const ExperiencePane = ({ experiences: _experiences, updateExperiences }: Experi
 					placeholder='Enter bullet points (one per line)'
 					rows={5}
 				/>
-				<button type='submit'>Add Experience</button>
+				<button type='submit'>Add {type === ExperienceType.Professional ? 'Work experience' : 'Education'}</button>
 			</form>
 		</div>
 	);
