@@ -156,9 +156,11 @@ export default class CardEdit extends Component {
 							>
 								<option>Choose...</option>
 								<option value='1'>Wish list</option>
-								<option value='2'>Waiting Referral</option>
-								<option value='3'>Applied</option>
+								<option value='2'>Waiting for Referral</option>
+								<option value='3'>No Response</option>
 								<option value='4'>Rejected</option>
+								<option value='5'>Accepted</option>
+								<option value='6'>Took an Interview</option>
 							</select>
 						</div>
 					</Modal.Body>

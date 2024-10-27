@@ -9,15 +9,11 @@ Chart.register(SankeyController, Flow, ...registerables);
 const findStatus = (value) => {
 	let status = '';
 	if (value === '1') status = 'Wish List';
-	else if (value === '2') status = 'Waiting for referral';
-	else if (value === '3') status = 'Applied';
+	else if (value === '2') status = 'Waiting for Referral';
+	else if (value === '3') status = 'No Response';
 	else if (value === '4') status = 'Rejected';
-	else if (value === '5') status = 'Interview';
-	else if (value === '6') status = 'No Response';
-	else if (value === '7') status = 'Offer';
-	else if (value === '8') status = 'No Offer';
-	else if (value === '9') status = 'Offer Accepted';
-	else if (value === '10') status = 'Offer Declined';
+	else if (value === '5') status = 'Accepted';
+	else if (value === '6') status = 'Took an Interview';
 
 	return status;
 };
@@ -28,53 +24,75 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 	const chartInstance = useRef(null); // Ref to hold the chart instance
 
 	const colors = {
-		Applications: 'purple',
-		Applied: '#90EE90',
-		Rejected: '#FF0000',
-		'Wish List': '#ffff00',
-		'Waiting for referral': '#b3afff',
-		Interview: 'orange',
-		'No Response': 'grey',
-		Offer: 'green',
-		'No Offer': 'red',
-		'Offer Accepted': 'green',
-		'Offer Declined': 'red'
+		Applications: 'brown',
+		'Wish List': 'pink',
+		'Waiting for Referral': 'purple',
+		Applied: 'green',
+		Accepted: 'green',
+		Rejected: 'red',
+		'Took an Interview': 'orange',
+		'No Response': 'grey'
 	};
 
 	const statusFrom = {
 		'Wish List': 'Applications',
-		'Waiting for referral': 'Applications',
+		'Waiting for Referral': 'Applications',
 		Applied: 'Applications',
+		Accepted: 'Applied',
 		Rejected: 'Applied',
-		Interview: 'Applied',
-		'No Response': 'Applied',
-		Offer: 'Interview',
-		'No Offer': 'Interview',
-		'Offer Accepted': 'Offer',
-		'Offer Declined': 'Offer'
+		'Took an Interview': 'Applied',
+		'No Response': 'Applied'
 	};
 
 	// Prepare data only if applicationLists is available
 	const filteredData = [];
+	let cnt = 0;
+	let all_cnt = {
+		'Wish List': 0,
+		'Waiting for Referral': 0,
+		Accepted: 0,
+		Rejected: 0,
+		'Took an Interview': 0,
+		'No Response': 0
+	};
 	if (applicationLists) {
 		Object.keys(applicationLists).forEach((status) => {
 			const applications = applicationLists[status];
 			applications.forEach(() => {
+				if (statusFrom[status] === 'Applied') {
+					cnt += 1;
+				}
+				all_cnt[status] += 1;
+			});
+		});
+
+		Object.keys(all_cnt).forEach((status) => {
+			if (all_cnt[status] > 0) {
 				filteredData.push({
 					from: statusFrom[status],
 					to: status,
-					flow: 1
+					flow: all_cnt[status]
 				});
-			});
+			}
 		});
+
+		if (cnt > 0) {
+			filteredData.push({
+				from: 'Applications',
+				to: 'Applied',
+				flow: cnt
+			});
+		}
 	}
 
 	// Reinitialize the chart whenever applicationLists changes
 	useEffect(() => {
+		console.log('applicationLists:', applicationLists);
+		console.log('filteredData:', filteredData);
+
 		if (applicationLists && filteredData.length > 0) {
 			const ctx = chartRef.current.getContext('2d');
 
-			// Destroy previous chart instance if it exists
 			if (chartInstance.current) {
 				chartInstance.current.destroy();
 			}
