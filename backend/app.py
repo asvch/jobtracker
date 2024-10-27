@@ -781,8 +781,6 @@ def create_app():
                 pdf_file_path, as_attachment=True, mimetype="application/pdf"
             )
 
-            shutil.copy(tex_file_path, f"/Users/cyril/Downloads/t.tex")
-
             return resp
         except Exception as e:
             print(e)
