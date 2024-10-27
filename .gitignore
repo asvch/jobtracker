@@ -571,3 +571,6 @@ resume_templates/**/*.fdb_latexmk
 resume_templates/**/*.out
 resume_templates/**/*.log
 resume_templates/**/*.gz
+
+resume_templates/**/*.pdf
+!resume_templates/**/sample.pdf
