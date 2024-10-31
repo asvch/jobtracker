@@ -465,21 +465,23 @@ def create_app():
             if request.args.get("keywords")
             else "random_test_keyword"
         )
-        salary = request.args.get("salary") if request.args.get("salary") else ""
+        location = request.args.get("location") if request.args.get("location") else ""
+        job_type = request.args.get("jobType") if request.args.get("jobType") else ""
         keywords = keywords.replace(" ", "+")
         if keywords == "random_test_keyword":
             return json.dumps({"label": str("successful test search")})
         # create a url for a crawler to fetch job information
-        if salary:
-            url = (
-                "https://www.google.com/search?q="
-                + keywords
-                + "%20salary%20"
-                + salary
-                + "&ibp=htl;jobs"
-            )
-        else:
-            url = "https://www.google.com/search?q=" + keywords + "&ibp=htl;jobs"
+        url = "https://www.google.com/search?q=" + keywords
+
+        # Check for location or job type to modify the URL
+        if location and job_type:
+            url += "%20near%20" + location + "%20" + job_type
+        elif location:
+            url += "%20near%20" + location
+        elif job_type:
+            url += "%20" + job_type
+
+        url += "&ibp=htl;jobs"
 
         print(user_agent.random)
         headers = {
