@@ -404,20 +404,24 @@ def create_app():
             ]
             user.update(authTokens=auth_tokens_new)
 
-            profileInfo = {
-                "id": user.id,
-                "fullName": user.fullName,
-                "institution": user.institution,
-                "skills": user.skills,
-                "phone_number": user.phone_number,
-                "address": user.address,
-                "locations": user.locations,
-                "job_levels": user.job_levels,
-                "email": user.email,
+            FIELDS_TO_EXCLUDE = [
+                "_id",
+                "username",
+                "password",
+                "applications",
+                "resume",
+            ]
+
+            cleaned_user = {
+                key: value
+                for key, value in user.to_mongo().items()
+                if key not in FIELDS_TO_EXCLUDE
             }
+
             return jsonify(
-                {"profile": profileInfo, "token": token, "expiry": expiry_str}
+                {"profile": cleaned_user, "token": token, "expiry": expiry_str}
             )
+
         except:
             return jsonify({"error": "Internal server error"}), 500
 
