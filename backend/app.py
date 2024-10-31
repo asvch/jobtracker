@@ -15,10 +15,8 @@ from fake_useragent import UserAgent
 import pandas as pd
 import json
 from datetime import datetime, timedelta
-import yaml
 import hashlib
 import uuid
-import certifi
 import requests
 import random
 from authlib.integrations.flask_client import OAuth
@@ -48,13 +46,14 @@ def create_app():
     # # make flask support CORS
     CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
-    # get all the variables from the application.yml file
-    # with open("application.yml") as f:
-    #     info = yaml.load(f, Loader=yaml.FullLoader)
-    #     GOOGLE_CLIENT_ID = info["GOOGLE_CLIENT_ID"]
-    #     GOOGLE_CLIENT_SECRET = info["GOOGLE_CLIENT_SECRET"]
-    #     CONF_URL = info["CONF_URL"]
-    #     app.secret_key = info['SECRET_KEY']
+    GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CONF_URL, SECRET_KEY = (
+        os.getenv("GOOGLE_CLIENT_ID"),
+        os.getenv("GOOGLE_CLIENT_SECRET"),
+        os.getenv("CONF_URL"),
+        os.getenv("SECRET_KEY"),
+    )
+
+    app.secret_key = SECRET_KEY
 
     oauth = OAuth(app)
 
@@ -219,7 +218,7 @@ def create_app():
         userSaved.update(authTokens=auth_tokens_new)
 
         return redirect(
-            f"http://127.0.0.1:3000/?token={token_whole}&expiry={expiry_str}&userId={unique_id}"
+            f"{os.environ.get("BASE_FRONTEND_URL")}/?token={token_whole}&expiry={expiry_str}&userId={unique_id}"
         )
 
     @app.route("/users/signup", methods=["POST"])
@@ -839,30 +838,10 @@ def create_app():
 
 app = create_app()
 
-if os.path.exists("application.yml"):
-    with open("application.yml") as f:
-        info = yaml.load(f, Loader=yaml.FullLoader)
-        username = info["username"]
-        password = info["password"]
-
-        app.config["MONGODB_SETTINGS"] = {
-            "db": "appTracker",
-            "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
-        }
-elif os.getenv("MONGODB_USERNAME") and os.getenv("MONGODB_PASSWORD"):
-    username = os.getenv("MONGODB_USERNAME")
-    password = os.getenv("MONGODB_PASSWORD")
-
-    app.config["MONGODB_SETTINGS"] = {
-        "db": "appTracker",
-        "host": f"mongodb+srv://{username}:{password}@projects-cluster.mwxrf.mongodb.net/appTracker?tls=true&tlsCAFile={certifi.where()}&retryWrites=true&w=majority",
-    }
-else:
-    app.config["MONGODB_SETTINGS"] = {
-        "db": "appTracker",
-        "host": f"mongodb://{os.getenv("DB_HOSTNAME") or "localhost"}:27017/mydatabase",
-    }
-
+app.config["MONGODB_SETTINGS"] = {
+    "db": "appTracker",
+    "host": os.getenv("MONGODB_HOST_STRING"),
+}
 
 db = MongoEngine()
 db.init_app(app)
