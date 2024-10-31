@@ -288,18 +288,6 @@ export default class SearchPage extends Component {
 													</td>
 												);
 											} else {
-												<button
-													type='button'
-													className='add-btn px-3 py-2'
-													// onClick={this.showEditModal.bind(this, row)}
-													onClick={this.handleShowJobDesc.bind(this, row)}
-													// style={{
-													//   backgroundColor: "#296E85",
-													//   border: "none",
-													// }}
-												>
-													Details
-												</button>;
 												const addButton = this.state.addedList.includes(row.id) ? (
 													<button
 														type='button'
@@ -309,18 +297,7 @@ export default class SearchPage extends Component {
 														Added
 													</button>
 												) : (
-													<button
-														type='button'
-														className='add-btn px-3 py-2'
-														// onClick={this.showEditModal.bind(this, row)}
-														onClick={this.handleShowJobDesc.bind(this, row)}
-														// style={{
-														//   backgroundColor: "#296E85",
-														//   border: "none",
-														// }}
-													>
-														Details
-													</button>
+													<></>
 												);
 												return (
 													<td key={row.id + '_func'} className='p-2'>

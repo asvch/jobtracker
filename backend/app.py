@@ -347,13 +347,7 @@ def create_app():
                 random_skill = random.choice(skill_sets)
                 random_job_level = random.choice(job_levels_sets)
                 random_location = random.choice(locations_set)
-                query = (
-                    "https://www.google.com/search?q="
-                    + random_skill
-                    + random_job_level
-                    + random_location
-                    + "&ibp=htl;jobs"
-                )
+                query = f"https://www.google.com/search?q={random_skill}+{random_job_level}+{random_location} &ibp=htl;jobs"
                 print(query)
 
             else:
