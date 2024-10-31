@@ -38,7 +38,7 @@ export default class SearchPage extends Component {
 		this.state = {
 			searchText: '',
 			rows: [],
-			salary: '',
+			location: '',
 			addedList: [],
 			showJobDesc: false,
 			selectedJob: null,
@@ -57,7 +57,8 @@ export default class SearchPage extends Component {
 			method: 'get',
 			data: {
 				keywords: this.state.searchText,
-				salary: this.state.salary
+				location: this.state.location,
+				jobType: this.state.jobType
 			},
 			contentType: 'application/json',
 			success: (data) => {
@@ -188,11 +189,11 @@ export default class SearchPage extends Component {
 
 		return (
 			<div>
-				<div className='d-flex justify-content-center my-5'>
+				<div className='d-flex my-5 mx-1' style={{ paddingLeft: '14%', justifyContent: 'flex-start' }}>
 					<input
 						type='text'
 						id='searchText'
-						className='form-control px-4 py-3 w-50'
+						className='form-control px-4 py-3 mx-1 w-70'
 						placeholder='Keyword'
 						aria-label='Username'
 						aria-describedby='basic-addon1'
@@ -200,6 +201,30 @@ export default class SearchPage extends Component {
 						onChange={this.handleChange.bind(this)}
 						style={{ fontSize: 18, marginRight: 20 }}
 					/>
+					<input
+						type='text'
+						id='location'
+						className='form-control px-4 py-3 mx-2 w-50'
+						placeholder='Location'
+						aria-label='Username'
+						aria-describedby='basic-addon1'
+						value={this.state.location}
+						onChange={this.handleChange.bind(this)}
+						style={{ fontSize: 18, marginRight: 20 }}
+					/>
+					<select
+						id='jobType'
+						className='form-control px-4 py-3 mx-2 w-50'
+						value={this.state.jobType}
+						onChange={this.handleChange.bind(this)}
+						style={{ fontSize: 18, marginRight: 20 }}
+					>
+						<option value=''>Select Job Type</option>
+						<option value='full-time'>Full-time</option>
+						<option value='part-time'>Part-time</option>
+						<option value='contract'>Contract</option>
+						<option value='internship'>Internship</option>
+					</select>
 					<button
 						type='button'
 						className='px-4 py-3 custom-btn'
