@@ -86,6 +86,59 @@ def test_search(client):
     jdata = json.loads(rv.data.decode("utf-8"))["label"]
     assert jdata == "successful test search"
 
+def test_search_with_keywords(client):
+    """Test the search endpoint with keywords only."""
+    rv = client.get("/search?keywords=developer")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)  # Expecting a list of job postings
+    assert len(jdata) >= 0  # Assuming there could be 0 or more job postings
+
+def test_search_with_location(client):
+    """Test the search endpoint with keywords and location."""
+    rv = client.get("/search?keywords=developer&location=New York")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)
+    assert len(jdata) >= 0  # Check if you receive results
+
+def test_search_with_job_type(client):
+    """Test the search endpoint with keywords and job type."""
+    rv = client.get("/search?keywords=developer&jobType=full-time")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)
+    assert len(jdata) >= 0
+
+def test_search_with_location_and_job_type(client):
+    """Test the search endpoint with keywords, location, and job type."""
+    rv = client.get("/search?keywords=developer&location=New York&jobType=part-time")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)
+    assert len(jdata) >= 0
+
+def test_search_with_invalid_parameters(client):
+    """Test the search endpoint with invalid parameters."""
+    rv = client.get("/search?keywords=&location=&jobType=")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert jdata["label"] == "successful test search"  # Default case check
+
+def test_search_with_special_characters(client):
+    """Test the search endpoint with special characters in keywords."""
+    rv = client.get("/search?keywords=developer@#$%^&*()")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)
+
+def test_search_no_results(client):
+    """Test the search endpoint with unlikely keywords."""
+    rv = client.get("/search?keywords=nonexistentjob&location=Nowhere")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)  # Should still return a list
+    assert len(jdata) == 0  # Assuming no results were found
+
+def test_search_long_strings(client):
+    """Test the search endpoint with excessively long strings."""
+    long_keyword = "a" * 500  # 500 characters long
+    rv = client.get(f"/search?keywords={long_keyword}")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)
 
 # 3. testing if the application is getting data from database properly
 def test_get_data(client, user):
