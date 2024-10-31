@@ -456,9 +456,18 @@ def create_app():
     @app.route("/search")
     def search():
         """
-        Searches the web and returns the job postings for the given search filters
+        Searches the web and returns the job postings for the given search filters keywords, location, and job type.
+        We added new functionality of searching for job postings based on location and job type.
 
-        :return: JSON object with job results
+        Parameters:
+        request: Flask request object
+        The incoming request containing search parameters:
+        - keywords (str): The search keywords provided by the user. Defaults to "random_test_keyword" if not provided.
+        - location (str): The location to search for jobs. Optional.
+        - jobType (str): The type of job (e.g., full-time, part-time). Optional.
+
+
+        :return: JSON object with job results and creates a URL with the search parameters for application
         """
         keywords = (
             request.args.get("keywords")
