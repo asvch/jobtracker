@@ -23,6 +23,8 @@ RUN mkdir -p public/resume-templates && \
         fi; \
     done
 
+ENV REACT_APP_BACKEND_BASE_URL={REACT_APP_BACKEND_BASE_URL}
+
 # Build the React app for production
 RUN pnpm build
 
