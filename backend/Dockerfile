@@ -25,8 +25,5 @@ ENV FLASK_RUN_HOST=0.0.0.0
 # Ensure output is not buffered (useful for logging in Docker)
 ENV PYTHONUNBUFFERED=1
 
-ENV BASE_FRONTEND_URL={BASE_FRONTEND_URL}
-ENV MONGODB_HOST_STRING={MONGODB_HOST_STRING}
-
 # Run the Flask server
 CMD ["flask", "run"]
