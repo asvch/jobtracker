@@ -1,5 +1,7 @@
 # Quick Start Guide
 
+- A docker-compose file is available (with corresponding Dockerfiles) to quickly spin up frontend and backend services along with a mongodb instance and a cloudflare tunnel (for hosting). You may use these files as is or modify them accordingly to quickly get started on the project. If for some reason you prefer to manually run the services follow the below instructions.
+
 ## Backend
 
 - Install dependencies:
