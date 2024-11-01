@@ -4,10 +4,10 @@
 ![GitHub issues](https://img.shields.io/github/issues/CSC-510-G55/project1-ats)
 ![GitHub issues](https://img.shields.io/github/issues-closed/CSC-510-G55/project1-ats)
 ![GitHub top language](https://img.shields.io/github/languages/top/CSC-510-G55/project1-ats)
-[![Build](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/build.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/build.yml)
-[![Pytest](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/pytest.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/pytest.yml)
-[![Pylint](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/pylint.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/pylint.yml)
-[![Prettier](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/prettier.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/actions/workflows/prettier.yml)
+[![Build](https://github.com/CSC-510-G55/project1-ats/actions/workflows/build.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/build.yml)
+[![Pytest](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pytest.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pytest.yml)
+[![Pylint](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pylint.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pylint.yml)
+[![Prettier](https://github.com/CSC-510-G55/project1-ats/actions/workflows/prettier.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/prettier.yml)
 
 # J-Tracker - Your Job Tracking Assistant
 
