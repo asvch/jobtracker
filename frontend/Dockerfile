@@ -1,6 +1,10 @@
 # Step 1: Build the React app
 FROM node:18 AS build
 
+ARG REACT_APP_BACKEND_BASE_URL
+
+ENV REACT_APP_BACKEND_BASE_URL=${REACT_APP_BACKEND_BASE_URL}
+
 # Set the working directory inside the container
 WORKDIR /app
 

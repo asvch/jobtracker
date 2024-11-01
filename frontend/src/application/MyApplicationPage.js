@@ -114,6 +114,8 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 				}
 			});
 		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [applicationLists]);
 
 	const toggleCardExpansion = (id) => {
@@ -186,7 +188,8 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 
 const ApplicationPage = () => {
 	const [applicationList, setApplicationList] = useState([]);
-	const [selectedApplication, setSelectedApplication] = useState(null);
+	// eslint-disable-next-line no-unused-vars
+	const [_selectedApplication, setSelectedApplication] = useState(null);
 	const [isChanged, setISChanged] = useState(true);
 
 	useEffect(() => {

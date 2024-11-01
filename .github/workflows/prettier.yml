@@ -1,0 +1,29 @@
+name: Check Prettier formatting
+
+on:
+  push:
+    branches: [project2]
+  pull_request:
+    branches: [project2]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2 # Updated to the latest version
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18' # Specify the version of Node.js you need
+
+      - name: Install Prettier
+        run: npm install --global prettier # Install Prettier globally
+
+      - name: Run Prettier
+        run: |
+          prettier --check src/**/*.{js,ts,tsx,css}
+          prettier --check ../backend
+        working-directory: frontend/

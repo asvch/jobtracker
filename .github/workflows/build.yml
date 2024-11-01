@@ -1,0 +1,26 @@
+name: Check if frontend can be built
+
+on:
+  push:
+    branches: [project2]
+  pull_request:
+    branches: [project2]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: frontend/
+
+      - name: Build
+        run: npm run build
+        working-directory: frontend/

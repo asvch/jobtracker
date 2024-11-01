@@ -8,7 +8,6 @@ import LoginPage from './login/LoginPage';
 import ManageResumePage from './resume/ManageResumePage';
 import ProfilePage from './profile/ProfilePage';
 import axios from 'axios';
-import fetch from './api/handler';
 import MatchesPage from './matches/MatchesPage';
 import MyApplicationPage from './application/MyApplicationPage';
 import CreateResumePage from './resume/CreateResumePage.tsx';
@@ -81,7 +80,7 @@ export default class App extends React.Component {
 
 	switchPage(pageName) {
 		const currentPage =
-			pageName == 'ProfilePage' ? (
+			pageName === 'ProfilePage' ? (
 				<ProfilePage profile={this.state.userProfile} updateProfile={this.updateProfile.bind(this)} />
 			) : (
 				this.state.mapRouter[pageName]

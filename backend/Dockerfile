@@ -10,7 +10,14 @@ COPY requirements.txt /app/
 # Install dependencies specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN apt update && apt install -y texlive
+RUN apt-get update && \
+    apt-get install -y \
+    texlive-full \
+    texlive-latex-extra \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-xetex \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy the rest of the application code
 COPY . /app

@@ -1,11 +1,13 @@
 """
 Test module for the backend
 """
+
 import hashlib
 from io import BytesIO
 
 import pytest
 import json
+import os
 import datetime
 from flask_mongoengine import MongoEngine
 import yaml
@@ -26,14 +28,12 @@ def client():
     :return: client fixture
     """
     app = create_app()
-    with open("application.yml") as f:
-        info = yaml.load(f, Loader=yaml.FullLoader)
-        username = info["username"]
-        password = info["password"]
-        app.config["MONGODB_SETTINGS"] = {
-            "db": "appTracker",
-            "host": f"mongodb+srv://{username}:{password}@applicationtracker.287am.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-        }
+
+    app.config["MONGODB_SETTINGS"] = {
+        "db": "appTracker",
+        "host": os.getenv("MONGODB_HOST_STRING"),
+    }
+
     db = MongoEngine()
     db.disconnect()
     db.init_app(app)
@@ -42,23 +42,29 @@ def client():
     db.disconnect()
 
 
+init = False
+
+
 @pytest.fixture
 def user(client):
+    global init
     """
     Creates a user with test data
 
     :param client: the mongodb client
     :return: the user object and auth token
     """
-    # print(request.data)
     data = {"username": "testUser", "password": "test", "fullName": "fullName"}
 
-    user = Users.objects(username=data["username"])
-    user.first()["applications"] = []
-    user.first().save()
+    if not init:
+        resp = client.post("/users/signup", json=data)
+        print(json.loads(resp.data.decode("utf-8")))
+        init = True
+
     rv = client.post("/users/login", json=data)
     jdata = json.loads(rv.data.decode("utf-8"))
     header = {"Authorization": "Bearer " + jdata["token"]}
+    user = Users.objects(username=data["username"])
     yield user.first(), header
     user.first()["applications"] = []
     user.first().save()
@@ -86,12 +92,14 @@ def test_search(client):
     jdata = json.loads(rv.data.decode("utf-8"))["label"]
     assert jdata == "successful test search"
 
+
 def test_search_with_keywords(client):
     """Test the search endpoint with keywords only."""
     rv = client.get("/search?keywords=developer")
     jdata = json.loads(rv.data.decode("utf-8"))
     assert isinstance(jdata, list)  # Expecting a list of job postings
     assert len(jdata) >= 0  # Assuming there could be 0 or more job postings
+
 
 def test_search_with_location(client):
     """Test the search endpoint with keywords and location."""
@@ -100,12 +108,14 @@ def test_search_with_location(client):
     assert isinstance(jdata, list)
     assert len(jdata) >= 0  # Check if you receive results
 
+
 def test_search_with_job_type(client):
     """Test the search endpoint with keywords and job type."""
     rv = client.get("/search?keywords=developer&jobType=full-time")
     jdata = json.loads(rv.data.decode("utf-8"))
     assert isinstance(jdata, list)
     assert len(jdata) >= 0
+
 
 def test_search_with_location_and_job_type(client):
     """Test the search endpoint with keywords, location, and job type."""
@@ -114,17 +124,20 @@ def test_search_with_location_and_job_type(client):
     assert isinstance(jdata, list)
     assert len(jdata) >= 0
 
+
 def test_search_with_invalid_parameters(client):
     """Test the search endpoint with invalid parameters."""
     rv = client.get("/search?keywords=&location=&jobType=")
     jdata = json.loads(rv.data.decode("utf-8"))
     assert jdata["label"] == "successful test search"  # Default case check
 
+
 def test_search_with_special_characters(client):
     """Test the search endpoint with special characters in keywords."""
     rv = client.get("/search?keywords=developer@#$%^&*()")
     jdata = json.loads(rv.data.decode("utf-8"))
     assert isinstance(jdata, list)
+
 
 def test_search_no_results(client):
     """Test the search endpoint with unlikely keywords."""
@@ -133,12 +146,14 @@ def test_search_no_results(client):
     assert isinstance(jdata, list)  # Should still return a list
     assert len(jdata) == 0  # Assuming no results were found
 
+
 def test_search_long_strings(client):
     """Test the search endpoint with excessively long strings."""
     long_keyword = "a" * 500  # 500 characters long
     rv = client.get(f"/search?keywords={long_keyword}")
     jdata = json.loads(rv.data.decode("utf-8"))
     assert isinstance(jdata, list)
+
 
 # 3. testing if the application is getting data from database properly
 def test_get_data(client, user):
