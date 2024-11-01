@@ -4,12 +4,8 @@
 ![GitHub issues](https://img.shields.io/github/issues/CSC-510-G55/project1-ats)
 ![GitHub issues](https://img.shields.io/github/issues-closed/CSC-510-G55/project1-ats)
 ![GitHub top language](https://img.shields.io/github/languages/top/CSC-510-G55/project1-ats)
-![GitHub issues](https://img.shields.io/github/issues/CSC-510-G55/project1-ats)
-![GitHub issues](https://img.shields.io/github/issues-closed/CSC-510-G55/project1-ats)
-![GitHub top language](https://img.shields.io/github/languages/top/CSC-510-G55/project1-ats)
-
-[![Build and Deploy Frontend](https://github.com/CSC-510-G55/project1-ats/actions/workflows/frontend_CI_CD.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/frontend_CI_CD.yml)
 [![Super Linter](https://github.com/CSC-510-G55/project1-ats/actions/workflows/super-linter.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/super-linter.yml)
+[![Build and Deploy Frontend](https://github.com/CSC-510-G55/project1-ats/actions/workflows/frontend_CI_CD.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/frontend_CI_CD.yml)
 
 # J-Tracker - Your Job Tracking Assistant
 
@@ -52,7 +48,7 @@ https://drive.google.com/file/d/1N096pIbiZH9cPoxaPnRfjno452qQZjZ9/view
 ## 1) Apply via job portals:
 
 To enhance user interaction and simplify the application process, the platform includes direct links for applying for each job listing from the corresponding job board where the job was originally posted. These links enable users to seamlessly connect with the job poster and apply to the job, facilitating a direct and efficient application process. This feature not only saves users valuable time but also improves the overall user experience by eliminating unnecessary steps and ensuring a smoother journey through the platform. With a single click, users can initiate the application process, contributing to a more user-friendly and streamlined platform.
-<img width="1286" alt="Apply Job Portal" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/Recommendjobspage.png">
+<img width="1286" alt="Apply Job Portal" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/1.png">
 
 ## 2) Added a new page for My Applications:
 
@@ -78,36 +74,56 @@ Move Cards: Applications can be represented as cards, with each card moving acro
 Visualize Progress: The board provides a visual representation of the overall status of your job applications.
 Prioritize: Applicants can prioritize applications in the Wishlist column and focus on applying for those positions.
 Identify Bottlenecks: If many applications are stuck in a particular column, it may indicate a bottleneck or an area that needs attention in the job search process.
-<img width="1286" alt="My Applications Page" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/home_screen.png">
+<img width="1286" alt="My Applications Page" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/2_1.png">
+
+<img width="1286" alt="My Applications Page" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/2_2.png">
 
 ## 3) Filtering applications:
 
 To enhance user convenience, especially for students managing a multitude of applications, the inclusion of filters is crucial. These filters enable users to categorize applications based on their status—such as accepted, rejected, waitlisted, wish-listed, or awaiting referrals. Additionally, the filter functionality extends to sorting applications based on location, job title, and even the company name, providing a comprehensive and efficient way to organize and navigate through the application process.
-<img width="1286" alt="Filtering" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/new_appl.png">
+<img width="1286" alt="Filtering" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/3.png">
 
 ## 4) Adding Notes to Applications:
 
 Applicant Tracking Systems (ATS) traditionally cater to hiring professionals, but an innovative addition involves enabling applicants to add notes and updates to their applications. The integration of a notes feature is a powerful tool that enables users, particularly applicants, to add real-time, personalized notes and updates for each application. This dynamic feature allows candidates to actively document their application journey, noting essential dates, interactions, and any pertinent details they find important. By doing so, applicants maintain a heightened sense of organization and stay well-informed throughout the entire hiring process.
 The real-time nature of this notes feature becomes a valuable asset for applicants. It empowers them to reflect on their progress and express their thoughts, motivations, and distinctive qualifications instantaneously.
-<img width="1086" alt="Notes" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/update.png">
+<img width="1086" alt="Notes" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/4.png">
 
-## 5) Setting preferences:
+## 5) Adding Profile Picture:
 
-Upon logging in, the application empowers users to establish their preferences promptly. This includes selecting their experience level from a dropdown menu, specifying preferred locations, and indicating proficiency in various skills through an intuitive pop-up interface. These defined parameters play a pivotal role in generating precise predictions and aligning the user's requirements with the most suitable job opportunities.
-<img width="1440" alt="Preferences" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/preference.png">
+To enhance user profiles, the platform now includes an option to upload a profile picture. This simple feature helps users personalize their accounts, adding a professional touch and making profiles more identifiable. Users can easily upload, crop, and adjust their image within a few clicks.
+<img width="1440" alt="Preferences" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/5.png">
 
 ## 6) Added Job links:
 
 Implemented web scraping to enhance user interaction, enabling direct access to recommended job matches. This eliminates the need for users, particularly students, to manually search for their desired positions again. The incorporation of direct job links saves significant time and streamlines the user experience.
-<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/link.png">
+<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/6.png">
 
-## 7) Error Handling:
+## 7) Job Search with Filters
+
+The platform offers advanced filters to streamline job searching. Users can narrow results by criteria like location, job type (e.g., internship), and more, allowing for a more targeted and efficient search experience.
+<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/7.png">
+
+## 8) Sankey Graph for Visualsation
+
+The platform features a Sankey Graph that visualizes job application flows, showing the status of all applications. Users can easily track their progress across various stages like applied, rejected, and wishlisted. This visual aid offers a clear, high-level overview of the entire job search journey, highlighting areas that may need attention.
+<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/7.png">
+
+## 9) Resume Building using Templates
+
+The platform includes a resume builder that offers customizable templates, allowing users to create polished resumes efficiently. This feature provides a range of professionally designed layouts tailored for different industries, making it easier for users to highlight relevant skills and experiences.
+<img width="1440" alt="Resume Builder" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/9.png">
+
+## 10) Additonal Feilds in Profile Section
+
+To refine job recommendations and match users with suitable positions, additional fields are included in the profile section. Users can now specify skills, experience levels, and preferred job locations. These details help enhance the job-matching algorithm, aligning job recommendations more closely with individual career aspirations.
+<img width="1440" alt="Profile Section" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/10.png">
+
+## 11) Error Handling:
 
 a) Resolved the issue where only half of the countries were initially visible for location on the website. The error has been addressed, and the website now displays the entire list of countries. As a result, the website is functioning correctly, and users can access the complete list of countries for location purposes.
 
 b) Previously, certain pages were redirecting to undefined or error pages, a practice deemed undesirable for a high-quality application. All errors within the application have now been effectively addressed, ensuring users are seamlessly redirected to the appropriate pages.
-
-<p align="center"><img width="700" src="./resources/Recommendjobspage.png"></p>
 
 ## Future Scope:
 
