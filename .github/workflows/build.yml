@@ -1,4 +1,4 @@
-name: Check if frontend can be built
+name: Build
 
 on:
   push:
