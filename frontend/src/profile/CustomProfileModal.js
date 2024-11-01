@@ -5,6 +5,13 @@ import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import { CONSTANTS } from '../data/Constants';
 import { baseApiURL } from '../api/base.ts';
 
+/**
+ * Converts a file to a Base64 string.
+ *
+ * @param {File} file - The file to be converted.
+ * @returns {Promise<string>} A promise that resolves to the Base64 string representation of the file.
+ * @throws {Error} If the file cannot be converted to Base64.
+ */
 const convertFileToBase64 = (file) => {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
@@ -21,6 +28,16 @@ const convertFileToBase64 = (file) => {
 	});
 };
 
+/**
+ * CustomProfileModal component allows users to edit their profile details.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.profile - The user's profile data.
+ * @param {Function} props.setModalOpen - Function to control the visibility of the modal.
+ * @param {Function} props.updateProfile - Function to update the profile data.
+ *
+ * @returns {JSX.Element} The rendered CustomProfileModal component.
+ */
 const CustomProfileModal = (props) => {
 	const { profile, setModalOpen, updateProfile } = props;
 	const [data, setData] = useState(profile);

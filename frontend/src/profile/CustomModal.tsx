@@ -19,6 +19,19 @@ interface CustomModalProps {
 	type: ModalType;
 }
 
+/**
+ * CustomModal component renders a modal dialog for updating a specific profile field.
+ *
+ * @param {CustomModalProps} props - The properties passed to the CustomModal component.
+ * @param {Array} props.options - The options for the select input when modalType is LIST.
+ * @param {string} props.name - The name of the profile field to be updated.
+ * @param {Object} props.profile - The current profile data.
+ * @param {Function} props.setModalOpen - Function to set the modal open state.
+ * @param {Function} props.updateProfile - Function to update the profile data.
+ * @param {ModalType} props.type - The type of the modal, either TEXT or LIST.
+ *
+ * @returns {JSX.Element} The rendered CustomModal component.
+ */
 const CustomModal = (props: CustomModalProps) => {
 	const { options, name, profile, setModalOpen, updateProfile, type: modalType } = props;
 	const [data, setData] = useState(profile[name]);

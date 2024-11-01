@@ -22,6 +22,25 @@ export interface Experience {
 	bullets: string[];
 }
 
+/**
+ * Component for displaying and managing a list of experiences (either professional or educational).
+ *
+ * @param {ExperiencePaneProps} props - The properties for the ExperiencePane component.
+ * @param {Experience[]} props.experiences - The initial list of experiences.
+ * @param {Function} props.updateExperiences - Function to update the experiences in the parent component.
+ * @param {ExperienceType} props.type - The type of experiences (Professional or Educational).
+ *
+ * @returns {JSX.Element} The rendered ExperiencePane component.
+ *
+ * @component
+ *
+ * @example
+ * <ExperiencePane
+ *   experiences={initialExperiences}
+ *   updateExperiences={handleUpdateExperiences}
+ *   type={ExperienceType.Professional}
+ * />
+ */
 const ExperiencePane = ({ experiences: _experiences, updateExperiences, type }: ExperiencePaneProps) => {
 	const [experiences, setExperiences] = useState<Experience[]>(_experiences);
 	const [newExperience, setNewExperience] = useState<Experience>({
