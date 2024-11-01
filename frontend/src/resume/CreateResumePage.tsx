@@ -1,15 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import fetch from '../api/handler';
 
+/**
+ * CreateResumePage component allows users to select a resume template and generate a PDF resume.
+ *
+ * This component fetches available resume templates from the server and displays them as embedded PDFs.
+ * Users can click on a template to generate a resume using that template, which will either open in a new tab
+ * or trigger a download if the new tab cannot be opened.
+ *
+ * @component
+ * @example
+ * return (
+ *   <CreateResumePage />
+ * )
+ *
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @remarks
+ * - The component uses `useState` to manage the list of templates.
+ * - The `useEffect` hook is used to fetch the templates when the component mounts.
+ * - The `generateResume` function handles the resume generation and file download/opening logic.
+ *
+ * @todo
+ * - Add loading indicators to improve user experience during template fetching and resume generation.
+ */
 const CreateResumePage = () => {
 	const [templates, setTemplates] = useState<string[]>([]);
 	useEffect(() => {
-		fetch({ url: '/resumeTemplates' }).then((response) => setTemplates(response));
+		fetch({ url: '/resumeTemplates' }).then((response) => setTemplates(response as string[]));
 	}, []);
 
 	const generateResume = (templateName: string) => {
 		fetch({ url: `/generateResume`, method: 'POST', body: { templateName }, raw: true }).then(async (response) => {
-			const blob = new Blob([response], { type: 'application/pdf' });
+			const blob = new Blob([response as BlobPart], { type: 'application/pdf' });
 			const url = window.URL.createObjectURL(blob);
 			const newTab = window.open(url, '_blank');
 
