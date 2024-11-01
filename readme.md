@@ -45,7 +45,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 https://drive.google.com/file/d/1N096pIbiZH9cPoxaPnRfjno452qQZjZ9/view
 
-## Improvements and Feature Additions
+## Improvements and Feature Additions Fall 2024 CSC-510-G55
 
 ## 1) Apply via job portals:
 
@@ -109,7 +109,7 @@ The platform offers advanced filters to streamline job searching. Users can narr
 ## 8) Sankey Graph for Visualsation
 
 The platform features a Sankey Graph that visualizes job application flows, showing the status of all applications. Users can easily track their progress across various stages like applied, rejected, and wishlisted. This visual aid offers a clear, high-level overview of the entire job search journey, highlighting areas that may need attention.
-<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/7.png">
+<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/8.png">
 
 ## 9) Resume Building using Templates
 
