@@ -1,16 +1,15 @@
+[![GitHub license](https://img.shields.io/github/license/CSC-510-G55/project1-ats)](https://github.com/CSC-510-G55/project1-ats/blob/project2/LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14026597.svg)](https://doi.org/10.5281/zenodo.14026597)
+[![codecov](https://codecov.io/gh/CSC-510-G55/project1-ats/branch/project2/graph/badge.svg)](https://codecov.io/gh/CSC-510-G55/project1-ats)
+![GitHub issues](https://img.shields.io/github/issues/CSC-510-G55/project1-ats)
+![GitHub issues](https://img.shields.io/github/issues-closed/CSC-510-G55/project1-ats)
+![GitHub top language](https://img.shields.io/github/languages/top/CSC-510-G55/project1-ats)
+![GitHub issues](https://img.shields.io/github/issues/CSC-510-G55/project1-ats)
+![GitHub issues](https://img.shields.io/github/issues-closed/CSC-510-G55/project1-ats)
+![GitHub top language](https://img.shields.io/github/languages/top/CSC-510-G55/project1-ats)
 
-[![GitHub license](https://img.shields.io/github/license/Kashika08/application-tracking-system)](https://github.com/Kashika08/application-tracking-system/blob/main/LICENSE)
-[![DOI](https://zenodo.org/badge/720131933.svg)](https://zenodo.org/doi/10.5281/zenodo.10211824)
-[![codecov](https://codecov.io/gh/Kashika08/application-tracking-system/branch/main/graph/badge.svg)](https://codecov.io/gh/Kashika08/application-tracking-system)
-![GitHub issues](https://img.shields.io/github/issues/Kashika08/application-tracking-system)
-![GitHub issues](https://img.shields.io/github/issues-closed/Kashika08/application-tracking-system)
-![GitHub top language](https://img.shields.io/github/languages/top/Kashika08/application-tracking-system)
-![GitHub issues](https://img.shields.io/github/issues/Kashika08/application-tracking-system)
-![GitHub issues](https://img.shields.io/github/issues-closed/Kashika08/application-tracking-system)
-![GitHub top language](https://img.shields.io/github/languages/top/Kashika08/application-tracking-system)
-
-[![Build and Deploy Frontend](https://github.com/kingan1/application-tracking-system/actions/workflows/frontend_CI_CD.yml/badge.svg)](https://github.com/kingan1/application-tracking-system/actions/workflows/frontend_CI_CD.yml)
-[![Super Linter](https://github.com/kingan1/application-tracking-system/actions/workflows/super-linter.yml/badge.svg)](https://github.com/kingan1/application-tracking-system/actions/workflows/super-linter.yml)
+[![Build and Deploy Frontend](https://github.com/CSC-510-G55/project1-ats/actions/workflows/frontend_CI_CD.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/frontend_CI_CD.yml)
+[![Super Linter](https://github.com/CSC-510-G55/project1-ats/actions/workflows/super-linter.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/super-linter.yml)
 
 # J-Tracker - Your Job Tracking Assistant
 
@@ -42,7 +41,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 ## Basic Design
 
-![Basic Design](https://github.com/prithvish-doshi-17/application-tracking-system/blob/main/resources/Overall%20Design.PNG)
+![Basic Design](https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/Overall%20Design.PNG)
 
 ## Demo Video
 
@@ -51,11 +50,12 @@ https://drive.google.com/file/d/1N096pIbiZH9cPoxaPnRfjno452qQZjZ9/view
 ## Improvements and Feature Additions
 
 ## 1) Apply via job portals:
-To enhance user interaction and simplify the application process, the platform includes direct links for applying for each job listing from the corresponding job board where the job was originally posted. These links enable users to seamlessly connect with the job poster and apply to the job, facilitating a direct and efficient application process. This feature not only saves users valuable time but also improves the overall user experience by eliminating unnecessary steps and ensuring a smoother journey through the platform. With a single click, users can initiate the application process, contributing to a more user-friendly and streamlined platform.
-![WhatsApp Image 2023-11-27 at 7 52 12 PM](https://github.com/Kashika08/application-tracking-system/assets/73926660/2ec9ad8b-656a-43c1-b876-c188c8ad7a97)
 
+To enhance user interaction and simplify the application process, the platform includes direct links for applying for each job listing from the corresponding job board where the job was originally posted. These links enable users to seamlessly connect with the job poster and apply to the job, facilitating a direct and efficient application process. This feature not only saves users valuable time but also improves the overall user experience by eliminating unnecessary steps and ensuring a smoother journey through the platform. With a single click, users can initiate the application process, contributing to a more user-friendly and streamlined platform.
+<img width="1286" alt="Apply Job Portal" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/Recommendjobspage.png">
 
 ## 2) Added a new page for My Applications:
+
 This page is a visual board that helps manage work in progress and optimize workflow. It is a useful way to organize and visualize the different stages of your job application process.
 
 _Rejected:_
@@ -78,38 +78,34 @@ Move Cards: Applications can be represented as cards, with each card moving acro
 Visualize Progress: The board provides a visual representation of the overall status of your job applications.
 Prioritize: Applicants can prioritize applications in the Wishlist column and focus on applying for those positions.
 Identify Bottlenecks: If many applications are stuck in a particular column, it may indicate a bottleneck or an area that needs attention in the job search process.
-<img width="1286" alt="Screenshot 2023-11-27 at 9 06 38 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/6358758a-c5de-43fd-831a-27d7bb822831">
+<img width="1286" alt="My Applications Page" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/home_screen.png">
 
+## 3) Filtering applications:
 
-
-
-## 3) Filtering applications: 
 To enhance user convenience, especially for students managing a multitude of applications, the inclusion of filters is crucial. These filters enable users to categorize applications based on their status—such as accepted, rejected, waitlisted, wish-listed, or awaiting referrals. Additionally, the filter functionality extends to sorting applications based on location, job title, and even the company name, providing a comprehensive and efficient way to organize and navigate through the application process.
-<img width="1286" alt="Screenshot 2023-11-27 at 9 08 47 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/627a673d-c0d7-4e5e-b95d-9ef8212fb65d">
-
+<img width="1286" alt="Filtering" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/new_appl.png">
 
 ## 4) Adding Notes to Applications:
+
 Applicant Tracking Systems (ATS) traditionally cater to hiring professionals, but an innovative addition involves enabling applicants to add notes and updates to their applications. The integration of a notes feature is a powerful tool that enables users, particularly applicants, to add real-time, personalized notes and updates for each application. This dynamic feature allows candidates to actively document their application journey, noting essential dates, interactions, and any pertinent details they find important. By doing so, applicants maintain a heightened sense of organization and stay well-informed throughout the entire hiring process.
 The real-time nature of this notes feature becomes a valuable asset for applicants. It empowers them to reflect on their progress and express their thoughts, motivations, and distinctive qualifications instantaneously.
-<img width="1086" alt="Screenshot 2023-11-27 at 9 12 50 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/e17415bd-9a70-41f4-8048-e530fbdccbbb">
+<img width="1086" alt="Notes" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/update.png">
 
+## 5) Setting preferences:
 
-## 5) Setting preferences: 
 Upon logging in, the application empowers users to establish their preferences promptly. This includes selecting their experience level from a dropdown menu, specifying preferred locations, and indicating proficiency in various skills through an intuitive pop-up interface. These defined parameters play a pivotal role in generating precise predictions and aligning the user's requirements with the most suitable job opportunities.
-<img width="1440" alt="Screenshot 2023-11-27 at 9 16 52 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/5426d481-254f-4173-8fe5-fcff931bd03e">
+<img width="1440" alt="Preferences" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/preference.png">
 
+## 6) Added Job links:
 
-## 6) Added Job links: 
 Implemented web scraping to enhance user interaction, enabling direct access to recommended job matches. This eliminates the need for users, particularly students, to manually search for their desired positions again. The incorporation of direct job links saves significant time and streamlines the user experience.
-<img width="1440" alt="Screenshot 2023-11-27 at 9 19 01 PM" src="https://github.com/Kashika08/application-tracking-system/assets/73926660/8328b1aa-514f-4bc9-9384-e0c0612a6790">
-
+<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/link.png">
 
 ## 7) Error Handling:
-   a) Resolved the issue where only half of the countries were initially visible for location on the website. The error has been addressed, and the website now displays the entire list of countries. As a result, the website is functioning correctly, and users can access the complete list of countries for location purposes.
-   
-   
-   b) Previously, certain pages were redirecting to undefined or error pages, a practice deemed undesirable for a high-quality application. All errors within the application have now been effectively addressed, ensuring users are seamlessly redirected to the appropriate pages.
 
+a) Resolved the issue where only half of the countries were initially visible for location on the website. The error has been addressed, and the website now displays the entire list of countries. As a result, the website is functioning correctly, and users can access the complete list of countries for location purposes.
+
+b) Previously, certain pages were redirecting to undefined or error pages, a practice deemed undesirable for a high-quality application. All errors within the application have now been effectively addressed, ensuring users are seamlessly redirected to the appropriate pages.
 
 <p align="center"><img width="700" src="./resources/Recommendjobspage.png"></p>
 
@@ -125,11 +121,11 @@ Implemented web scraping to enhance user interaction, enabling direct access to 
 
 Currently, we have four fundamental steps in our project:
 
-1. The SearchPage where users can search about the Job Postings
+1. The SearchPage where users can search about the Job Postings, along with filters like Job Type and Location
 2. The MatchesPage where users get recommendation about the jobs according to their preferences
 3. The ApplicationsPage where users can add and see the position they applied to and can update/delete the the information. Any details in any table can be modified at any time during the process
 4. The ProfilePage where user can add his skills, experience level and preffered location. This information is used to recommend user jobs that require similar skillsets.
-5. The My Applications page enables the user to keep track of all the applications on a visual board with various sections for applied, rejected, waiting for referrals, wishlist applications.
+5. The My Applications page enables users to track all their job applications visually on a Kanban-style board with sections like "Applied," "Rejected," "Waiting for Referrals," and "Wishlist." Additionally, it displays a Sankey chart summarizing the flow of applications across different statuses and categories, providing a visual overview of all bookmarked or applied positions.
 
 ## Technologies Used:
 
@@ -198,23 +194,23 @@ mongodb
 
 2. Follow MongoDB Atlas [Setup Guide](https://docs.atlas.mongodb.com/getting-started/) to create a database collection for hosting applications
 3. In app.py set 'host' string to your MongoDB Atlas connection string
-4. Create an application.yml file in the /backend directory with the specifications:
+4. Create a .env file in the /backend directory with the specifications:
 
-username: <MongoDB Atlas cluster username>
-password: <MongoDB Atlas cluster password>
+- MONGODB_HOST_STRING: MongoDB Atlas cluster link
+- BASE_FRONTEND_URL: The url of the port is it exposed
 
 5. For testing through CI to function as expected, repository secrets will need to be added through the settings. Create individual secrets with the following keys/values:
 
-MONGO_USER: <MongoDB Atlas cluster username>
-MONGO_PASS: <MongoDB Atlas cluster password>
+- MONGODB_HOST_STRING: MongoDB Atlas cluster non-prod link
+- BASE_FRONTEND_URL: The url of the port is it exposed
 
 ## License
 
-The project is licensed under the [MIT](https://github.com/Kashika08/application-tracking-system/blob/main/LICENSE) license.
+The project is licensed under the [MIT](https://github.com/CSC-510-G55/project1-ats/blob/project2/LICENSE) license.
 
 ## How to Contribute?
 
-Please see our CONTRIBUTING.md for instructions on how to contribute to the repository and assist us in improving the project.
+Please see our [CONTRIBUTING.md](https://github.com/CSC-510-G55/project1-ats/blob/project2/Contributing.md) for instructions on how to contribute to the repository and assist us in improving the project.
 
 ## Team Members
 
