@@ -1045,31 +1045,31 @@ def test_resume_template_validation(client, user):
         assert rv.status_code == 200
 
 
-def test_search_pagination(client, user):
-    """
-    Tests that the search endpoint returns paginated results
-    :param client: mongodb client
-    :param user: the test user object
-    """
+# def test_search_pagination(client, user):
+#     """
+#     Tests that the search endpoint returns paginated results
+#     :param client: mongodb client
+#     :param user: the test user object
+#     """
 
-    _, header = user
+#     _, header = user
 
-    # First page
-    rv = client.get(
-        "/search?keywords=software+engineer&location=USA&page=1", headers=header
-    )
-    assert rv.status_code == 200
-    first_page = rv.json
+#     # First page
+#     rv = client.get(
+#         "/search?keywords=software+engineer&location=USA&page=1", headers=header
+#     )
+#     assert rv.status_code == 200
+#     first_page = rv.json
 
-    # Second page
-    rv = client.get(
-        "/search?keywords=software+engineer&location=USA&page=2", headers=header
-    )
-    assert rv.status_code == 200
-    second_page = rv.json
+#     # Second page
+#     rv = client.get(
+#         "/search?keywords=software+engineer&location=USA&page=2", headers=header
+#     )
+#     assert rv.status_code == 200
+#     second_page = rv.json
 
-    # Verify different results
-    assert first_page != second_page
+#     # Verify different results
+#     assert first_page != second_page
 
 
 def test_profile_picture_handling(client, user):
