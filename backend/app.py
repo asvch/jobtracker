@@ -250,6 +250,13 @@ def create_app():
             for key in data.keys():
                 user[key] = data[key]
 
+            if (
+                "picture" in data
+                and data["picture"]
+                and not data["picture"].startswith("data:image/png;base64,")
+            ):
+                return jsonify({"error": "Invalid image format"}), 400
+
             user.save()
             return jsonify(user.to_json()), 200
 
@@ -646,7 +653,13 @@ def create_app():
     @app.route("/resumeTemplates", methods=["GET"])
     def get_resume_templates():
         """
-        Returns a list of available resume templates
+        Flask route to get a list of available resume templates.
+        This route handles GET requests to the "/resumeTemplates" endpoint and returns a list of available resume templates.
+        A resume template is considered available if it is a directory within the `../resume_templates` directory and contains a "sample.pdf" file.
+
+        Returns:
+            tuple: A list of available resume template names and an HTTP status code 200 on success.
+            If an error occurs, returns a JSON response with an error message and an HTTP status code 500.
         """
         try:
             base_path = "../resume_templates"
@@ -665,7 +678,13 @@ def create_app():
     @app.route("/generateResume", methods=["POST"])
     def generate_resume():
         """
-        Generates a resume based on the provided template and user data
+        Generates a resume based on the provided template and user data.
+        This endpoint expects a POST request with a JSON body containing the template name.
+        It retrieves the user data from the database, processes it according to the specified template, and generates a PDF resume.
+        Returns:
+            Response: A PDF file of the generated resume.
+        Raises:
+            Exception: If there is an error during the resume generation process, a 500 Internal Server Error is returned.
         """
         try:
             userid = get_userid_from_header()
@@ -679,6 +698,10 @@ def create_app():
 
             # Copy the template files to the temp directory
             template_dir = f"../resume_templates/{template_name}"
+
+            if not template_name or not os.path.exists(template_dir):
+                return jsonify({"error": "Template not found"}), 404
+
             for item in os.listdir(template_dir):
                 s = os.path.join(template_dir, item)
                 d = os.path.join(temp_dir, item)

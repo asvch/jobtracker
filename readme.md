@@ -43,7 +43,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 ## Demo Video
 
-https://drive.google.com/file/d/1N096pIbiZH9cPoxaPnRfjno452qQZjZ9/view
+https://drive.google.com/file/d/1ex5-YLe7Nk8qPSVuC0A4Oy5Kil-VJqz9/view
 
 ## Improvements and Feature Additions Fall 2024 CSC-510-G55
 
