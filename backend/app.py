@@ -158,25 +158,90 @@ def create_app():
     @cross_origin()
     def health_check():
         return jsonify({"message": "Server up and running"}), 200
+        token = oauth.google.authorize_access_token()
+        user = oauth.google.parse_id_token(token, nonce=session["nonce"])
+        session["user"] = user
 
-    @app.route("/users/signupGoogle")
-    def signupGoogle():
+        user_exists = Users.objects(email=user["email"]).first()
 
-        oauth.register(
-            name="google",
-            client_id=GOOGLE_CLIENT_ID,
-            client_secret=GOOGLE_CLIENT_SECRET,
-            server_metadata_url=CONF_URL,
-            client_kwargs={"scope": "openid email profile"},
-            nonce="foobar",
+        users_email = user["email"]
+        full_name = user["given_name"] + " " + user["family_name"]
+
+        if user["email_verified"]:
+            if user_exists is None:
+                userSave = Users(
+                    id=get_new_user_id(),
+                    fullName=full_name,
+                    email=users_email,
+                    authTokens=[],
+                    applications=[],
+                    skills=[],
+                    job_levels=[],
+                    locations=[],
+                    phone_number="",
+                    address="",
+                )
+                userSave.save()
+                unique_id = userSave["id"]
+            else:
+                unique_id = user_exists["id"]
+
+        userSaved = Users.objects(email=user["email"]).first()
+        expiry = datetime.now() + timedelta(days=1)
+        expiry_str = expiry.strftime("%m/%d/%Y, %H:%M:%S")
+        token_whole = str(unique_id) + "." + token["access_token"]
+        auth_tokens_new = userSaved["authTokens"] + [
+            {"token": token_whole, "expiry": expiry_str}
+        ]
+        userSaved.update(authTokens=auth_tokens_new)
+
+        return redirect(
+            f"{os.environ.get("BASE_FRONTEND_URL")}/?token={token_whole}&expiry={expiry_str}&userId={unique_id}"
         )
 
-        # Redirect to google_auth function
-        redirect_uri = url_for("authorized", _external=True)
-        print(redirect_uri)
+    @app.route("/users/signup", methods=["POST"])
+    def sign_up():
+        """
+        Creates a new user profile and adds the user to the database and returns the message
 
-        session["nonce"] = generate_token()
-        return oauth.google.authorize_redirect(redirect_uri, nonce=session["nonce"])
+        :return: JSON object
+        """
+        try:
+            # print(request.data)
+            data = json.loads(request.data)
+            print(data)
+            try:
+                _ = data["username"]
+                _ = data["password"]
+                _ = data["fullName"]
+            except:
+                return jsonify({"error": "Missing fields in input"}), 400
+
+            username_exists = Users.objects(username=data["username"])
+            if len(username_exists) != 0:
+                return jsonify({"error": "Username already exists"}), 400
+            password = data["password"]
+            password_hash = hashlib.md5(password.encode())
+            user = Users(
+                id=get_new_user_id(),
+                fullName=data["fullName"],
+                username=data["username"],
+                password=password_hash.hexdigest(),
+                authTokens=[],
+                applications=[],
+                skills=[],
+                job_levels=[],
+                locations=[],
+                phone_number="",
+                address="",
+                institution="",
+                email="",
+            )
+            user.save()
+            # del user.to_json()["password", "authTokens"]
+            return jsonify(user.to_json()), 200
+        except:
+            return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/getProfile", methods=["GET"])
     def get_profile_data():
