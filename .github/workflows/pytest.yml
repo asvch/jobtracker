@@ -44,7 +44,7 @@ jobs:
         run: |
           cd ./backend
           pwd
-          pytest --cov --cov-report=xml:./backend/coverage.xml
+          pytest --cov --cov-report=xml:coverage.xml
 
       - name: Upload coverage to Codecov
         if: always()
