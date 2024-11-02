@@ -1,6 +1,6 @@
 [![GitHub license](https://img.shields.io/github/license/CSC-510-G55/project1-ats)](https://github.com/CSC-510-G55/project1-ats/blob/project2/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14026597.svg)](https://doi.org/10.5281/zenodo.14026597)
-[![codecov](https://codecov.io/gh/CSC-510-G55/project1-ats/branch/project2/graph/badge.svg)](https://codecov.io/gh/CSC-510-G55/project1-ats)
+[![codecov](https://codecov.io/gh/CSC-510-G55/project1-ats/graph/badge.svg?token=6YDFK41GU0)](https://codecov.io/gh/CSC-510-G55/project1-ats)
 ![GitHub issues](https://img.shields.io/github/issues/CSC-510-G55/project1-ats)
 ![GitHub issues](https://img.shields.io/github/issues-closed/CSC-510-G55/project1-ats)
 ![GitHub top language](https://img.shields.io/github/languages/top/CSC-510-G55/project1-ats)
