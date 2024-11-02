@@ -36,6 +36,8 @@ jobs:
           pip install pytest pytest-cov pytest-mock coverage
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install -r ./backend/requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex texlive-fonts-extra
 
       - name: Set environment variable for MongoDB
         run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV

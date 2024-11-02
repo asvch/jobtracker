@@ -312,6 +312,13 @@ def create_app():
             for key in data.keys():
                 user[key] = data[key]
 
+            if (
+                "picture" in data
+                and data["picture"]
+                and not data["picture"].startswith("data:image/png;base64,")
+            ):
+                return jsonify({"error": "Invalid image format"}), 400
+
             user.save()
             return jsonify(user.to_json()), 200
 
@@ -758,6 +765,10 @@ def create_app():
 
             # Copy the template files to the temp directory
             template_dir = f"../resume_templates/{template_name}"
+
+            if not template_name or not os.path.exists(template_dir):
+                return jsonify({"error": "Template not found"}), 404
+
             for item in os.listdir(template_dir):
                 s = os.path.join(template_dir, item)
                 d = os.path.join(temp_dir, item)
