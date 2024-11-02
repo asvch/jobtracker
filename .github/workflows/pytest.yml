@@ -2,9 +2,9 @@ name: Pytest
 
 on:
   push:
-    branches: [project2]
+    branches: [pytest]
   pull_request:
-    branches: [project2]
+    branches: [pytest]
 
 jobs:
   test:
@@ -44,7 +44,7 @@ jobs:
         run: |
           cd ./backend
           pwd
-          pytest --doctest-modules --junitxml=junit/test-results.xml --cov=app --cov-report=xml --cov-report=html
+          pytest --cov --cov-report=xml
 
       - name: Upload coverage to Codecov
         if: always()
