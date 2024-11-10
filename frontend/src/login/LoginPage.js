@@ -16,18 +16,40 @@ export default class LoginPage extends Component {
 			username: uname,
 			password: pwd
 		};
-		//console.log(obj)
+		console.log(obj)
 		getToken(obj)
 			.then((res) => {
-				console.log(res);
-				if (res['error']) throw new Error('Wrong username or password');
-				storeToken({ ...res, userId: res.profile.id });
-				this.props.side(res.profile);
+				console.log("login api response:", res);
+				const data = res[0];  // Access the first element containing the JSON data
+
+				if (data.error) throw new Error('Wrong username or password');
+				
+				// Now use data.profile.id, assuming id is included in `profile` object
+				storeToken({ ...data, userId: data.profile.id });
+				this.props.side(data.profile);
 			})
 			.catch((error) => {
 				console.log(error);
-				alert('Error while login ! Wrong username or password');
+				alert('Error while login! Wrong username or password!!');
 			});
+
+		// getToken(obj)
+		// 	.then((res) => {
+		// 		console.log("login api res", res);
+		// 		if (res['error']) throw new Error('Wrong username or password');
+				
+		// 		// Check if res and res.profile are defined
+		// 		if (!res || !res.profile || !res.profile.id) {
+		// 			throw new Error("Unexpected response structure");
+		// 		}
+
+		// 		storeToken({ ...res, userId: res.profile.id });
+		// 		this.props.side(res.profile);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log(error);
+		// 		alert('Error while login ! Wrong username or password!!');
+		// 	});
 	};
 
 	handleSignup = (fullname, uname, pwd) => {
@@ -37,13 +59,15 @@ export default class LoginPage extends Component {
 			password: pwd,
 			fullName: fullname
 		};
-		//console.log(obj)
+		console.log(obj)
 		signUp(obj)
 			.then((res) => {
+				console.log(res);
 				alert('Sign up successfull! Proceed to Login');
 			})
 			.catch((error) => {
-				alert('Error while signing up !');
+				console.log(error)
+				alert('Error while signing up !!!');
 			});
 	};
 

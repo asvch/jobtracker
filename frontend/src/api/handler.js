@@ -15,7 +15,7 @@ import { baseApiURL } from './base.ts';
  * @param {boolean} [options.raw=false] - If true, the response type will be 'arraybuffer'.
  * @returns {Promise<Object>} A promise that resolves with the response data or rejects with an error.
  */
-export default function fetch(options) {
+export default function fetchs(options) {
 	return new Promise((resolve, reject) => {
 		const headers = options.headers || {};
 

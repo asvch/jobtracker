@@ -159,6 +159,7 @@ def create_app():
     def health_check():
         return jsonify({"message": "Server up and running"}), 200
 
+
     @app.route("/users/signup", methods=["POST"])
     def sign_up():
         """
@@ -166,21 +167,27 @@ def create_app():
 
         :return: JSON object
         """
+        print("YPPPPPPPP1111")
         try:
             # print(request.data)
             data = json.loads(request.data)
-            print(data)
+            print("YPPPPPPPP")
+            print("signup data", data)
             try:
                 _ = data["username"]
                 _ = data["password"]
                 _ = data["fullName"]
+                print("got it")
             except:
                 return jsonify({"error": "Missing fields in input"}), 400
 
+            print("user?")
             username_exists = Users.objects(username=data["username"])
+            # print("username_exists", username_exists)
             if len(username_exists) != 0:
                 return jsonify({"error": "Username already exists"}), 400
             password = data["password"]
+            print("pwrd", password)
             password_hash = hashlib.md5(password.encode())
             user = Users(
                 id=get_new_user_id(),
@@ -198,10 +205,13 @@ def create_app():
                 email="",
             )
             user.save()
+            print("saved user")
             # del user.to_json()["password", "authTokens"]
             return jsonify(user.to_json()), 200
-        except:
+        except Exception as e:
+            print("error 500:", e)
             return jsonify({"error": "Internal server error"}), 500
+
 
     @app.route("/getProfile", methods=["GET"])
     def get_profile_data():
@@ -321,6 +331,7 @@ def create_app():
             print(err)
             return jsonify({"error": "Internal server error"}), 500
 
+
     @app.route("/users/login", methods=["POST"])
     def login():
         """
@@ -333,6 +344,7 @@ def create_app():
                 data = json.loads(request.data)
                 _ = data["username"]
                 _ = data["password"]
+                print("login data", data)
             except:
                 return jsonify({"error": "Username or password missing"}), 400
             password_hash = hashlib.md5(data["password"].encode()).hexdigest()
@@ -363,12 +375,17 @@ def create_app():
                 if key not in FIELDS_TO_EXCLUDE
             }
 
+            print("cleaned user", cleaned_user)
+            print("token", token)
             return jsonify(
-                {"profile": cleaned_user, "token": token, "expiry": expiry_str}
+                {"profile": cleaned_user, "token": token, "expiry": expiry_str}, 200
             )
+            # return jsonify(profile=cleaned_user, token=token, expiry=expiry_str), 200
+
 
         except:
             return jsonify({"error": "Internal server error"}), 500
+
 
     @app.route("/users/logout", methods=["POST"])
     def logout():
@@ -797,10 +814,14 @@ def create_app():
 
 app = create_app()
 
+
 app.config["MONGODB_SETTINGS"] = {
-    "db": "appTracker",
+    "db": "Group56F24",
     "host": os.getenv("MONGODB_HOST_STRING"),
+    "tls": True,
+    "tlsAllowInvalidCertificates": True
 }
+
 
 db = MongoEngine()
 db.init_app(app)
