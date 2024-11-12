@@ -159,7 +159,6 @@ def create_app():
     def health_check():
         return jsonify({"message": "Server up and running"}), 200
 
-
     @app.route("/users/signup", methods=["POST"])
     def sign_up():
         """
@@ -211,7 +210,6 @@ def create_app():
         except Exception as e:
             print("error 500:", e)
             return jsonify({"error": "Internal server error"}), 500
-
 
     @app.route("/getProfile", methods=["GET"])
     def get_profile_data():
@@ -331,7 +329,6 @@ def create_app():
             print(err)
             return jsonify({"error": "Internal server error"}), 500
 
-
     @app.route("/users/login", methods=["POST"])
     def login():
         """
@@ -382,10 +379,8 @@ def create_app():
             )
             # return jsonify(profile=cleaned_user, token=token, expiry=expiry_str), 200
 
-
         except:
             return jsonify({"error": "Internal server error"}), 500
-
 
     @app.route("/users/logout", methods=["POST"])
     def logout():
@@ -818,8 +813,8 @@ app = create_app()
 app.config["MONGODB_SETTINGS"] = {
     "db": "Group56F24",
     "host": os.getenv("MONGODB_HOST_STRING"),
-    "tls": True,
-    "tlsAllowInvalidCertificates": True
+    # "tls": False,
+    # "tlsAllowInvalidCertificates": True
 }
 
 
