@@ -3,6 +3,7 @@ import './static/App.css';
 import React from 'react';
 import Sidebar from './sidebar/Sidebar';
 import ApplicationPage from './application/ApplicationPage';
+import HomePage from './home/HomePage.js';
 import SearchPage from './search/SearchPage';
 import LoginPage from './login/LoginPage';
 import ManageResumePage from './resume/ManageResumePage';
@@ -17,6 +18,7 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 		let mapRouter = {
+			HomePage: <HomePage />,
 			SearchPage: <SearchPage />,
 			ApplicationPage: <ApplicationPage />,
 			LoginPage: <LoginPage />,
@@ -101,7 +103,7 @@ export default class App extends React.Component {
 						<div className='content'>
 							<div className=''>
 								<h1 className='text-center' style={{ marginTop: '2%', fontWeight: '300' }}>
-									Application Tracking System
+								<b>Job Tracker</b>
 								</h1>
 								{/* <span className="btn-icon ">
                 <button className="btn btn-danger btn-icon"><i className="fas fa-plus"></i>&nbsp;New</button>
@@ -125,7 +127,7 @@ export default class App extends React.Component {
 									fontWeight: '300'
 								}}
 							>
-								Application Tracking System
+								<b>Job Tracker</b>
 							</h1>
 							<div className=''>
 								{/* <span className="btn-icon ">

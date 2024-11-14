@@ -8,9 +8,10 @@ import '@fortawesome/fontawesome-free/js/brands';
 import '../static/Sidebar.css';
 
 const options = [
-	{ label: 'Search', icon: 'fas fa-search', page: 'SearchPage' },
+	{ label: 'Home', icon: 'fas fa-home', page: 'HomePage' },
+	// { label: 'Search', icon: 'fas fa-search', page: 'SearchPage' },
 	{ label: 'Manage', icon: 'fas fa-folder', page: 'ManageResumePage' },
-	{ label: 'Matches', icon: 'fas fa-check-double', page: 'MatchesPage' },
+	// { label: 'Matches', icon: 'fas fa-check-double', page: 'MatchesPage' },
 	{ label: 'New Application', icon: 'fas fa-file-alt', page: 'ApplicationPage' },
 	{ label: 'My Applications', icon: 'fas fa-user-alt', page: 'MyApplicationPage' },
 	{ label: 'Profile', icon: 'fas fa-user-alt', page: 'ProfilePage' },
