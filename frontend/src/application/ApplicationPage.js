@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Col, Container, Row, Modal, Button } from 'react-bootstrap';
+import { Card, Col, Container, Row, Modal, Button, Form } from 'react-bootstrap';
 import { baseApiURL } from '../api/base.ts';
 
 const ApplicationsList = ({
@@ -17,15 +17,16 @@ const ApplicationsList = ({
 	const [date, setDate] = useState();
 	const [jobLink, setJobLink] = useState();
 	const [isCreate, setIsCreate] = useState();
+	const [notes, setNotes] = useState('');
+	const [updates, setUpdates] = useState('');
+	const [sendEmailReminder, setSendEmailReminder] = useState(false);
+	const [emailAddress, setEmailAddress] = useState('');
 	const [searchCriteria, setSearchCriteria] = useState({
 		jobTitle: '',
 		companyName: '',
 		location: '',
 		status: ''
 	});
-	const [notes, setNotes] = useState('');
-	const [updates, setUpdates] = useState('');
-
 	const findStatus = (value) => {
 		let status = '';
 		if (value === '1') status = 'Wish List';
@@ -192,7 +193,6 @@ const ApplicationsList = ({
 				</Row>
 			</Container>
 
-			{/* Modal for updating details */}
 			<Modal show={!closeModal} onHide={() => setCloseModal(true)}>
 				<Modal.Header closeButton>
 					<Modal.Title>Update Details</Modal.Title>
@@ -278,7 +278,29 @@ const ApplicationsList = ({
 									onChange={(e) => setUpdates(e.target.value)}
 								/>
 							</div>
+							<div className="form-group mt-4">
+								<Form.Check
+									type="checkbox"
+									id="sendEmailReminder"
+									label="Send reminder email for the application"
+									checked={sendEmailReminder}
+									onChange={(e) => setSendEmailReminder(e.target.checked)}
+								/>
 
+								{sendEmailReminder && (
+									<div className="mt-2">
+										<label className="col-form-label">Email Address</label>
+										<input
+											type="email"
+											className="form-control"
+											id="emailAddress"
+											placeholder="Enter your email"
+											value={emailAddress}
+											onChange={(e) => setEmailAddress(e.target.value)}
+										/>
+									</div>
+								)}
+							</div>
 							<div className='input-group mb-3'>
 								<div className='input-group-prepend'>
 									<label className='input-group-text'>Application Type</label>
@@ -303,21 +325,19 @@ const ApplicationsList = ({
 				</Modal.Body>
 				<Modal.Footer>
 					{!isCreate && (
-						<>
-							<Button
-								variant='danger'
-								onClick={(e) => {
-									e.preventDefault();
-									handleDeleteApplication(selectedApplication);
-									setCloseModal(true);
-								}}
-							>
-								Delete
-							</Button>{' '}
-						</>
+						<Button
+							variant="danger"
+							onClick={(e) => {
+								e.preventDefault();
+								handleDeleteApplication(selectedApplication);
+								setCloseModal(true);
+							}}
+						>
+							Delete
+						</Button>
 					)}
 					<Button
-						variant='success'
+						variant="success"
 						onClick={(e) => {
 							e.preventDefault();
 							let jobTitle = document.querySelector('#jobTitle').value;
@@ -326,6 +346,8 @@ const ApplicationsList = ({
 							let date = document.querySelector('#date').value;
 							let status = document.querySelector('#status').value;
 							let jobLink = document.querySelector('#jobLink').value;
+
+							// Include email data in the update
 							handleUpdateDetails(
 								selectedApplication?.id,
 								jobTitle,
@@ -335,7 +357,8 @@ const ApplicationsList = ({
 								status,
 								jobLink,
 								notes,
-								updates
+								updates,
+								sendEmailReminder ? emailAddress : null
 							);
 							setCloseModal(true);
 						}}
@@ -374,7 +397,7 @@ const ApplicationPage = () => {
 	};
 
 	const handleUpdateDetails = useCallback(
-		(id, job, company, location, date, status, jobLink, notes, updates) => {
+		(id, job, company, location, date, status, jobLink, notes, updates, emailAddress) => {
 			let application = {
 				id: id ? id : null,
 				jobTitle: job,
@@ -387,10 +410,49 @@ const ApplicationPage = () => {
 				updates: updates
 			};
 
+			// Function to send email reminder
+			const sendEmailReminder = async (application, emailAddress) => {
+				try {
+					const response = await fetch(`${baseApiURL}/send-reminder`, {
+						method: 'POST',
+						headers: {
+							'Authorization': 'Bearer ' + localStorage.getItem('token'),
+							'Content-Type': 'application/json',
+							// 'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
+							// 'Access-Control-Allow-Credentials': 'true'
+						},
+						body: JSON.stringify({
+							email: emailAddress,
+							application: {
+								jobTitle: application.jobTitle,
+								companyName: application.companyName,
+								date: application.date,
+								status: application.status,
+								location: application.location,
+								jobLink: application.jobLink,
+								notes: application.notes,
+								updates: application.updates,
+							}
+						})
+					});
+
+					if (!response.ok) {
+						throw new Error('Failed to send email reminder');
+					}
+
+					alert('Email reminder sent successfully!');
+				} catch (error) {
+					console.error('Error sending email:', error);
+					alert('Failed to send email reminder');
+				}
+			};
+
 			if (application.id === null) {
+				// Creating new application
 				fetch(`${baseApiURL}/applications`, {
 					headers: {
 						Authorization: 'Bearer ' + localStorage.getItem('token'),
+						'Content-Type': 'application/json',
 						'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
 						'Access-Control-Allow-Credentials': 'true'
 					},
@@ -399,35 +461,37 @@ const ApplicationPage = () => {
 						application: {
 							...application
 						}
-					}),
-					contentType: 'application/json'
+					})
 				})
 					.then((response) => response.json())
 					.then((data) => {
-						// Update the application id
 						application.id = data.id;
 						setApplicationList((prevApplicationList) => [...prevApplicationList, application]);
 
-						// Display an alert for new application added successfully
+						// Send email reminder if email address is provided
+						if (emailAddress) {
+							sendEmailReminder(application, emailAddress);
+						}
+
 						alert('New application added successfully!');
 					})
 					.catch((error) => {
-						// Handle error
 						console.error('Error:', error);
 						alert('Adding application failed!');
 					});
 			} else {
+				// Updating existing application
 				fetch(`${baseApiURL}/applications/${application.id}`, {
 					headers: {
 						Authorization: 'Bearer ' + localStorage.getItem('token'),
+						'Content-Type': 'application/json',
 						'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
 						'Access-Control-Allow-Credentials': 'true'
 					},
 					method: 'PUT',
 					body: JSON.stringify({
 						application: application
-					}),
-					contentType: 'application/json'
+					})
 				})
 					.then((response) => response.json())
 					.then((data) => {
@@ -437,9 +501,13 @@ const ApplicationPage = () => {
 							);
 							return updatedApplicationList;
 						});
+
+						// Send email reminder if email address is provided
+						if (emailAddress) {
+							sendEmailReminder(application, emailAddress);
+						}
 					})
 					.catch((error) => {
-						// Handle error
 						console.error('Error:', error);
 						alert('Update Failed!');
 					});
@@ -485,4 +553,5 @@ const ApplicationPage = () => {
 		/>
 	);
 };
+
 export default ApplicationPage;
