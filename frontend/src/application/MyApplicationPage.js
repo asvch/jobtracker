@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Col, Container, Row, Card, Button } from 'react-bootstrap';
+import { Col, Container, Row, Card, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { baseApiURL } from '../api/base.ts';
 import { Chart, registerables } from 'chart.js';
 import { SankeyController, Flow } from 'chartjs-chart-sankey';
@@ -37,12 +37,12 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 	const colors = {
 		Applications: 'brown',
 		'Wish List': 'pink',
-		'Waiting for Referral': 'purple',
+		'Waiting for Referral': 'lightsteelblue',
 		Applied: 'green',
 		Accepted: 'green',
 		Rejected: 'red',
 		'Took an Interview': 'orange',
-		'No Response': 'grey'
+		'No Response': 'powderblue'
 	};
 
 	const statusFrom = {
@@ -189,23 +189,23 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 			<Row style={{ marginBottom: '40px' }}>
 				<canvas ref={chartRef} />
 			</Row>
-			<Row>
+			<Row style={{backgroundColor:"#d4d8de", overflow:"scroll"}}>
 				<DragDropContext onDragEnd={handleDrag}>
 				{Object.keys(categories).map((status) => (
-					<Col key={status} md={3} style={{ marginBottom: '20px' }}>
+					<Col key={status} md={2} style={{padding: "8px", border: "1px solid black"}}>
 						{(
-							<Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
-								<Card.Header
-									as='h5'
+							<div style={{backgroundColor: "#d4d8de"}}>
+								<h6
 									style={{
-										backgroundColor: colors[status],
-										borderBottom: '1px solid #dee2e6',
-										color: 'black'
+										backgroundColor: "#d4d8de",
+										borderBottom: '1px solid black',
+										color: 'black',
+										textAlign:"center"
 									}}
 								>
 									{status}
-								</Card.Header>
-								<Card.Body style={{ padding: '20px' }}>
+								</h6>
+								<Card.Body >
 									<Droppable droppableId={`${status}`} ignoreContainerClipping={ true }>
 											{(provided) => (
 												<div ref={provided.innerRef}>
@@ -221,20 +221,21 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 													{...provided.draggableProps}
 													{...provided.dragHandleProps}
 												>
-													<div key={jobListing.id} style={{ marginBottom: '10px' }}>
+													<div key={jobListing.id} style={{ marginBottom: '10px' }} >
 														<Card
 															style={{
-																borderColor: '#ccc',
-																borderRadius: '5px',
-																boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-																transition: '0.3s',
-																cursor: 'pointer',
-																marginBottom: '10px'
+																backgroundColor: colors[status],
+																padding: "0",
+																textAlign: "center"
 															}}
 														>
-															<Card.Body style={{ padding: '20px' }}>
+															<OverlayTrigger placement='top' overlay={<Tooltip id={jobListing.id}>Click to {expandedCardId !== jobListing.id ? "expand" : "collapse"}</Tooltip>}>
+															<Card.Body onClick={() => toggleCardExpansion(jobListing.id)}>
 																<div>
-																	<strong>{jobListing?.jobTitle}</strong> - {jobListing?.companyName}
+
+																	<strong>{jobListing?.companyName}</strong>
+																	<br/>
+																	{jobListing?.jobTitle}
 																</div>
 																{expandedCardId === jobListing.id && (
 																	<>
@@ -246,10 +247,8 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 																		</div>
 																	</>
 																)}
-																<Button onClick={() => toggleCardExpansion(jobListing.id)}>
-																	{expandedCardId === jobListing.id ? 'Collapse' : 'Expand'}
-																</Button>
 															</Card.Body>
+															</OverlayTrigger>
 														</Card>
 													</div>
 												</div>
@@ -260,7 +259,7 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 									</div>)}
 									</Droppable>
 								</Card.Body>
-							</Card>
+							</div>
 						)}
 					</Col>
 				))}
