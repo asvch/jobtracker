@@ -10,7 +10,6 @@ const ProfilePage = (props) => {
 	const [activeModal, setActiveModal] = useState('');
 
 	const profile = props.profile;
-
 	const fields = [
 		{ name: CONSTANTS.PROFILE.SKILLS, label: 'Skills', options: CONSTANTS.SKILLS },
 		{ name: CONSTANTS.PROFILE.EXPERIENCE_LEVEL, label: 'Experience Level', options: CONSTANTS.EXPERIENCE_LEVEL },

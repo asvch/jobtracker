@@ -64,8 +64,9 @@ const CustomProfileModal = (props) => {
 					},
 					{
 						headers: {
-							userid: profile.id,
-							Authorization: `Bearer ${localStorage.getItem('userId')}`
+							// userid: profile.id,
+							// Authorization: `Bearer ${localStorage.getItem('userId')}`
+							Authorization: `Bearer ${localStorage.getItem('token')}`
 						}
 					}
 				);
@@ -75,6 +76,7 @@ const CustomProfileModal = (props) => {
 				setModalOpen(false);
 			} catch (err) {
 				console.log(err.message);
+				console.log('Error in HandleSave: ', data)
 				setModalOpen(false);
 			}
 		}

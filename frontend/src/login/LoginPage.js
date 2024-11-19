@@ -32,24 +32,6 @@ export default class LoginPage extends Component {
 				console.log(error);
 				alert('Error while login! Wrong username or password!!');
 			});
-
-		// getToken(obj)
-		// 	.then((res) => {
-		// 		console.log("login api res", res);
-		// 		if (res['error']) throw new Error('Wrong username or password');
-				
-		// 		// Check if res and res.profile are defined
-		// 		if (!res || !res.profile || !res.profile.id) {
-		// 			throw new Error("Unexpected response structure");
-		// 		}
-
-		// 		storeToken({ ...res, userId: res.profile.id });
-		// 		this.props.side(res.profile);
-		// 	})
-		// 	.catch((error) => {
-		// 		console.log(error);
-		// 		alert('Error while login ! Wrong username or password!!');
-		// 	});
 	};
 
 	handleSignup = (fullname, uname, pwd) => {

@@ -129,17 +129,56 @@ def create_app():
         token = headers["Authorization"].split(" ")[1]
         return token
 
+    # def get_userid_from_header():
+    #     """
+    #     Evaluates user id from the request header
+
+    #     :return: string
+    #     """
+    #     headers = request.headers
+    #     token = headers["Authorization"].split(" ")[1]
+    #     print(token)
+    #     userid = token.split(".")[0]
+    #     return userid
+
+
     def get_userid_from_header():
         """
         Evaluates user id from the request header
-
         :return: string
+        :raises ValueError: If authorization header is missing or improperly formatted
         """
-        headers = request.headers
-        token = headers["Authorization"].split(" ")[1]
-        print(token)
-        userid = token.split(".")[0]
-        return userid
+        try:
+            headers = request.headers
+            
+            # Check if Authorization header exists
+            if "Authorization" not in headers:
+                raise ValueError("Authorization header is missing")
+            
+            # Split the Authorization header
+            auth_parts = headers["Authorization"].split(" ")
+            
+            # Validate the header format
+            if len(auth_parts) != 2 or auth_parts[0].lower() != "bearer":
+                raise ValueError("Invalid Authorization header format")
+            
+            # Use the token from localStorage directly
+            token = auth_parts[1]
+            
+            print(f"Received token: {token}")
+
+            # If the token contains a dot (like userid.uuid), split and return userid
+            if '.' in token:
+                userid = token.split('.')[0]
+            else:
+                userid = token
+            
+            print(f"Extracted Userid: {userid}")
+            return userid
+                    
+        except Exception as e:
+            print(f"Error in get_userid_from_header: {e}")
+            raise
 
     def delete_auth_token(token_to_delete, user_id):
         """
@@ -251,14 +290,38 @@ def create_app():
         Update the user profile with preferences: skills, job-level and location
         """
         try:
-            print(request.data)
-            userid = get_userid_from_header()
-            user = Users.objects(id=userid).first()
-            data = json.loads(request.data)
-            print(user)
+            # Print raw request data for debugging
+            print("Raw request data:", request.data)
+            # Try different methods of data retrieval
+            print("request.get_json():", request.get_json())
+            print("request.form:", request.form)
+            print("request.json:", request.json)
 
-            for key in data.keys():
-                user[key] = data[key]
+            userid = get_userid_from_header()
+            print
+            try:
+                userid = int(userid)
+            except ValueError:
+                pass
+
+            # Find user
+            user = Users.objects(id=userid).first()
+            if not user:
+                return jsonify({"error": "User not found"}), 400
+
+            # Parsing incoming data
+            # data = json.loads(request.data)
+            data = request.get_json() or json.loads(request.data.decode('utf-8')) or {}
+            print("Received data: ", data)
+
+            # Updating fields
+            for key, value in data.items():
+                # only update if the key exists in the model
+                if hasattr(user, key):
+                    setattr(user, key, value)
+
+            # for key in data.keys():
+            #     user[key] = data[key]
 
             if (
                 "picture" in data
@@ -270,8 +333,14 @@ def create_app():
             user.save()
             return jsonify(user.to_json()), 200
 
+        except ValueError as ve:
+            print(f"Value Error: {ve}")
+            return jsonify({"error": str(ve)}), 400
+            # return jsonify({"error": "Internal server error"}), 500
         except Exception as err:
-            print(err)
+            print("Full error traceback:")
+            import traceback
+            traceback.print_exc()
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/getRecommendations", methods=["GET"])
@@ -829,7 +898,7 @@ def create_app():
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500
-        
+
     return app
 
 
