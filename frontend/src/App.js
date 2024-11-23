@@ -1,6 +1,6 @@
 import './static/App.css';
 
-import React from 'react';
+import React, { Component } from 'react';
 import Sidebar from './sidebar/Sidebar';
 import ApplicationPage from './application/ApplicationPage';
 import HomePage from './home/HomePage.js';
@@ -13,6 +13,9 @@ import MatchesPage from './matches/MatchesPage';
 import MyApplicationPage from './application/MyApplicationPage';
 import CreateResumePage from './resume/CreateResumePage.tsx';
 import { baseApiURL } from './api/base.ts';
+import { Widget, addResponseMessage } from 'react-chat-widget';
+
+import 'react-chat-widget/lib/styles.css';
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -92,12 +95,39 @@ export default class App extends React.Component {
 		});
 	}
 
+	componentDidMount() {
+        addResponseMessage('Welcome to this awesome chat!');
+    }
+
+	handleNewUserMessage = (newMessage) => {
+		console.log(`New message incoming! ${newMessage}`);
+		// Now send the message throught the backend API
+		
+		const response = "Absolutely!";
+
+		// const response = await fetch(`${baseApiURL}/getRecommendations`, {
+        //     headers: {
+        //       Authorization: 'Bearer ' + localStorage.getItem('token'),
+        //       'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
+        //       'Access-Control-Allow-Credentials': 'true'
+        //     },
+        //     method: 'GET'
+        // });
+
+		addResponseMessage(response);
+	};
+
 	render() {
 		var app;
 		// console.log(this.state.sidebar)
 		if (this.state.sidebar) {
 			app = (
 				<div className='main-page'>
+					<Widget
+						handleNewUserMessage={this.handleNewUserMessage}
+						title="Job Tracker Expert"
+          				subtitle="Ask Me Your Questions!"
+					/>
 					<Sidebar switchPage={this.switchPage.bind(this)} handleLogout={this.handleLogout} />
 					<div className='main'>
 						<div className='content'>
