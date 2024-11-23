@@ -23,7 +23,7 @@ export default class LoginPage extends Component {
 				const data = res[0];  // Access the first element containing the JSON data
 
 				if (data.error) throw new Error('Wrong username or password');
-				
+
 				// Now use data.profile.id, assuming id is included in `profile` object
 				storeToken({ ...data, userId: data.profile.id });
 				this.props.side(data.profile);
@@ -37,7 +37,7 @@ export default class LoginPage extends Component {
 		// 	.then((res) => {
 		// 		console.log("login api res", res);
 		// 		if (res['error']) throw new Error('Wrong username or password');
-				
+
 		// 		// Check if res and res.profile are defined
 		// 		if (!res || !res.profile || !res.profile.id) {
 		// 			throw new Error("Unexpected response structure");
@@ -71,9 +71,10 @@ export default class LoginPage extends Component {
 			});
 	};
 
-	handleSignupGoogle = () => {
-		window.open(`${baseApiURL}/users/signupGoogle`); // Google oauth url
-	};
+	// TODO removing google sign in because it requires significant refactoring of the backend and frontend
+	// handleSignupGoogle = () => {
+	// 	window.open(`${baseApiURL}/users/signupGoogle`); // Google oauth url
+	// };
 
 	componentDidMount() {
 		if (localStorage.getItem('token') === null) {
@@ -125,14 +126,17 @@ export default class LoginPage extends Component {
 										Login
 									</button>
 
-									<button
-										onClick={() => {
-											this.handleSignupGoogle();
-										}}
-										className='custom-btn px-3 py-2 mx-2'
-									>
-										Google Login
-									</button>
+									{
+									// TODO removing google sign in because it requires significant refactoring of the backend and frontend
+									// <button
+									// 	onClick={() => {
+									// 		this.handleSignupGoogle();
+									// 	}}
+									// 	className='custom-btn px-3 py-2 mx-2'
+									// >
+									// 	Google Login
+									// </button>
+									}
 								</div>
 							</form>
 						</Tab>
@@ -164,15 +168,17 @@ export default class LoginPage extends Component {
 									>
 										Sign Up
 									</button>
-
-									<button
-										onClick={() => {
-											this.handleSignupGoogle();
-										}}
-										className='custom-btn px-3 py-2 mx-2'
-									>
-										Google Signup
-									</button>
+									{
+									// TODO removing google sign in because it requires significant refactoring of the backend and frontend
+									// <button
+									// 	onClick={() => {
+									// 		this.handleSignupGoogle();
+									// 	}}
+									// 	className='custom-btn px-3 py-2 mx-2'
+									// >
+									// 	Google Signup
+									// </button>
+									}
 								</div>
 							</form>
 						</Tab>
