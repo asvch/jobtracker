@@ -32,6 +32,7 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 		'Accepted': "5",
 		'Took an Interview': "6"
 	}
+	const [ ordered, setOrdered ] = useState(Object.keys(categories))
 	const [applications, setApplications] = useState(Object.keys(categories).map(() => []))
 
 	const colors = {
@@ -145,42 +146,50 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 		if(dst !== null){
 			const src = e.source
 			const newApplications = [...applications]
-			const srcArray = newApplications[parseInt(categories[src.droppableId])-1]
-			const dstArray = newApplications[parseInt(categories[dst.droppableId])-1]
-			const temp = srcArray[src.index];
-			temp.status = categories[dst.droppableId]
-			try{
-				let resp = await fetch(`${baseApiURL}/applications/${temp.id}`, {
-					headers: {
-						Authorization: 'Bearer ' + localStorage.getItem('token'),
-						'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
-						'Access-Control-Allow-Credentials': 'true'
-					},
-					method: 'PUT',
-					body: JSON.stringify({
-						application: temp
-					}),
-					contentType: 'application/json'
-				})
-				if(!resp.ok){
+			if(e.type == "Category"){
+				let temp = [...ordered]
+				let swapping = ordered[src.index]
+				temp[src.index] = temp[dst.index]
+				temp[dst.index] = swapping
+				setOrdered(temp)
+			} else {
+				const srcArray = newApplications[parseInt(categories[src.droppableId]) - 1]
+				const dstArray = newApplications[parseInt(categories[dst.droppableId]) - 1]
+				const temp = srcArray[src.index];
+				temp.status = categories[dst.droppableId]
+				try {
+					let resp = await fetch(`${baseApiURL}/applications/${temp.id}`, {
+						headers: {
+							Authorization: 'Bearer ' + localStorage.getItem('token'),
+							'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
+							'Access-Control-Allow-Credentials': 'true'
+						},
+						method: 'PUT',
+						body: JSON.stringify({
+							application: temp
+						}),
+						contentType: 'application/json'
+					})
+					if (!resp.ok) {
+						alert('Update Failed!');
+						return;
+					}
+					setApplicationList((prevApplicationList) => {
+						const updatedApplicationList = prevApplicationList.map((jobListing) =>
+							jobListing.id === temp.id ? temp : jobListing
+						);
+						return updatedApplicationList;
+					});
+				} catch {
 					alert('Update Failed!');
 					return;
 				}
-				setApplicationList((prevApplicationList) => {
-					const updatedApplicationList = prevApplicationList.map((jobListing) =>
-						jobListing.id === temp.id ? temp : jobListing
-					);
-					return updatedApplicationList;
-				});
-			} catch {
-				alert('Update Failed!');
-				return;
+				const removed = srcArray.splice(src.index, 1)[0]
+				removed.status = categories[dst.droppableId]
+				if (dstArray.length > 0) dstArray.splice(dst.index, 0, removed)
+				else dstArray.push(removed)
+				setApplications(newApplications)
 			}
-			const removed = srcArray.splice(src.index,1)[0]
-			removed.status = categories[dst.droppableId]
-			if(dstArray.length > 0) dstArray.splice(dst.index,0, removed)
-			else dstArray.push(removed)
-			setApplications(newApplications)
 		}
 	}
 
@@ -191,8 +200,22 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 			</Row>
 			<Row style={{backgroundColor:"#d4d8de", overflow:"scroll"}}>
 				<DragDropContext onDragEnd={handleDrag}>
-				{Object.keys(categories).map((status) => (
+				<Droppable droppableId="board" type="Category" direction="horizontal">
+				{(provided) => (
+				<div ref={provided.innerRef} {...provided.droppableProps} {...provided.dragHandleProps} className="board" style={{display:'flex', padding: 0}}>
+				{ordered.map((status,index) => (
 					<Col key={status} md={2} style={{padding: "8px", border: "1px solid black"}}>
+					<Draggable
+						draggableId={`Category-${status}`}
+						key={status}
+						index={index}
+					>
+					{(provided) => (
+						<div
+							ref={provided.innerRef}
+							{...provided.draggableProps}
+							{...provided.dragHandleProps}
+						>
 						{(
 							<div style={{backgroundColor: "#d4d8de"}}>
 								<h6
@@ -261,8 +284,13 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 								</Card.Body>
 							</div>
 						)}
+					</div>)}
+					</Draggable>
 					</Col>
 				))}
+				{provided.placeholder}
+				</div>)}
+				</Droppable>
 				</DragDropContext>
 			</Row>
 		</Container>
