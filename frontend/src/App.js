@@ -99,22 +99,35 @@ export default class App extends React.Component {
         addResponseMessage('Welcome to this awesome chat!');
     }
 
-	handleNewUserMessage = (newMessage) => {
+	handleNewUserMessage = async (newMessage) => {
 		console.log(`New message incoming! ${newMessage}`);
 		// Now send the message throught the backend API
 		
-		const response = "Absolutely!";
+		// const response = "Absolutely!";
 
-		// const response = await fetch(`${baseApiURL}/getRecommendations`, {
-        //     headers: {
-        //       Authorization: 'Bearer ' + localStorage.getItem('token'),
-        //       'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
-        //       'Access-Control-Allow-Credentials': 'true'
-        //     },
-        //     method: 'GET'
-        // });
+		try {
+			const response = await fetch(`${baseApiURL}/getLLMresponse`, {
+				method: 'POST', // Assuming you are using a POST request
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ message: newMessage }), // Send the user message as payload
+			});
 
-		addResponseMessage(response);
+			if (!response.ok) {
+				throw new Error(`Error: ${response.statusText}`);
+			}
+	
+			const data = await response.json();
+			const outputmsg = data.response;
+
+			addResponseMessage(outputmsg);
+		
+		} catch (error) {
+			console.error('Error fetching response:', error);
+        	addResponseMessage('Sorry, something went wrong!');
+		}
+
 	};
 
 	render() {
@@ -125,7 +138,7 @@ export default class App extends React.Component {
 				<div className='main-page'>
 					<Widget
 						handleNewUserMessage={this.handleNewUserMessage}
-						title="Job Tracker Expert"
+						title="Job Expert"
           				subtitle="Ask Me Your Questions!"
 					/>
 					<Sidebar switchPage={this.switchPage.bind(this)} handleLogout={this.handleLogout} />
