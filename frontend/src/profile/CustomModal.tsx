@@ -47,7 +47,7 @@ const CustomModal = (props: CustomModalProps) => {
 				{
 					headers: {
 						userid: localStorage.getItem('userId')!,
-						Authorization: `Bearer ${localStorage.getItem('userId')}`
+						Authorization: `Bearer ${localStorage.getItem('token')}`
 					}
 				}
 			)
