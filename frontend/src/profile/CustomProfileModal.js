@@ -76,7 +76,6 @@ const CustomProfileModal = (props) => {
 				setModalOpen(false);
 			} catch (err) {
 				console.log(err.message);
-				console.log('Error in HandleSave: ', data)
 				setModalOpen(false);
 			}
 		}

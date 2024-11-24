@@ -1,7 +1,3 @@
-"""
-The flask application for our program
-"""
-
 # importing required python libraries
 from flask import Flask, jsonify, request, send_file, redirect, url_for, session
 from flask_mongoengine import MongoEngine
@@ -130,55 +126,17 @@ def create_app():
         token = headers["Authorization"].split(" ")[1]
         return token
 
-    # def get_userid_from_header():
-    #     """
-    #     Evaluates user id from the request header
-
-    #     :return: string
-    #     """
-    #     headers = request.headers
-    #     token = headers["Authorization"].split(" ")[1]
-    #     print(token)
-    #     userid = token.split(".")[0]
-    #     return userid
-
     def get_userid_from_header():
         """
         Evaluates user id from the request header
+
         :return: string
-        :raises ValueError: If authorization header is missing or improperly formatted
         """
-        try:
-            headers = request.headers
-
-            # Check if Authorization header exists
-            if "Authorization" not in headers:
-                raise ValueError("Authorization header is missing")
-
-            # Split the Authorization header
-            auth_parts = headers["Authorization"].split(" ")
-
-            # Validate the header format
-            if len(auth_parts) != 2 or auth_parts[0].lower() != "bearer":
-                raise ValueError("Invalid Authorization header format")
-
-            # Use the token from localStorage directly
-            token = auth_parts[1]
-
-            print(f"Received token: {token}")
-
-            # If the token contains a dot (like userid.uuid), split and return userid
-            if "." in token:
-                userid = token.split(".")[0]
-            else:
-                userid = token
-
-            print(f"Extracted Userid: {userid}")
-            return userid
-
-        except Exception as e:
-            print(f"Error in get_userid_from_header: {e}")
-            raise
+        headers = request.headers
+        token = headers["Authorization"].split(" ")[1]
+        print(token)
+        userid = token.split(".")[0]
+        return userid
 
     def delete_auth_token(token_to_delete, user_id):
         """
@@ -290,38 +248,14 @@ def create_app():
         Update the user profile with preferences: skills, job-level and location
         """
         try:
-            # Print raw request data for debugging
-            print("Raw request data:", request.data)
-            # Try different methods of data retrieval
-            print("request.get_json():", request.get_json())
-            print("request.form:", request.form)
-            print("request.json:", request.json)
-
+            print(request.data)
             userid = get_userid_from_header()
-            print
-            try:
-                userid = int(userid)
-            except ValueError:
-                pass
-
-            # Find user
             user = Users.objects(id=userid).first()
-            if not user:
-                return jsonify({"error": "User not found"}), 400
+            data = json.loads(request.data)
+            print(user)
 
-            # Parsing incoming data
-            # data = json.loads(request.data)
-            data = request.get_json() or json.loads(request.data.decode("utf-8")) or {}
-            print("Received data: ", data)
-
-            # Updating fields
-            for key, value in data.items():
-                # only update if the key exists in the model
-                if hasattr(user, key):
-                    setattr(user, key, value)
-
-            # for key in data.keys():
-            #     user[key] = data[key]
+            for key in data.keys():
+                user[key] = data[key]
 
             if (
                 "picture" in data
@@ -333,15 +267,8 @@ def create_app():
             user.save()
             return jsonify(user.to_json()), 200
 
-        except ValueError as ve:
-            print(f"Value Error: {ve}")
-            return jsonify({"error": str(ve)}), 400
-            # return jsonify({"error": "Internal server error"}), 500
         except Exception as err:
-            print("Full error traceback:")
-            import traceback
-
-            traceback.print_exc()
+            print(err)
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/getRecommendations", methods=["GET"])
@@ -583,124 +510,6 @@ def create_app():
         return jsonify(df.to_dict("records"))
 
     # get data from the CSV file for rendering root page
-    # @app.route("/applications", methods=["GET"])
-    # def get_data():
-    #     """
-    #     Gets user's applications data from the database
-
-    #     :return: JSON object with application data
-    #     """
-    #     try:
-    #         userid = get_userid_from_header()
-    #         user = Users.objects(id=userid).first()
-    #         applications = user["applications"]
-    #         return jsonify(applications)
-    #     except:
-    #         return jsonify({"error": "Internal server error"}), 500
-
-    # @app.route("/applications", methods=["POST"])
-    # def add_application():
-    #     """
-    #     Add a new job application for the user
-
-    #     :return: JSON object with status and message
-    #     """
-    #     try:
-    #         userid = get_userid_from_header()
-    #         try:
-    #             request_data = json.loads(request.data)["application"]
-    #             _ = request_data["jobTitle"]
-    #             _ = request_data["companyName"]
-    #         except:
-    #             return jsonify({"error": "Missing fields in input"}), 400
-
-    #         user = Users.objects(id=userid).first()
-    #         current_application = {
-    #             "id": get_new_application_id(userid),
-    #             "jobTitle": request_data["jobTitle"],
-    #             "companyName": request_data["companyName"],
-    #             "date": request_data.get("date"),
-    #             "jobLink": request_data.get("jobLink"),
-    #             "location": request_data.get("location"),
-    #             "status": request_data.get("status", "1"),
-    #         }
-    #         applications = user["applications"] + [current_application]
-
-    #         user.update(applications=applications)
-    #         return jsonify(current_application), 200
-    #     except:
-    #         return jsonify({"error": "Internal server error"}), 500
-
-    # @app.route("/applications/<int:application_id>", methods=["PUT"])
-    # def update_application(application_id):
-    #     """
-    #     Updates the existing job application for the user
-
-    #     :param application_id: Application id to be modified
-    #     :return: JSON object with status and message
-    #     """
-    #     try:
-    #         userid = get_userid_from_header()
-    #         try:
-    #         request_data = json.loads(request.data)["application"]
-    #     except:
-    #         return jsonify({"error": "No fields found in input"}), 400
-
-    #     user = Users.objects(id=userid).first()
-    #     current_applications = user["applications"]
-
-    #     if len(current_applications) == 0:
-    #         return jsonify({"error": "No applications found"}), 400
-    #     else:
-    #         updated_applications = []
-    #         app_to_update = None
-    #         application_updated_flag = False
-    #         for application in current_applications:
-    #             if application["id"] == application_id:
-    #                 app_to_update = application
-    #                 application_updated_flag = True
-    #                 for key, value in request_data.items():
-    #                     application[key] = value
-    #             updated_applications += [application]
-    #         if not application_updated_flag:
-    #             return jsonify({"error": "Application not found"}), 400
-    #         user.update(applications=updated_applications)
-
-    #     return jsonify(app_to_update), 200
-    # except:
-    #     return jsonify({"error": "Internal server error"}), 500
-
-    # @app.route("/applications/<int:application_id>", methods=["DELETE"])
-    # def delete_application(application_id):
-    #     """
-    #     Deletes the given job application for the user
-
-    #     :param application_id: Application id to be modified
-    #     :return: JSON object with status and message
-    #     """
-    #     try:
-    #         userid = get_userid_from_header()
-    #         user = Users.objects(id=userid).first()
-
-    #         current_applications = user["applications"]
-
-    #         application_deleted_flag = False
-    #         updated_applications = []
-    #         app_to_delete = None
-    #         for application in current_applications:
-    #             if application["id"] != application_id:
-    #                 updated_applications += [application]
-    #             else:
-    #                 app_to_delete = application
-    #                 application_deleted_flag = True
-
-    #         if not application_deleted_flag:
-    #             return jsonify({"error": "Application not found"}), 400
-    #         user.update(applications=updated_applications)
-    #         return jsonify(app_to_delete), 200
-    #     except:
-    #         return jsonify({"error": "Internal server error"}), 500
-
     @app.route("/applications", methods=["GET"])
     def get_data():
         """
@@ -711,25 +520,9 @@ def create_app():
         try:
             userid = get_userid_from_header()
             user = Users.objects(id=userid).first()
-            # Convert EmbeddedDocument to dictionary for each application
-            applications = [
-                {
-                    "id": app.id,
-                    "jobTitle": app.jobTitle,
-                    "companyName": app.companyName,
-                    "date": app.date or "",
-                    "jobLink": app.jobLink or "",
-                    "location": app.location or "",
-                    "status": app.status or "",
-                    "notes": app.notes or "",
-                    "updates": app.updates or "",
-                    "email_reminder_sent": app.email_reminder_sent,
-                }
-                for app in user.applications
-            ]
+            applications = user["applications"]
             return jsonify(applications)
-        except Exception as e:
-            print(f"Error in get_data: {str(e)}")
+        except:
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/applications", methods=["POST"])
@@ -749,42 +542,20 @@ def create_app():
                 return jsonify({"error": "Missing fields in input"}), 400
 
             user = Users.objects(id=userid).first()
-
-            # Create new Application EmbeddedDocument
-            new_application = Application(
-                id=get_new_application_id(userid),
-                jobTitle=request_data["jobTitle"],
-                companyName=request_data["companyName"],
-                date=request_data.get("date"),
-                jobLink=request_data.get("jobLink"),
-                location=request_data.get("location"),
-                status=request_data.get("status", "1"),
-                notes=request_data.get("notes"),
-                updates=request_data.get("updates"),
-                email_reminder_sent=request_data.get("email_reminder_sent", False),
-            )
-
-            # Add to applications list
-            user.applications.append(new_application)
-            user.save()
-
-            # Convert to dict for response
-            response_data = {
-                "id": new_application.id,
-                "jobTitle": new_application.jobTitle,
-                "companyName": new_application.companyName,
-                "date": new_application.date,
-                "jobLink": new_application.jobLink,
-                "location": new_application.location,
-                "status": new_application.status,
-                "notes": new_application.notes,
-                "updates": new_application.updates,
-                "email_reminder_sent": new_application.email_reminder_sent,
+            current_application = {
+                "id": get_new_application_id(userid),
+                "jobTitle": request_data["jobTitle"],
+                "companyName": request_data["companyName"],
+                "date": request_data.get("date"),
+                "jobLink": request_data.get("jobLink"),
+                "location": request_data.get("location"),
+                "status": request_data.get("status", "1"),
             }
+            applications = user["applications"] + [current_application]
 
-            return jsonify(response_data), 200
-        except Exception as e:
-            print(f"Error in add_application: {str(e)}")
+            user.update(applications=applications)
+            return jsonify(current_application), 200
+        except:
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/applications/<int:application_id>", methods=["PUT"])
@@ -803,42 +574,27 @@ def create_app():
                 return jsonify({"error": "No fields found in input"}), 400
 
             user = Users.objects(id=userid).first()
+            current_applications = user["applications"]
 
-            # Find the application to update
-            app_index = None
-            for i, app in enumerate(user.applications):
-                if app.id == application_id:
-                    app_index = i
-                    break
+            if len(current_applications) == 0:
+                return jsonify({"error": "No applications found"}), 400
+            else:
+                updated_applications = []
+                app_to_update = None
+                application_updated_flag = False
+                for application in current_applications:
+                    if application["id"] == application_id:
+                        app_to_update = application
+                        application_updated_flag = True
+                        for key, value in request_data.items():
+                            application[key] = value
+                    updated_applications += [application]
+                if not application_updated_flag:
+                    return jsonify({"error": "Application not found"}), 400
+                user.update(applications=updated_applications)
 
-            if app_index is None:
-                return jsonify({"error": "Application not found"}), 400
-
-            # Update the application fields
-            for key, value in request_data.items():
-                if hasattr(user.applications[app_index], key):
-                    setattr(user.applications[app_index], key, value)
-
-            user.save()
-
-            # Convert updated application to dict for response
-            updated_app = user.applications[app_index]
-            response_data = {
-                "id": updated_app.id,
-                "jobTitle": updated_app.jobTitle,
-                "companyName": updated_app.companyName,
-                "date": updated_app.date,
-                "jobLink": updated_app.jobLink,
-                "location": updated_app.location,
-                "status": updated_app.status,
-                "notes": updated_app.notes,
-                "updates": updated_app.updates,
-                "email_reminder_sent": updated_app.email_reminder_sent,
-            }
-
-            return jsonify(response_data), 200
-        except Exception as e:
-            print(f"Error in update_application: {str(e)}")
+            return jsonify(app_to_update), 200
+        except:
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/applications/<int:application_id>", methods=["DELETE"])
@@ -853,36 +609,23 @@ def create_app():
             userid = get_userid_from_header()
             user = Users.objects(id=userid).first()
 
-            # Find the application to delete
-            app_to_delete = None
+            current_applications = user["applications"]
+
+            application_deleted_flag = False
             updated_applications = []
-
-            for app in user.applications:
-                if app.id == application_id:
-                    app_to_delete = {
-                        "id": app.id,
-                        "jobTitle": app.jobTitle,
-                        "companyName": app.companyName,
-                        "date": app.date,
-                        "jobLink": app.jobLink,
-                        "location": app.location,
-                        "status": app.status,
-                        "notes": app.notes,
-                        "updates": app.updates,
-                        "email_reminder_sent": app.email_reminder_sent,
-                    }
+            app_to_delete = None
+            for application in current_applications:
+                if application["id"] != application_id:
+                    updated_applications += [application]
                 else:
-                    updated_applications.append(app)
+                    app_to_delete = application
+                    application_deleted_flag = True
 
-            if not app_to_delete:
+            if not application_deleted_flag:
                 return jsonify({"error": "Application not found"}), 400
-
-            user.applications = updated_applications
-            user.save()
-
+            user.update(applications=updated_applications)
             return jsonify(app_to_delete), 200
-        except Exception as e:
-            print(f"Error in delete_application: {str(e)}")
+        except:
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/resume", methods=["POST"])

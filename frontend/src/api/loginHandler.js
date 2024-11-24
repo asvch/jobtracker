@@ -45,9 +45,7 @@ export const signUp = (params) => {
 // };
 
 export const storeToken = (obj) => {
-    // Converting userId to string to possibly solve that error about undefined or something
-    const userId = obj.userId ? obj.userId.toString() : null;
 	localStorage.setItem('token', obj.token);
 	localStorage.setItem('expiry', obj.expiry);
-	localStorage.setItem('userId', userId);
+	localStorage.setItem('userId', obj.userId);
 };
