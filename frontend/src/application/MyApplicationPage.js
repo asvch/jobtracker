@@ -21,7 +21,7 @@ const findStatus = (value) => {
 };
 
 const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, handleDeleteApplication, setApplicationList }) => {
-	const [expandedCardId, setExpandedCardId] = useState(null);
+	const [expandedCardIds, setExpandedCardIds] = useState(new Set());
 	const chartRef = useRef(null);
 	const chartInstance = useRef(null); // Ref to hold the chart instance
 	const categories = {
@@ -40,7 +40,7 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 		'Wish List': 'pink',
 		'Waiting for Referral': 'lightsteelblue',
 		Applied: 'green',
-		Accepted: 'green',
+		Accepted: 'seagreen',
 		Rejected: 'red',
 		'Took an Interview': 'orange',
 		'No Response': 'powderblue'
@@ -138,7 +138,10 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 	}, [applicationLists]);
 
 	const toggleCardExpansion = (id) => {
-		setExpandedCardId((prevId) => (prevId === id ? null : id));
+		let curExpanded = new Set(expandedCardIds)
+		if(!curExpanded.has(id)) curExpanded.add(id);
+		else curExpanded.delete(id);
+		setExpandedCardIds(curExpanded);
 	};
 
 	const handleDrag = async (e) => {
@@ -198,13 +201,13 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 			<Row style={{ marginBottom: '40px' }}>
 				<canvas ref={chartRef} />
 			</Row>
-			<Row style={{backgroundColor:"#d4d8de", overflow:"scroll"}}>
+			<Row style={{backgroundColor:"#d4d8de"}}>
 				<DragDropContext onDragEnd={handleDrag}>
 				<Droppable droppableId="board" type="Category" direction="horizontal">
 				{(provided) => (
 				<div ref={provided.innerRef} {...provided.droppableProps} {...provided.dragHandleProps} className="board" style={{display:'flex', padding: 0}}>
 				{ordered.map((status,index) => (
-					<Col key={status} md={2} style={{padding: "8px", border: "1px solid black"}}>
+					<Col key={status} md={2} style={{padding: "8px", border: "1px solid black"}} >
 					<Draggable
 						draggableId={`Category-${status}`}
 						key={status}
@@ -252,7 +255,7 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 																textAlign: "center"
 															}}
 														>
-															<OverlayTrigger placement='top' overlay={<Tooltip id={jobListing.id}>Click to {expandedCardId !== jobListing.id ? "expand" : "collapse"}</Tooltip>}>
+															<OverlayTrigger placement='top' overlay={<Tooltip id={jobListing.id}>Click to {expandedCardIds.has(jobListing.id) ? "expand" : "collapse"}</Tooltip>}>
 															<Card.Body onClick={() => toggleCardExpansion(jobListing.id)}>
 																<div>
 
@@ -260,7 +263,7 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 																	<br/>
 																	{jobListing?.jobTitle}
 																</div>
-																{expandedCardId === jobListing.id && (
+																{expandedCardIds.has(jobListing.id) && (
 																	<>
 																		<div>
 																			<strong>Location:</strong> {jobListing?.location}
