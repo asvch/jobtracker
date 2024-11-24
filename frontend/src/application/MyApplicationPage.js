@@ -1,8 +1,24 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import { Col, Container, Row, Card, Button } from 'react-bootstrap';
 import { baseApiURL } from '../api/base.ts';
 import { Chart, registerables } from 'chart.js';
 import { SankeyController, Flow } from 'chartjs-chart-sankey';
+
+// Add utility functions after imports
+const ensureArray = (data) => {
+	if (!data) return [];
+	return Array.isArray(data) ? data : [];
+};
+
+const safelyParseResponse = async (response) => {
+	try {
+		const data = await response.json();
+		return ensureArray(data);
+	} catch (error) {
+		console.error('Error parsing response:', error);
+		return [];
+	}
+};
 
 Chart.register(SankeyController, Flow, ...registerables);
 
@@ -203,8 +219,12 @@ const ApplicationPage = () => {
 				},
 				method: 'GET'
 			})
-				.then((response) => response.json())
-				.then((data) => setApplicationList(data));
+				.then(safelyParseResponse)
+				.then(data => setApplicationList(data))
+				.catch(error => {
+					console.error('Error fetching applications:', error);
+					setApplicationList([]);
+				});
 		}
 	}, [isChanged]);
 
@@ -239,19 +259,22 @@ const ApplicationPage = () => {
 							...application
 						}
 					}),
-					contentType: 'application/json'
+					// contentType: 'application/json'
 				})
-					.then((response) => response.json())
-					.then((data) => {
-						// Update the application id
-						application.id = data.id;
-						setApplicationList((prevApplicationList) => [...prevApplicationList, application]);
-
-						// Display an alert for new application added successfully
-						alert('New application added successfully!');
+					.then(safelyParseResponse)
+					.then(data => {
+						if (data && data.id) {
+							application.id = data.id;
+							setApplicationList(prevList => {
+								const currentList = ensureArray(prevList);
+								return [...currentList, application];
+							});
+							alert('New application added successfully!');
+						} else {
+							throw new Error('Invalid response data');
+						}
 					})
-					.catch((error) => {
-						// Handle error
+					.catch(error => {
 						console.error('Error:', error);
 						alert('Adding application failed!');
 					});
@@ -268,17 +291,16 @@ const ApplicationPage = () => {
 					}),
 					contentType: 'application/json'
 				})
-					.then((response) => response.json())
-					.then((data) => {
-						setApplicationList((prevApplicationList) => {
-							const updatedApplicationList = prevApplicationList.map((jobListing) =>
+					.then(safelyParseResponse)
+					.then(() => {
+						setApplicationList(prevList => {
+							const currentList = ensureArray(prevList);
+							return currentList.map(jobListing =>
 								jobListing.id === application.id ? application : jobListing
 							);
-							return updatedApplicationList;
 						});
 					})
-					.catch((error) => {
-						// Handle error
+					.catch(error => {
 						console.error('Error:', error);
 						alert('Update Failed!');
 					});
@@ -314,14 +336,23 @@ const ApplicationPage = () => {
 		setSelectedApplication(null);
 	};
 
-	const organizedApplications = applicationList.reduce((acc, jobListing) => {
-		const status = findStatus(jobListing.status);
-		if (!acc[status]) {
-			acc[status] = [];
-		}
-		acc[status].push(jobListing);
-		return acc;
-	}, {});
+	// Update organizedApplications using useMemo
+	const organizedApplications = useMemo(() => {
+		const validList = ensureArray(applicationList);
+
+		return validList.reduce((acc, jobListing) => {
+			if (!jobListing?.status) return acc;
+
+			const status = findStatus(jobListing.status);
+			if (!status) return acc;
+
+			if (!acc[status]) {
+				acc[status] = [];
+			}
+			acc[status].push(jobListing);
+			return acc;
+		}, {});
+	}, [applicationList]);
 
 	return (
 		<KanbanBoard

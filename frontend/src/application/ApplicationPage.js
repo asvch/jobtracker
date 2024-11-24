@@ -1,6 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, Col, Container, Row, Modal, Button, Form } from 'react-bootstrap';
 import { baseApiURL } from '../api/base.ts';
+
+const ensureArray = (data) => {
+	if (!data) return [];
+	return Array.isArray(data) ? data : [];
+};
+
+const safelyParseResponse = async (response) => {
+	try {
+		const data = await response.json();
+		return ensureArray(data);
+	} catch (error) {
+		console.error('Error parsing response:', error);
+		return [];
+	}
+};
 
 const ApplicationsList = ({
 	applicationList,
@@ -39,14 +54,29 @@ const ApplicationsList = ({
 		return status;
 	};
 
-	const filteredApplications = applicationList.filter((jobListing) => {
-		const titleMatch = jobListing.jobTitle.toLowerCase().includes(searchCriteria.jobTitle.toLowerCase());
-		const companyMatch = jobListing.companyName.toLowerCase().includes(searchCriteria.companyName.toLowerCase());
-		const locationMatch = jobListing.location.toLowerCase().includes(searchCriteria.location.toLowerCase());
-		const statusMatch = jobListing.status === searchCriteria.status || searchCriteria.status === '';
+	// Update the filteredApplications section in ApplicationsList component
+	const filteredApplications = useMemo(() => {
+		const validList = ensureArray(applicationList);
 
-		return titleMatch && companyMatch && locationMatch && statusMatch;
-	});
+		return validList.filter(jobListing => {
+			if (!jobListing?.jobTitle || !jobListing?.companyName || !jobListing?.location) {
+				return false;
+			}
+
+			const titleMatch = jobListing.jobTitle.toLowerCase().includes(
+				(searchCriteria.jobTitle || '').toLowerCase()
+			);
+			const companyMatch = jobListing.companyName.toLowerCase().includes(
+				(searchCriteria.companyName || '').toLowerCase()
+			);
+			const locationMatch = jobListing.location.toLowerCase().includes(
+				(searchCriteria.location || '').toLowerCase()
+			);
+			const statusMatch = jobListing.status === searchCriteria.status || !searchCriteria.status;
+
+			return titleMatch && companyMatch && locationMatch && statusMatch;
+		});
+	}, [applicationList, searchCriteria]);
 
 	return (
 		<>
@@ -377,7 +407,6 @@ const ApplicationPage = () => {
 	const [isChanged, setISChanged] = useState(true);
 
 	useEffect(() => {
-		// Fetch the list of applications from the backend API
 		if (isChanged) {
 			fetch(`${baseApiURL}/applications`, {
 				headers: {
@@ -387,8 +416,12 @@ const ApplicationPage = () => {
 				},
 				method: 'GET'
 			})
-				.then((response) => response.json())
-				.then((data) => setApplicationList(data));
+				.then(safelyParseResponse)
+				.then(data => setApplicationList(data))
+				.catch(error => {
+					console.error('Error fetching applications:', error);
+					setApplicationList([]);
+				});
 		}
 	}, [isChanged]);
 
@@ -457,26 +490,28 @@ const ApplicationPage = () => {
 						'Access-Control-Allow-Credentials': 'true'
 					},
 					method: 'POST',
-					body: JSON.stringify({
-						application: {
-							...application
-						}
-					})
+					body: JSON.stringify({ application })
 				})
-					.then((response) => response.json())
-					.then((data) => {
-						application.id = data.id;
-						setApplicationList((prevApplicationList) => [...prevApplicationList, application]);
+					.then(safelyParseResponse)
+					.then(data => {
+						if (data && data.id) {
+							application.id = data.id;
+							setApplicationList(prevList => {
+								const currentList = ensureArray(prevList);
+								return [...currentList, application];
+							});
 
-						// Send email reminder if email address is provided
-						if (emailAddress) {
-							sendEmailReminder(application, emailAddress);
+							if (emailAddress) {
+								sendEmailReminder(application, emailAddress);
+							}
+
+							alert('New application added successfully!');
+						} else {
+							throw new Error('Invalid response data');
 						}
-
-						alert('New application added successfully!');
 					})
-					.catch((error) => {
-						console.error('Error:', error);
+					.catch(error => {
+						console.error('Error adding application:', error);
 						alert('Adding application failed!');
 					});
 			} else {
@@ -489,26 +524,23 @@ const ApplicationPage = () => {
 						'Access-Control-Allow-Credentials': 'true'
 					},
 					method: 'PUT',
-					body: JSON.stringify({
-						application: application
-					})
+					body: JSON.stringify({ application })
 				})
-					.then((response) => response.json())
-					.then((data) => {
-						setApplicationList((prevApplicationList) => {
-							const updatedApplicationList = prevApplicationList.map((jobListing) =>
+					.then(safelyParseResponse)
+					.then(() => {
+						setApplicationList(prevList => {
+							const currentList = ensureArray(prevList);
+							return currentList.map(jobListing =>
 								jobListing.id === application.id ? application : jobListing
 							);
-							return updatedApplicationList;
 						});
 
-						// Send email reminder if email address is provided
 						if (emailAddress) {
 							sendEmailReminder(application, emailAddress);
 						}
 					})
-					.catch((error) => {
-						console.error('Error:', error);
+					.catch(error => {
+						console.error('Error updating application:', error);
 						alert('Update Failed!');
 					});
 			}
