@@ -596,7 +596,7 @@ def create_app():
                             application[key] = value
                     updated_applications += [application]
                 if not application_updated_flag:
-                    return jsonify({"error": "Application not found"}), 400
+                    return jsonify({"error": "Application not found"}), 404
                 user.update(applications=updated_applications)
 
             return jsonify(app_to_update), 200

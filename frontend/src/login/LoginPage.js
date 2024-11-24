@@ -104,12 +104,12 @@ export default class LoginPage extends Component {
 							<form>
 								<div className='form-group my-4'>
 									<label>Username</label>
-									<input type='text' className='form-control' id='uname' placeholder='Enter username' />
+									<input type='text' className='form-control' id='uname' placeholder='Enter username' data-testid="login-username"/>
 								</div>
 
 								<div className='form-group my-4'>
 									<label>Password</label>
-									<input type='password' className='form-control' id='pwd' placeholder='Enter password' />
+									<input type='password' className='form-control' id='pwd' placeholder='Enter password' data-testid="login-password" />
 								</div>
 								<div className='d-flex justify-content-center'>
 									<button
@@ -144,15 +144,15 @@ export default class LoginPage extends Component {
 							<form>
 								<div className='form-group my-4'>
 									<label>Full name</label>
-									<input type='text' className='form-control' id='fullname' placeholder='Full name' />
+									<input type='text' className='form-control' id='fullname' placeholder='Full name' data-testid="signup-name" />
 								</div>
 								<div className='form-group my-4'>
 									<label>Username</label>
-									<input type='text' className='form-control' id='suname' placeholder='Enter username' />
+									<input type='text' className='form-control' id='suname' placeholder='Enter username' data-testid="signup-username" />
 								</div>
 								<div className='form-group my-4'>
 									<label>Password</label>
-									<input type='password' className='form-control' id='spwd' placeholder='Enter password' />
+									<input type='password' className='form-control' id='spwd' placeholder='Enter password' data-testid="signup-password" />
 								</div>
 								<div className='d-flex justify-content-center'>
 									<button
