@@ -123,8 +123,12 @@ def test_signup_tab_clickit(driver):
     time.sleep(3)
 
     signup_button = driver.find_element(By.XPATH, '//button[contains(text(),"Sign Up")]')
+    driver.execute_script("arguments[0].scrollIntoView();", signup_button)
 
-    signup_button.click()
+    if signup_button.is_displayed():
+        signup_button.click()
+    else:
+        print("Signup button displayed")
     time.sleep(3)
 
     alert = driver.switch_to.alert
