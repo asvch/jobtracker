@@ -3,11 +3,9 @@
 ![GitHub issues](https://img.shields.io/github/issues/asvch/jobtracker)
 ![GitHub issues](https://img.shields.io/github/issues-closed/asvch/jobtracker)
 ![GitHub top language](https://img.shields.io/github/languages/top/asvch/jobtracker)
-[![Build](https://github.com/asvch/jobtracker/actions/workflows/build.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/build.yml)
 [![Pytest](https://github.com/asvch/jobtracker/actions/workflows/pytest.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/pytest.yml)
 [![codecov](https://codecov.io/gh/asvch/jobtracker/graph/badge.svg?token=XCRF456LTP)](https://codecov.io/gh/asvch/jobtracker)
 [![Pylint](https://github.com/asvch/jobtracker/actions/workflows/pylint.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/pylint.yml)
-[![Prettier](https://github.com/asvch/jobtracker/actions/workflows/prettier.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/prettier.yml)
 
 # J-Tracker - Your Job Tracking Assistant
 
