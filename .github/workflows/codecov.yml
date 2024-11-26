@@ -3,8 +3,8 @@ name: Code Coverage
 on:
   push:
     branches: [project3]
-  # pull_request:
-  #   branches: [project3]
+  pull_request:
+    branches: [project3]
 
 jobs:
   frontend-tests:
@@ -55,7 +55,7 @@ jobs:
       if: always()
       uses: codecov/codecov-action@v3
       with:
-          files: ./backend/coverage-backend.xml
+          files: ./backend/coverage-frontend.xml
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false

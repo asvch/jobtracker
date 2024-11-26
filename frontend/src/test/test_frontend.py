@@ -8,9 +8,9 @@ import time
 @pytest.fixture(scope="module")
 def driver():
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
+    # chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--no-sandbox")
+    # chrome_options.add_argument("--disable-dev-shm-usage")
     driver = webdriver.Chrome(options=chrome_options)
     # driver = webdriver.Chrome()
     driver.get("http://localhost:3000")  
@@ -40,7 +40,31 @@ def test_invalid_login(driver):
 
     alert = driver.switch_to.alert
     alert_text = alert.text
+    alert.accept()
     assert "Error while login" in alert_text, "Alert message is not as expected"
+
+
+def test_signup(driver):
+
+    signup_tab = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/nav/a[2]")
+    fullname = driver.find_element(By.ID, "fullname")
+    username_field = driver.find_element(By.ID, "suname")
+    password_field = driver.find_element(By.ID, "spwd")
+    signup_button = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/div/div[2]/form/div[4]/button[1]")
+
+    signup_tab.click()
+    time.sleep(3)
+    fullname.send_keys("sponge10")
+    username_field.send_keys("sponge10")
+    password_field.send_keys("sponge10")
+    signup_button.click()
+
+    time.sleep(5)
+
+    alert = driver.switch_to.alert
+    alert_text = alert.text
+    assert "Proceed to Login" in alert_text, "Alert message is not as expected"
+
 
 # def test_login(driver):
 #     # Locate username and password fields and login button
