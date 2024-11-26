@@ -55,7 +55,7 @@ jobs:
         run: |
           cd ./frontend
           pwd
-          pytest src/test --driver Chrome --headless --cov --cov-report=xml:coverage-frontend.xml
+          pytest src/test --cov --cov-report=xml:coverage-frontend.xml
 
       - name: Backend test with pytest
         run: |
