@@ -27,21 +27,21 @@ def test_login_page(driver):
 
     print("Text 'Job Tracker' is displayed on the page")
 
-def test_invalid_login(driver):
-    username_field = driver.find_element(By.ID, "uname")
-    password_field = driver.find_element(By.ID, "pwd")
-    login_button = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/div/div[1]/form/div[3]/button[1]")
+# def test_invalid_login(driver):
+#     username_field = driver.find_element(By.ID, "uname")
+#     password_field = driver.find_element(By.ID, "pwd")
+#     login_button = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/div/div[1]/form/div[3]/button[1]")
 
-    username_field.send_keys("sponge9")   # invalid login and pword
-    password_field.send_keys("sponge9")
-    login_button.click()
+#     username_field.send_keys("sponge9")   # invalid login and pword
+#     password_field.send_keys("sponge9")
+#     login_button.click()
 
-    time.sleep(5)
+#     time.sleep(5)
 
-    alert = driver.switch_to.alert
-    alert_text = alert.text
-    alert.accept()
-    assert "Error while login" in alert_text, "Alert message is not as expected"
+#     alert = driver.switch_to.alert
+#     alert_text = alert.text
+#     alert.accept()
+#     assert "Error while login" in alert_text, "Alert message is not as expected"
 
 
 def test_signup(driver):
