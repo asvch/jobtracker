@@ -39,8 +39,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y texlive-xetex texlive-fonts-extra
 
-      - name: Set environment variable for MongoDB
-        run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
+      # - name: Set environment variable for MongoDB
+      #   run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
+
+      - name: Set MongoDB connection string 
+        run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV 
+        
+      - name: Verify MongoDB connection string 
+        run: echo "MONGODB_URI is $MONGODB_URI"
 
       - name: Test with pytest
         run: |

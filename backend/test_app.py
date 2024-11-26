@@ -592,30 +592,30 @@ def test_resume(client, mocker, user):
     assert rv.status_code == 200
 
 
-# def test_login_fields(client):
-#     """
-#     Tests that the login endpoint returns required fields
-#     :param client: mongodb client
-#     """
-#     data = {"username": username, "password": password, "fullName": fullName}
-#     rv = client.post("/users/login", json=data)
+def test_login_fields(client):
+    """
+    Tests that the login endpoint returns required fields
+    :param client: mongodb client
+    """
+    data = {"username": username, "password": password, "fullName": fullName}
+    rv = client.post("/users/login", json=data)
 
-#     resp_body = json.loads(rv.data.decode("utf-8"))
+    resp_body = json.loads(rv.data.decode("utf-8"))
 
-#     assert rv.status_code == 200, "Expected status code 200, got {}".format(
-#         rv.status_code
-#     )
+    assert rv.status_code == 200, "Expected status code 200, got {}".format(
+        rv.status_code
+    )
 
-#     profile = resp_body[0]["profile"]
+    profile = resp_body[0]["profile"]
 
-#     assert "token" in resp_body[0], "Expected token in response body"
+    assert "token" in resp_body[0], "Expected token in response body"
 
-#     assert "skills" in profile, "Expected skills in response body"
-#     assert "job_levels" in profile, "Expected job_levels in response body"
-#     assert "locations" in profile, "Expected locations in response body"
-#     assert "institution" in profile, "Expected institution in response body"
-#     assert "phone_number" in profile, "Expected phone_number in response body"
-#     assert "address" in profile, "Expected address in response body"
+    assert "skills" in profile, "Expected skills in response body"
+    assert "job_levels" in profile, "Expected job_levels in response body"
+    assert "locations" in profile, "Expected locations in response body"
+    assert "institution" in profile, "Expected institution in response body"
+    assert "phone_number" in profile, "Expected phone_number in response body"
+    assert "address" in profile, "Expected address in response body"
 
 
 def test_resume_templates(client):
