@@ -49,29 +49,40 @@ https://drive.google.com/file/d/1ex5-YLe7Nk8qPSVuC0A4Oy5Kil-VJqz9/view
 
 View your recommended jobs and search for new positions all in one page now! 
 
+![alt text](image-1.png)
+
 ## 2) Redesigned Kanban Board:
 
-Now with drag and drop functionality!
+Now with drag and drop functionality! Drag and drop from column to column and watch the diagram also change with it.
+
+![alt text](image.png)
 
 
 ## 3) A New LLM Agent Helper for All Your Questions:
 
 Having issues with your job search? We know it can be frustrating. Ask our LLM expert any questions you have or advice you need! With the click of a button, access this expert from any page on Job Tracker for helpful advice!
 
+![alt text](image-2.png)
+
 
 ## 4) Email Reminders:
 
 Don't forget about that deadline or that interview! When you log an application on the site, send yourself an email to make sure you follow through on the next steps!
+
+![alt text](image-3.png)
 
 
 ## 5) Bug Fixes for Saving Users Information:
 
 Previously, the user information on the profile page could not be updated. But that is now sorted! Update your languages, interests, school, and more in your profile tab!
 
+![alt text](image-4.png)
+
 
 ## Future Scope:
 
-- Fine tune the LLM to make it more of a proper expert on career related information.
+- Fine-tune the LLM bot so it provides better career advice after training.
+- Interview Prep Tools: Add features like mock interview simulations and frequently asked questions tailored to job descriptions.
 - Add a feature that allows users to attach these reminders to their Google calendar.
 - Work on better web scraping so the columns display correct values in the search and recommendations tables.
 - Work on a recommender algorithm to more cleverly suggest jobs for each user based on their interests.
