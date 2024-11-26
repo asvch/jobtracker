@@ -115,6 +115,23 @@ def test_signup_tab_clickable(driver):
 
     assert signup_button.is_enabled()
 
+def test_signup_tab_clickit(driver):
+
+    signup_tab = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/nav/a[2]")
+
+    signup_tab.click()
+    time.sleep(3)
+
+    signup_button = driver.find_element(By.XPATH, '//button[contains(text(),"Sign Up")]')
+
+    signup_button.click()
+    time.sleep(3)
+
+    alert = driver.switch_to.alert
+    alert_text = alert.text
+    alert.accept()
+    assert "Proceed to Login" in alert_text, "Alert message is not as expected"
+
 # def test_signup(driver):
 
 #     signup_tab = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/nav/a[2]")
