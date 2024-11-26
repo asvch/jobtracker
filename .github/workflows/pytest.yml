@@ -38,7 +38,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install pytest pytest-selenium selenium
+        pip install pytest pytest-selenium selenium pytest-cov
     
     # - name: Install Latex
     #   run: |
