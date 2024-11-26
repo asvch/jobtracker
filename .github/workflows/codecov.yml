@@ -42,27 +42,34 @@ jobs:
       - name: Set environment variable for MongoDB
         run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
 
-      - name: Test with pytest
+      - name: Frontend test with pytest
+        run: |
+          cd ./frontend
+          pwd
+          pytest src/test --driver Chrome --headless --cov --cov-report=xml:coverage-frontend.xml
+
+      - name: Backend test with pytest
         run: |
           cd ./backend
           pwd
-          pytest --cov --cov-report=xml:coverage.xml
-    
-    #   - name: Test selenium
-    #     run: |
-    #       cd ./frontend/src/test
-    #       pwd
-    #       pytest --cov 
-
+          pytest --cov --cov-report=xml:coverage-backend.xml
+      
+      # - name: Test with pytest
+      #   run: |
+      #     cd ./frontend
+      #     pwd
+      #     pytest src/test --driver Chrome --headless --cov --cov-report=xml:coverage-frontend.xml
 
       - name: Upload coverage to Codecov
         if: always()
         uses: codecov/codecov-action@v3
         with:
-          files: ./backend/coverage.xml
+          files: |
+            ./backend/coverage-backend.xml
+            ./frontend/coverage-frontend.xml
           flags: unittests
           name: codecov-umbrella
-        #   fail_ci_if_error: true
+          # fail_ci_if_error: true
           fail_ci_if_error: false
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
