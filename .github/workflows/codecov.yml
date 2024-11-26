@@ -108,7 +108,13 @@ jobs:
               pip install -r ./backend/requirements.txt
               sudo apt-get update
               sudo apt-get install -y texlive-xetex texlive-fonts-extra
-  
+
+      - name: Set Multiple Environment Variables
+        run: |
+                  echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" >> $GITHUB_ENV
+                  echo "REACT_APP_BACKEND_BASE_URL=${{ secrets.REACT_APP_BACKEND_BASE_URL }}" >> $GITHUB_ENV
+                  echo "MONGODB_HOST_STRING=${{ secrets.MONGODB_HOST_STRING }}" >> $GITHUB_ENV
+
       - name: Set environment variable for MongoDB
         run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
         

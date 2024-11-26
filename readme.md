@@ -1,13 +1,12 @@
 [![GitHub license](https://img.shields.io/github/license/asvch/jobtracker)](https://github.com/asvch/jobtracker/blob/project2/LICENSE)
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/asvch/jobtracker/project3)
 [![DOI](https://zenodo.org/badge/885974538.svg)](https://doi.org/10.5281/zenodo.14224565)
 ![GitHub issues](https://img.shields.io/github/issues/asvch/jobtracker)
 ![GitHub issues](https://img.shields.io/github/issues-closed/asvch/jobtracker)
 ![GitHub top language](https://img.shields.io/github/languages/top/asvch/jobtracker)
-[![Build](https://github.com/asvch/jobtracker/actions/workflows/build.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/build.yml)
 [![Pytest](https://github.com/asvch/jobtracker/actions/workflows/pytest.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/pytest.yml)
 [![codecov](https://codecov.io/gh/asvch/jobtracker/graph/badge.svg?token=XCRF456LTP)](https://codecov.io/gh/asvch/jobtracker)
 [![Pylint](https://github.com/asvch/jobtracker/actions/workflows/pylint.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/pylint.yml)
-[![Prettier](https://github.com/asvch/jobtracker/actions/workflows/prettier.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/prettier.yml)
 
 # J-Tracker - Your Job Tracking Assistant
 
@@ -15,11 +14,13 @@ The process of applying for jobs and internships is not a cakewalk. Managing job
 
 Our application keeps track of the jobs you've added to your wish list. It also keeps track of the companies you've already applied to and keeps a list of any rejections. Rather than having the user browse each company's site for potential prospects, our application allows the applicant to search for them directly using basic keywords. Any prospective work offers can then be added to the applicant's wishlist.
 
+Video: https://www.canva.com/design/DAGXnn0mqe4/Wh2PcCvbZVNBjhWoCMuC4g/watch
+
 ## Table of contents
 
 - [Basic Design](#basic-design)
 - [Demo Video](#demo-video)
-- [Improvements and Feature Additions](#improvements-and-feature-additions)
+- [Improvements and Feature Additions](https://github.com/asvch/jobtracker?tab=readme-ov-file#improvements-and-feature-additions-fall-2024-csc-510-g56)
 - [Future Scope](#future-scope)
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
@@ -41,9 +42,9 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 ## Demo Video
 
-https://drive.google.com/file/d/1ex5-YLe7Nk8qPSVuC0A4Oy5Kil-VJqz9/view
+https://www.canva.com/design/DAGXnn0mqe4/Wh2PcCvbZVNBjhWoCMuC4g/watch
 
-## Improvements and Feature Additions Fall 2024 CSC-510-G55
+## Improvements and Feature Additions Fall 2024 CSC-510-G56
 
 ## 1) A New Home Page:
 
