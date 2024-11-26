@@ -27,7 +27,7 @@ import shutil
 import jinja2
 import base64
 from groq import Groq
-
+from util import send_application_reminder
 from util import load_and_run_function
 
 load_dotenv()
@@ -817,6 +817,30 @@ def create_app():
         except:
             return jsonify({"error": "Internal server error"}), 500
         
+    @app.route("/send-reminder", methods=["POST"])
+    @cross_origin()
+    def send_reminder():
+        try:
+            # Get data from request
+            # data = request.get_json()
+            data = json.loads(request.data)
+            email = data.get("email")
+            application_data = data.get("application")
+
+            if not email or not application_data:
+                return jsonify({"error": "Missing email or application data"}), 400
+
+            # Send email
+            success, message = send_application_reminder(email, application_data)
+
+            if success:
+                return jsonify({"message": "Reminder email sent successfully"}), 200
+            else:
+                return jsonify({"error": f"Failed to send email: {message}"}), 500
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
     @app.route("/getLLMresponse", methods=["POST"])
     def getLLMresponse():
 
@@ -850,16 +874,32 @@ app = create_app()
 
 
 app.config["MONGODB_SETTINGS"] = {
-    "db": "Group56F24",
+    "db": "mydatabase",
     "host": os.getenv("MONGODB_HOST_STRING"),
-    "tls": True,
-    "tlsAllowInvalidCertificates": True
+    # "tls": True,
+    # "tlsAllowInvalidCertificates": True
 }
 
 
 db = MongoEngine()
 db.init_app(app)
 
+
+class Application(db.EmbeddedDocument):
+    """
+    Embedded document for storing application details
+    """
+
+    id = db.IntField(required=True)
+    jobTitle = db.StringField(required=True)
+    companyName = db.StringField(required=True)
+    location = db.StringField()
+    date = db.StringField()
+    status = db.StringField()
+    jobLink = db.StringField()
+    notes = db.StringField()
+    updates = db.StringField()
+    email_reminder_sent = db.BooleanField(default=False)
 
 class Users(db.Document):
     """
@@ -872,7 +912,7 @@ class Users(db.Document):
     password = db.StringField()
     authTokens = db.ListField()
     email = db.StringField()
-    applications = db.ListField()
+    applications = db.ListField(db.EmbeddedDocumentField(Application))
     resume = db.FileField()
     skills = db.ListField()
     job_levels = db.ListField()
