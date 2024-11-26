@@ -1,4 +1,5 @@
 [![GitHub license](https://img.shields.io/github/license/asvch/jobtracker)](https://github.com/asvch/jobtracker/blob/project2/LICENSE)
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/asvch/jobtracker/project3)
 [![DOI](https://zenodo.org/badge/885974538.svg)](https://doi.org/10.5281/zenodo.14224565)
 ![GitHub issues](https://img.shields.io/github/issues/asvch/jobtracker)
 ![GitHub issues](https://img.shields.io/github/issues-closed/asvch/jobtracker)
