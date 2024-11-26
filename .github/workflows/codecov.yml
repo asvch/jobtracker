@@ -40,7 +40,7 @@ jobs:
     - name: Run frontend Selenium tests
       run: |
         cd frontend/src/test
-        pytest src/test --cov --cov-report=xml:coverage-frontend.xml
+        pytest src/test 
 
     - name: Kill frontend server
       run: |
