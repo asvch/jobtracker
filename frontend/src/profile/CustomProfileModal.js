@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Modal, ModalBody, ModalFooter, Form, Button } from 'react-bootstrap';
-import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import { CONSTANTS } from '../data/Constants';
 import { baseApiURL } from '../api/base.ts';
 
@@ -64,8 +63,7 @@ const CustomProfileModal = (props) => {
 					},
 					{
 						headers: {
-							// userid: profile.id,
-							Authorization: `Bearer ${localStorage.getItem('token')}`
+							userid: profile.id,
 						}
 					}
 				);
@@ -89,10 +87,10 @@ const CustomProfileModal = (props) => {
 
 	return (
 		<Modal show={true} centered>
-			<ModalHeader>
+			<Modal.Header>
 				<h5 class='modal-title'>Edit Details</h5>
 				<button type='button' class='btn-close' aria-label='Close' onClick={() => setModalOpen(false)}></button>
-			</ModalHeader>
+			</Modal.Header>
 			<ModalBody>
 				{error && <div style={{ color: 'red', fontSize: 12, marginBottom: 10 }}>{errorMessage}</div>}
 				<Form>

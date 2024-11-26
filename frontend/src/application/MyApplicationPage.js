@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Col, Container, Row, Card, Button } from 'react-bootstrap';
+import { Col, Container, Row, Card, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { baseApiURL } from '../api/base.ts';
 import { Chart, registerables } from 'chart.js';
 import { SankeyController, Flow } from 'chartjs-chart-sankey';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 Chart.register(SankeyController, Flow, ...registerables);
+
 
 const findStatus = (value) => {
 	let status = '';
@@ -18,20 +20,30 @@ const findStatus = (value) => {
 	return status;
 };
 
-const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, handleDeleteApplication }) => {
-	const [expandedCardId, setExpandedCardId] = useState(null);
+const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, handleDeleteApplication, setApplicationList }) => {
+	const [expandedCardIds, setExpandedCardIds] = useState(new Set());
 	const chartRef = useRef(null);
 	const chartInstance = useRef(null); // Ref to hold the chart instance
+	const categories = {
+		'Wish List': "1",
+		'Waiting for Referral': "2",
+		'No Response': "3",
+		'Rejected': "4",
+		'Accepted': "5",
+		'Took an Interview': "6"
+	}
+	const [ ordered, setOrdered ] = useState(Object.keys(categories))
+	const [applications, setApplications] = useState(Object.keys(categories).map(() => []))
 
 	const colors = {
 		Applications: 'brown',
 		'Wish List': 'pink',
-		'Waiting for Referral': 'purple',
+		'Waiting for Referral': 'lightsteelblue',
 		Applied: 'green',
-		Accepted: 'green',
+		Accepted: 'seagreen',
 		Rejected: 'red',
 		'Took an Interview': 'orange',
-		'No Response': 'grey'
+		'No Response': 'powderblue'
 	};
 
 	const statusFrom = {
@@ -90,7 +102,8 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 		console.log('applicationLists:', applicationLists);
 		console.log('filteredData:', filteredData);
 
-		if (applicationLists && filteredData.length > 0) {
+		if (applicationLists) {
+			if(filteredData.length > 0){
 			const ctx = chartRef.current.getContext('2d');
 
 			if (chartInstance.current) {
@@ -113,74 +126,175 @@ const KanbanBoard = ({ applicationLists, handleCardClick, handleUpdateDetails, h
 					]
 				}
 			});
+			}
+			let temp = [...applications];
+			Object.entries(applicationLists).forEach((entry) => {
+				temp[parseInt(categories[entry[0]])-1] = entry[1]
+			})
+			setApplications(temp)
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [applicationLists]);
 
 	const toggleCardExpansion = (id) => {
-		setExpandedCardId((prevId) => (prevId === id ? null : id));
+		let curExpanded = new Set(expandedCardIds)
+		if(!curExpanded.has(id)) curExpanded.add(id);
+		else curExpanded.delete(id);
+		setExpandedCardIds(curExpanded);
 	};
+
+	const handleDrag = async (e) => {
+		const dst = e.destination
+		if(dst !== null){
+			const src = e.source
+			const newApplications = [...applications]
+			if(e.type == "Category"){
+				let temp = [...ordered]
+				let swapping = ordered[src.index]
+				temp[src.index] = temp[dst.index]
+				temp[dst.index] = swapping
+				setOrdered(temp)
+			} else {
+				const srcArray = newApplications[parseInt(categories[src.droppableId]) - 1]
+				const dstArray = newApplications[parseInt(categories[dst.droppableId]) - 1]
+				const temp = srcArray[src.index];
+				temp.status = categories[dst.droppableId]
+				try {
+					let resp = await fetch(`${baseApiURL}/applications/${temp.id}`, {
+						headers: {
+							Authorization: 'Bearer ' + localStorage.getItem('token'),
+							'Access-Control-Allow-Origin': 'http://127.0.0.1:3000',
+							'Access-Control-Allow-Credentials': 'true'
+						},
+						method: 'PUT',
+						body: JSON.stringify({
+							application: temp
+						}),
+						contentType: 'application/json'
+					})
+					if (!resp.ok) {
+						alert('Update Failed!');
+						return;
+					}
+					setApplicationList((prevApplicationList) => {
+						const updatedApplicationList = prevApplicationList.map((jobListing) =>
+							jobListing.id === temp.id ? temp : jobListing
+						);
+						return updatedApplicationList;
+					});
+				} catch {
+					alert('Update Failed!');
+					return;
+				}
+				const removed = srcArray.splice(src.index, 1)[0]
+				removed.status = categories[dst.droppableId]
+				if (dstArray.length > 0) dstArray.splice(dst.index, 0, removed)
+				else dstArray.push(removed)
+				setApplications(newApplications)
+			}
+		}
+	}
 
 	return (
 		<Container style={{ marginTop: '20px', marginBottom: '20px', marginLeft: '110px' }}>
 			<Row style={{ marginBottom: '40px' }}>
 				<canvas ref={chartRef} />
 			</Row>
-			<Row>
-				{Object.keys(applicationLists).map((status) => (
-					<Col key={status} md={3} style={{ marginBottom: '20px' }}>
-						{applicationLists[status] && (
-							<Card style={{ borderRadius: '5px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', overflow: 'hidden' }}>
-								<Card.Header
-									as='h5'
+			<Row style={{backgroundColor:"#d4d8de"}}>
+				<DragDropContext onDragEnd={handleDrag}>
+				<Droppable droppableId="board" type="Category" direction="horizontal">
+				{(provided) => (
+				<div ref={provided.innerRef} {...provided.droppableProps} {...provided.dragHandleProps} className="board" style={{display:'flex', padding: 0}}>
+				{ordered.map((status,index) => (
+					<Col key={status} md={2} style={{padding: "8px", border: "1px solid black"}} >
+					<Draggable
+						draggableId={`Category-${status}`}
+						key={status}
+						index={index}
+					>
+					{(provided) => (
+						<div
+							ref={provided.innerRef}
+							{...provided.draggableProps}
+							{...provided.dragHandleProps}
+						>
+						{(
+							<div style={{backgroundColor: "#d4d8de"}}>
+								<h6
 									style={{
-										backgroundColor: colors[status],
-										borderBottom: '1px solid #dee2e6',
-										color: 'black'
+										backgroundColor: "#d4d8de",
+										borderBottom: '1px solid black',
+										color: 'black',
+										textAlign:"center"
 									}}
 								>
 									{status}
-								</Card.Header>
-								<Card.Body style={{ padding: '20px' }}>
-									{applicationLists[status].map((jobListing) => (
-										<div key={jobListing.id} style={{ marginBottom: '10px' }}>
-											<Card
-												style={{
-													borderColor: '#ccc',
-													borderRadius: '5px',
-													boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-													transition: '0.3s',
-													cursor: 'pointer',
-													marginBottom: '10px'
-												}}
-											>
-												<Card.Body style={{ padding: '20px' }}>
-													<div>
-														<strong>{jobListing?.jobTitle}</strong> - {jobListing?.companyName}
+								</h6>
+								<Card.Body >
+									<Droppable droppableId={`${status}`} ignoreContainerClipping={ true }>
+											{(provided) => (
+												<div ref={provided.innerRef}>
+									{applications[parseInt(categories[status])-1].length > 0 && applications[parseInt(categories[status])-1].map((jobListing,index) => (
+										<Draggable
+											draggableId={jobListing.id.toString()}
+											key={jobListing.id}
+											index={index}
+										>
+											{(provided) => (
+												<div
+													ref={provided.innerRef}
+													{...provided.draggableProps}
+													{...provided.dragHandleProps}
+												>
+													<div key={jobListing.id} style={{ marginBottom: '10px' }} >
+														<Card
+															style={{
+																backgroundColor: colors[status],
+																padding: "0",
+																textAlign: "center"
+															}}
+														>
+															<OverlayTrigger placement='top' overlay={<Tooltip id={jobListing.id}>Click to {expandedCardIds.has(jobListing.id) ? "expand" : "collapse"}</Tooltip>}>
+															<Card.Body onClick={() => toggleCardExpansion(jobListing.id)}>
+																<div>
+
+																	<strong>{jobListing?.companyName}</strong>
+																	<br/>
+																	{jobListing?.jobTitle}
+																</div>
+																{expandedCardIds.has(jobListing.id) && (
+																	<>
+																		<div>
+																			<strong>Location:</strong> {jobListing?.location}
+																		</div>
+																		<div>
+																			<strong>Date:</strong> {jobListing?.date}
+																		</div>
+																	</>
+																)}
+															</Card.Body>
+															</OverlayTrigger>
+														</Card>
 													</div>
-													{expandedCardId === jobListing.id && (
-														<>
-															<div>
-																<strong>Location:</strong> {jobListing?.location}
-															</div>
-															<div>
-																<strong>Date:</strong> {jobListing?.date}
-															</div>
-														</>
-													)}
-													<Button onClick={() => toggleCardExpansion(jobListing.id)}>
-														{expandedCardId === jobListing.id ? 'Collapse' : 'Expand'}
-													</Button>
-												</Card.Body>
-											</Card>
-										</div>
+												</div>
+											)}
+										</Draggable>
 									))}
+									{provided.placeholder}
+									</div>)}
+									</Droppable>
 								</Card.Body>
-							</Card>
+							</div>
 						)}
+					</div>)}
+					</Draggable>
 					</Col>
 				))}
+				{provided.placeholder}
+				</div>)}
+				</Droppable>
+				</DragDropContext>
 			</Row>
 		</Container>
 	);
@@ -329,6 +443,7 @@ const ApplicationPage = () => {
 			handleCardClick={handleCardClick}
 			handleUpdateDetails={handleUpdateDetails}
 			handleDeleteApplication={handleDeleteApplication}
+			setApplicationList={setApplicationList}
 		/>
 	);
 };

@@ -1,15 +1,14 @@
 import React from 'react';
 import { Button, Modal, ModalBody, ModalFooter } from 'react-bootstrap';
-import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 
 const JobDescription = (props) => {
 	const { selectedJob, setState } = props;
 	const { qualifications, responsibilities, benefits } = selectedJob;
 	return (
 		<Modal centered show={true} scrollable size='xl'>
-			<ModalHeader style={{ backgroundColor: '#296E85', color: '#fff' }}>
+			<Modal.Header style={{ backgroundColor: '#296E85', color: '#fff' }}>
 				<h4 className='mb-0 p-2'>Job Description</h4>
-			</ModalHeader>
+			</Modal.Header>
 			<ModalBody className='p-4'>
 				{qualifications && qualifications.length > 0 && (
 					<div className='mb-4'>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import { Modal, ModalBody, ModalFooter } from 'react-bootstrap';
-import ModalHeader from 'react-bootstrap/esm/ModalHeader';
 import axios from 'axios';
 import { baseApiURL } from '../api/base.ts';
 
@@ -47,7 +46,7 @@ const CustomModal = (props: CustomModalProps) => {
 				{
 					headers: {
 						userid: localStorage.getItem('userId')!,
-						Authorization: `Bearer ${localStorage.getItem('Token')}`
+						Authorization: `Bearer ${localStorage.getItem('token')}`
 					}
 				}
 			)
@@ -63,7 +62,7 @@ const CustomModal = (props: CustomModalProps) => {
 	};
 	return (
 		<Modal show={true} centered size='lg'>
-			<ModalHeader style={{ backgroundColor: '#296E85', color: '#fff' }}>
+			<Modal.Header style={{ backgroundColor: '#296E85', color: '#fff' }}>
 				<h5 className='modal-title'>Set {name}</h5>
 				<button
 					type='button'
@@ -72,7 +71,7 @@ const CustomModal = (props: CustomModalProps) => {
 					onClick={() => setModalOpen(false)}
 					style={{ backgroundColor: '#fff' }}
 				></button>
-			</ModalHeader>
+			</Modal.Header>
 			<ModalBody>
 				{modalType === ModalType.TEXT && (
 					<input
