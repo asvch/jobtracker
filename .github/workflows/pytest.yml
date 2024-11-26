@@ -42,23 +42,25 @@ jobs:
       - name: Set environment variable for MongoDB
         run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
 
-      # - name: Set MongoDB connection string 
-      #   run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV 
-
-      # - name: Verify MongoDB connection string 
-      #   run: echo "MONGODB_URI is $MONGODB_URI"
-
       - name: Test with pytest
         run: |
           cd ./backend
           pwd
-          pytest --cov --cov-report=xml:coverage.xml
+          pytest --cov --cov-report=xml:coverage-backend.xml
+      
+      - name: Test with pytest
+        run: |
+          cd ./frontend
+          pwd
+          pytest src/test --driver Chrome --headless --cov --cov-report=xml:coverage-frontend.xml
 
       - name: Upload coverage to Codecov
         if: always()
         uses: codecov/codecov-action@v3
         with:
-          files: ./backend/coverage.xml
+          files: |
+            ./backend/coverage-backend.xml
+            ./frontend/coverage-frontend.xml
           flags: unittests
           name: codecov-umbrella
           # fail_ci_if_error: true
