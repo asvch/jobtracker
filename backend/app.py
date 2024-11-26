@@ -134,8 +134,9 @@ def create_app():
         :return: string
         """
         headers = request.headers
+        print("headers Auth", headers)
         token = headers["Authorization"].split(" ")[1]
-        print(token)
+        print("the token", token)
         userid = token.split(".")[0]
         return userid
 
@@ -250,15 +251,19 @@ def create_app():
         """
         Update the user profile with preferences: skills, job-level and location
         """
+        print("updating profile")
         try:
-            print(request.data)
+            print("Prof data", request.data)
             userid = get_userid_from_header()
             user = Users.objects(id=userid).first()
             data = json.loads(request.data)
-            print(user)
+            print("userid:", userid)
+            print("user:", user)
+            print("data1", data)
 
             for key in data.keys():
                 user[key] = data[key]
+                print(user[key])
 
             if (
                 "picture" in data
@@ -271,7 +276,7 @@ def create_app():
             return jsonify(user.to_json()), 200
 
         except Exception as err:
-            print(err)
+            print("Error", err)
             return jsonify({"error": "Internal server error"}), 500
 
     @app.route("/getRecommendations", methods=["GET"])
@@ -282,7 +287,8 @@ def create_app():
         try:
             userid = get_userid_from_header()
             user = Users.objects(id=userid).first()
-            print(user["skills"])
+            print("user", user)
+            print("skills", user["skills"])
             skill_sets = [x["value"] for x in user["skills"]]
             job_levels_sets = [x["value"] for x in user["job_levels"]]
             locations_set = [x["value"] for x in user["locations"]]
@@ -494,9 +500,8 @@ def create_app():
                 link_href = apply_link.get("href")
                 link_text = apply_link.get("title") or "Apply"
                 clickable_link = (
-                    f'<a href="{link_href}" target="_blank">{link_text}</a>'
+                    f'<a href="{link_href}" target="_blank"><button type="button" class="btn btn-primary d-flex align-items-center" style="background-color: #2a6e85; margin: 5px; width: 100px; vertical-align: middle;">{link_text}</button></a>'
                 )
-
                 df.at[i, "jobLink"] = clickable_link
 
             # Collect Job Description Details
