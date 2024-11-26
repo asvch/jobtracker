@@ -49,7 +49,7 @@ jobs:
       run: |
         cd ./frontend/src/test
         pwd
-        pytest --cov --cov-report=xml:coverage-frontend.xml
+        pytest --cov . --cov-report=xml:coverage-frontend.xml
 
     - name: Kill frontend server
       run: |
