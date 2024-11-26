@@ -7,83 +7,141 @@ on:
   #   branches: [project3]
 
 jobs:
-  test:
+  frontend-tests:
     runs-on: ubuntu-latest
-    services:
-      mongodb:
-        image: mongo:5.0
-        ports:
-          - 27017:27017
-        env:
-          MONGO_INITDB_DATABASE: mydatabase
-        options: >-
-          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.11
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16' # Adjust this to match your project's Node.js version
 
-    #   - name: Install dependencies
-    #     run: |
-    #       python -m pip install --upgrade pip
-    #       pip install pytest pytest-cov pytest-mock coverage
-    #       if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    #       pip install -r ./backend/requirements.txt
-    #       sudo apt-get update
-    #       sudo apt-get install -y texlive-xetex texlive-fonts-extra
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm install
 
-      - name: Install dependencies
-        run: |
-            python -m pip install --upgrade pip
-            pip install pytest pytest-cov pytest-selenium selenium
-            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-            pip install -r ./backend/requirements.txt
-            sudo apt-get update
-            sudo apt-get install -y texlive-xetex texlive-fonts-extra
+    - name: Start frontend server
+      run: |
+        nohup npm start &
+        sleep 10 # Give the server time to start
 
-      - name: Set environment variable for MongoDB
-        run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
+    - name: Install Python and Selenium
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
 
-    #   - name: Frontend test with pytest
-    #     run: |
-    #       cd ./frontend
-    #       pwd
-    #       pytest src/test --cov --cov-report=xml:coverage-frontend.xml
+    - name: Install Python dependencies
+      run: |
+        pip install pytest pytest-selenium selenium
 
-      - name: Backend tests with pytest
-        run: |
-          cd ./backend
-          pwd
-          pytest --cov --cov-report=xml:coverage-backend.xml
-      
-      # - name: Test with pytest
-      #   run: |
-      #     cd ./frontend
-      #     pwd
-      #     pytest src/test --driver Chrome --headless --cov --cov-report=xml:coverage-frontend.xml
+    - name: Run frontend Selenium tests
+      run: |
+        cd frontend/src/test
+        pytest src/test --cov --cov-report=xml:coverage-frontend.xml
 
-      - name: Upload coverage to Codecov
-        if: always()
-        uses: codecov/codecov-action@v3
-        with:
+    - name: Kill frontend server
+      run: |
+        pkill -f "npm start"
+
+
+    - name: Upload coverage to Codecov
+      if: always()
+      uses: codecov/codecov-action@v3
+      with:
           files: ./backend/coverage-backend.xml
-        # ./frontend/coverage-frontend.xml
           flags: unittests
           name: codecov-umbrella
-          # fail_ci_if_error: true
           fail_ci_if_error: false
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       
-      - name: Debug Coverage
-        run: |
-          ls -R
-          find . -name coverage.xml
+    #   - name: Debug Coverage
+    #    run: |
+    #     ls -R
+    #     find . -name coverage.xml
+    
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     services:
+#       mongodb:
+#         image: mongo:5.0
+#         ports:
+#           - 27017:27017
+#         env:
+#           MONGO_INITDB_DATABASE: mydatabase
+#         options: >-
+#           --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+
+#     steps:
+#       - uses: actions/checkout@v2
+
+#       - name: Set up Python 3.11
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: 3.11
+
+#     #   - name: Install dependencies
+#     #     run: |
+#     #       python -m pip install --upgrade pip
+#     #       pip install pytest pytest-cov pytest-mock coverage
+#     #       if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+#     #       pip install -r ./backend/requirements.txt
+#     #       sudo apt-get update
+#     #       sudo apt-get install -y texlive-xetex texlive-fonts-extra
+
+#       - name: Install dependencies
+#         run: |
+#             python -m pip install --upgrade pip
+#             pip install pytest pytest-cov pytest-selenium selenium
+#             if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+#             pip install -r ./backend/requirements.txt
+#             sudo apt-get update
+#             sudo apt-get install -y texlive-xetex texlive-fonts-extra
+
+#       - name: Set environment variable for MongoDB
+#         run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
+
+#     #   - name: Frontend test with pytest
+#     #     run: |
+#     #       cd ./frontend
+#     #       pwd
+#     #       pytest src/test --cov --cov-report=xml:coverage-frontend.xml
+
+#       - name: Backend tests with pytest
+#         run: |
+#           cd ./backend
+#           pwd
+#           pytest --cov --cov-report=xml:coverage-backend.xml
+      
+#       # - name: Test with pytest
+#       #   run: |
+#       #     cd ./frontend
+#       #     pwd
+#       #     pytest src/test --driver Chrome --headless --cov --cov-report=xml:coverage-frontend.xml
+
+#       - name: Upload coverage to Codecov
+#         if: always()
+#         uses: codecov/codecov-action@v3
+#         with:
+#           files: ./backend/coverage-backend.xml
+#         # ./frontend/coverage-frontend.xml
+#           flags: unittests
+#           name: codecov-umbrella
+#           # fail_ci_if_error: true
+#           fail_ci_if_error: false
+#         env:
+#           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      
+#       - name: Debug Coverage
+#         run: |
+#           ls -R
+#           find . -name coverage.xml
         
