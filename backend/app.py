@@ -26,6 +26,7 @@ from dotenv import load_dotenv
 import shutil
 import jinja2
 import base64
+from groq import Groq
 
 from util import load_and_run_function
 
@@ -34,6 +35,8 @@ load_dotenv()
 existing_endpoints = ["/applications", "/resume"]
 
 user_agent = UserAgent()
+
+llm_api_key = os.environ.get("GROQ_API_KEY")
 
 
 def create_app():
@@ -813,6 +816,32 @@ def create_app():
             return response, 200
         except:
             return jsonify({"error": "Internal server error"}), 500
+        
+    @app.route("/getLLMresponse", methods=["POST"])
+    def getLLMresponse():
+
+        data = request.get_json()  # Access the JSON payload
+        user_message = data.get('message')
+        print("user_message", user_message)
+
+        client = Groq(
+            api_key=os.environ.get("GROQ_API_KEY"),
+        )
+
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": user_message, # "Explain the importance of fast language models",
+                }
+            ],
+            model="llama3-8b-8192",
+        )
+
+        print(chat_completion.choices[0].message.content)
+
+        return jsonify({"response": chat_completion.choices[0].message.content}), 200
+
 
     return app
 
