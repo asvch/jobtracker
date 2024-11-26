@@ -494,7 +494,6 @@ def create_app():
             df.at[i, "location"] = div.find(
                 "div", {"class": "wHYlTd FqK3wc MKCbgd"}
             ).text.split("•")[0]
-            print("DEBUG",div.find_all("span", {"class": "Yf9oye"}, limit=1))
             df.at[i, "date"] = div.find_all("span", {"class": "Yf9oye"}, limit=1)[
                 0
             ].text
@@ -817,7 +816,7 @@ def create_app():
             return response, 200
         except:
             return jsonify({"error": "Internal server error"}), 500
-        
+
     @app.route("/send-reminder", methods=["POST"])
     @cross_origin()
     def send_reminder():
@@ -841,7 +840,7 @@ def create_app():
 
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-        
+
     @app.route("/getLLMresponse", methods=["POST"])
     def getLLMresponse():
 
