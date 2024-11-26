@@ -47,6 +47,13 @@ jobs:
           cd ./backend
           pwd
           pytest --cov --cov-report=xml:coverage.xml
+    
+    #   - name: Test selenium
+    #     run: |
+    #       cd ./frontend/src/test
+    #       pwd
+    #       pytest --cov 
+
 
       - name: Upload coverage to Codecov
         if: always()
@@ -55,8 +62,8 @@ jobs:
           files: ./backend/coverage.xml
           flags: unittests
           name: codecov-umbrella
-          fail_ci_if_error: true
-          # fail_ci_if_error: false
+        #   fail_ci_if_error: true
+          fail_ci_if_error: false
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       
