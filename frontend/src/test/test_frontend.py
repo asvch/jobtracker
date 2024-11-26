@@ -45,7 +45,6 @@ def test_invalid_login(driver):
     alert.accept()
     assert "Error while login" in alert_text, "Alert message is not as expected"
 
-
 def test_signup_tab_user(driver):
 
     signup_tab = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/nav/a[2]")
@@ -125,61 +124,41 @@ def is_element_obstructed(driver, element):
 
     return obstructing_element != element
 
-def test_signup_tab_clickit(driver):
-
-    signup_tab = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/nav/a[2]")
-
-    signup_tab.click()
-    time.sleep(3)
-
-    signup_button = driver.find_element(By.XPATH, '//button[contains(text(),"Sign Up")]')
-    driver.execute_script("arguments[0].scrollIntoView();", signup_button)
-
-    if is_element_obstructed(driver, signup_button):
-        print("Sign Up button is obstructed by another element.")
-    else: 
-        print("button not obstructed")
-        signup_button.click()
-
-    # if signup_button.is_displayed():
-    #     signup_button.click()
-    # else:
-    #     print("Signup button displayed")
-
-    time.sleep(3)
-
-    alert = driver.switch_to.alert
-    alert_text = alert.text
-    alert.accept()
-    assert "Proceed to Login" in alert_text, "Alert message is not as expected"
-
-# def test_signup(driver):
+# def test_signup_tab_clickit(driver):
 
 #     signup_tab = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/nav/a[2]")
-#     fullname = driver.find_element(By.ID, "fullname")
-#     username_field = driver.find_element(By.ID, "suname")
-#     password_field = driver.find_element(By.ID, "spwd")
-#     # signup_button = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/div/div[2]/form/div[4]/button[1]")
 
 #     signup_tab.click()
 #     time.sleep(3)
-#     signup_button = WebDriverWait(driver, 10).until(
-#         EC.element_to_be_clickable((By.XPATH, '//button[contains(text(),"Sign Up")]'))
-#     )
-#     # driver.save_screenshot("screenshot.png")  # Save a screenshot for debugging
-#     fullname.send_keys("sponge10")
-#     username_field.send_keys("sponge10")
-#     password_field.send_keys("sponge10")
-#     # signup_button.click()
-#     driver.execute_script("arguments[0].scrollIntoView(true);", signup_button)
-#     signup_button.click()
 
-#     time.sleep(5)
+#     signup_button = driver.find_element(By.XPATH, '//button[contains(text(),"Sign Up")]')
+#     driver.execute_script("arguments[0].scrollIntoView();", signup_button)
+
+#     if is_element_obstructed(driver, signup_button):
+#         print("Sign Up button is obstructed by another element.")
+#     else: 
+#         print("button not obstructed")
+#         signup_button.click()
+
+#     time.sleep(3)
 
 #     alert = driver.switch_to.alert
 #     alert_text = alert.text
+#     alert.accept()
 #     assert "Proceed to Login" in alert_text, "Alert message is not as expected"
 
+def test_login_tab_user(driver):
+
+    uname = driver.find_element(By.ID, "uname")
+
+    assert uname is not None
+
+    
+def test_login_tab_pword(driver):
+
+    pword = driver.find_element(By.ID, "pwd")
+
+    assert pword is not None
 
 # def test_login(driver):
 #     # Locate username and password fields and login button
