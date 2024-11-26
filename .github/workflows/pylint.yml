@@ -2,9 +2,9 @@ name: Pylint
 
 on:
   push:
-    branches: [project2]
+    branches: [project3]
   pull_request:
-    branches: [project2]
+    branches: [project3]
 
 jobs:
   lint:
@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python 3.13
         uses: actions/setup-python@v3
         with:
-          python-version: 3.13
+          python-version: 3.11
 
       - name: Install dependencies
         run: |
