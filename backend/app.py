@@ -494,6 +494,7 @@ def create_app():
             df.at[i, "location"] = div.find(
                 "div", {"class": "wHYlTd FqK3wc MKCbgd"}
             ).text.split("•")[0]
+            print("DEBUG",div.find_all("span", {"class": "Yf9oye"}, limit=1))
             df.at[i, "date"] = div.find_all("span", {"class": "Yf9oye"}, limit=1)[
                 0
             ].text
