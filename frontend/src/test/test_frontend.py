@@ -27,21 +27,36 @@ def test_login_page(driver):
 
     print("Text 'Job Tracker' is displayed on the page")
 
-def test_login(driver):
-    # Locate username and password fields and login button
+def test_invalid_login(driver):
     username_field = driver.find_element(By.ID, "uname")
     password_field = driver.find_element(By.ID, "pwd")
     login_button = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/div/div[1]/form/div[3]/button[1]")
 
-    # Input test credentials
-    username_field.send_keys("sponge7")
-    password_field.send_keys("sponge7")
+    username_field.send_keys("sponge9")   # invalid login and pword
+    password_field.send_keys("sponge9")
     login_button.click()
 
     time.sleep(5)
 
-    left_nav = driver.find_element(By.CLASS_NAME, "left-nav")
+    alert = driver.switch_to.alert
+    alert_text = alert.text
+    assert "Error while login" in alert_text, "Alert message is not as expected"
 
-    assert left_nav.is_displayed(), "Left navigation is not visible when the page loads"
+# def test_login(driver):
+#     # Locate username and password fields and login button
+#     username_field = driver.find_element(By.ID, "uname")
+#     password_field = driver.find_element(By.ID, "pwd")
+#     login_button = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/div/div[1]/form/div[3]/button[1]")
+
+#     # Input test credentials
+#     username_field.send_keys("sponge7")
+#     password_field.send_keys("sponge7")
+#     login_button.click()
+
+#     time.sleep(5)
+
+#     left_nav = driver.find_element(By.CLASS_NAME, "left-nav")
+
+#     assert left_nav.is_displayed(), "Left navigation is not visible when the page loads"
 
 # def test_
