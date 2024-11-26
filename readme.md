@@ -1,17 +1,15 @@
-[![GitHub license](https://img.shields.io/github/license/CSC-510-G55/project1-ats)](https://github.com/CSC-510-G55/project1-ats/blob/project2/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/asvch/jobtracker)](https://github.com/asvch/jobtracker/blob/project2/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14026597.svg)](https://doi.org/10.5281/zenodo.14026597)
-![GitHub issues](https://img.shields.io/github/issues/CSC-510-G55/project1-ats)
-![GitHub issues](https://img.shields.io/github/issues-closed/CSC-510-G55/project1-ats)
-![GitHub top language](https://img.shields.io/github/languages/top/CSC-510-G55/project1-ats)
-[![Build](https://github.com/CSC-510-G55/project1-ats/actions/workflows/build.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/build.yml)
-[![Pytest](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pytest.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pytest.yml)
-[![Codecov](https://codecov.io/gh/CSC-510-G55/project1-ats/graph/badge.svg)](https://codecov.io/gh/CSC-510-G55/project1-ats)
-[![Pylint](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pylint.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/pylint.yml)
-[![Prettier](https://github.com/CSC-510-G55/project1-ats/actions/workflows/prettier.yml/badge.svg)](https://github.com/CSC-510-G55/project1-ats/actions/workflows/prettier.yml)
+![GitHub issues](https://img.shields.io/github/issues/asvch/jobtracker)
+![GitHub issues](https://img.shields.io/github/issues-closed/asvch/jobtracker)
+![GitHub top language](https://img.shields.io/github/languages/top/asvch/jobtracker)
+[![Build](https://github.com/asvch/jobtracker/actions/workflows/build.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/build.yml)
+[![Pytest](https://github.com/asvch/jobtracker/actions/workflows/pytest.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/pytest.yml)
+[![Codecov](https://codecov.io/gh/asvch/jobtracker/graph/badge.svg)](https://codecov.io/gh/asvch/jobtracker)
+[![Pylint](https://github.com/asvch/jobtracker/actions/workflows/pylint.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/pylint.yml)
+[![Prettier](https://github.com/asvch/jobtracker/actions/workflows/prettier.yml/badge.svg)](https://github.com/asvch/jobtracker/actions/workflows/prettier.yml)
 
 # J-Tracker - Your Job Tracking Assistant
-
-https://user-images.githubusercontent.com/43064854/135554150-c06afd4e-d223-47e3-b123-b45f9cd1b87a.mp4
 
 The process of applying for jobs and internships is not a cakewalk. Managing job applications is a time-consuming process. Due to the referrals and deadlines, the entire procedure can be stressful. Our application allows you to track and manage your job application process, as well as regulate it, without the use of cumbersome Excel spreadsheets.
 
@@ -39,7 +37,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 ## Basic Design
 
-![Basic Design](https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/Overall%20Design.PNG)
+![Basic Design](https://github.com/asvch/jobtracker/blob/project2/resources/Overall%20Design.PNG)
 
 ## Demo Video
 
@@ -50,7 +48,7 @@ https://drive.google.com/file/d/1ex5-YLe7Nk8qPSVuC0A4Oy5Kil-VJqz9/view
 ## 1) Apply via job portals:
 
 To enhance user interaction and simplify the application process, the platform includes direct links for applying for each job listing from the corresponding job board where the job was originally posted. These links enable users to seamlessly connect with the job poster and apply to the job, facilitating a direct and efficient application process. This feature not only saves users valuable time but also improves the overall user experience by eliminating unnecessary steps and ensuring a smoother journey through the platform. With a single click, users can initiate the application process, contributing to a more user-friendly and streamlined platform.
-<img width="1286" alt="Apply Job Portal" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/1.png">
+<img width="1286" alt="Apply Job Portal" src="https://github.com/asvch/jobtracker/blob/project2/resources/1.png">
 
 ## 2) Added a new page for My Applications:
 
@@ -76,50 +74,50 @@ Move Cards: Applications can be represented as cards, with each card moving acro
 Visualize Progress: The board provides a visual representation of the overall status of your job applications.
 Prioritize: Applicants can prioritize applications in the Wishlist column and focus on applying for those positions.
 Identify Bottlenecks: If many applications are stuck in a particular column, it may indicate a bottleneck or an area that needs attention in the job search process.
-<img width="1286" alt="My Applications Page" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/2_1.png">
+<img width="1286" alt="My Applications Page" src="https://github.com/asvch/jobtracker/blob/project2/resources/2_1.png">
 
-<img width="1286" alt="My Applications Page" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/2_2.png">
+<img width="1286" alt="My Applications Page" src="https://github.com/asvch/jobtracker/blob/project2/resources/2_2.png">
 
 ## 3) Filtering applications:
 
 To enhance user convenience, especially for students managing a multitude of applications, the inclusion of filters is crucial. These filters enable users to categorize applications based on their status—such as accepted, rejected, waitlisted, wish-listed, or awaiting referrals. Additionally, the filter functionality extends to sorting applications based on location, job title, and even the company name, providing a comprehensive and efficient way to organize and navigate through the application process.
-<img width="1286" alt="Filtering" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/3.png">
+<img width="1286" alt="Filtering" src="https://github.com/asvch/jobtracker/blob/project2/resources/3.png">
 
 ## 4) Adding Notes to Applications:
 
 Applicant Tracking Systems (ATS) traditionally cater to hiring professionals, but an innovative addition involves enabling applicants to add notes and updates to their applications. The integration of a notes feature is a powerful tool that enables users, particularly applicants, to add real-time, personalized notes and updates for each application. This dynamic feature allows candidates to actively document their application journey, noting essential dates, interactions, and any pertinent details they find important. By doing so, applicants maintain a heightened sense of organization and stay well-informed throughout the entire hiring process.
 The real-time nature of this notes feature becomes a valuable asset for applicants. It empowers them to reflect on their progress and express their thoughts, motivations, and distinctive qualifications instantaneously.
-<img width="1086" alt="Notes" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/4.png">
+<img width="1086" alt="Notes" src="https://github.com/asvch/jobtracker/blob/project2/resources/4.png">
 
 ## 5) Adding Profile Picture:
 
 To enhance user profiles, the platform now includes an option to upload a profile picture. This simple feature helps users personalize their accounts, adding a professional touch and making profiles more identifiable. Users can easily upload, crop, and adjust their image within a few clicks.
-<img width="1440" alt="Preferences" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/5.png">
+<img width="1440" alt="Preferences" src="https://github.com/asvch/jobtracker/blob/project2/resources/5.png">
 
 ## 6) Added Job links:
 
 Implemented web scraping to enhance user interaction, enabling direct access to recommended job matches. This eliminates the need for users, particularly students, to manually search for their desired positions again. The incorporation of direct job links saves significant time and streamlines the user experience.
-<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/6.png">
+<img width="1440" alt="Job Link" src="https://github.com/asvch/jobtracker/blob/project2/resources/6.png">
 
 ## 7) Job Search with Filters
 
 The platform offers advanced filters to streamline job searching. Users can narrow results by criteria like location, job type (e.g., internship), and more, allowing for a more targeted and efficient search experience.
-<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/7.png">
+<img width="1440" alt="Job Link" src="https://github.com/asvch/jobtracker/blob/project2/resources/7.png">
 
 ## 8) Sankey Graph for Visualsation
 
 The platform features a Sankey Graph that visualizes job application flows, showing the status of all applications. Users can easily track their progress across various stages like applied, rejected, and wishlisted. This visual aid offers a clear, high-level overview of the entire job search journey, highlighting areas that may need attention.
-<img width="1440" alt="Job Link" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/8.png">
+<img width="1440" alt="Job Link" src="https://github.com/asvch/jobtracker/blob/project2/resources/8.png">
 
 ## 9) Resume Building using Templates
 
 The platform includes a resume builder that offers customizable templates, allowing users to create polished resumes efficiently. This feature provides a range of professionally designed layouts tailored for different industries, making it easier for users to highlight relevant skills and experiences.
-<img width="1440" alt="Resume Builder" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/9.png">
+<img width="1440" alt="Resume Builder" src="https://github.com/asvch/jobtracker/blob/project2/resources/9.png">
 
 ## 10) Additonal Feilds in Profile Section
 
 To refine job recommendations and match users with suitable positions, additional fields are included in the profile section. Users can now specify skills, experience levels, and preferred job locations. These details help enhance the job-matching algorithm, aligning job recommendations more closely with individual career aspirations.
-<img width="1440" alt="Profile Section" src="https://github.com/CSC-510-G55/project1-ats/blob/project2/resources/10.png">
+<img width="1440" alt="Profile Section" src="https://github.com/asvch/jobtracker/blob/project2/resources/10.png">
 
 ## 11) Error Handling:
 
@@ -224,11 +222,11 @@ mongodb
 
 ## License
 
-The project is licensed under the [MIT](https://github.com/CSC-510-G55/project1-ats/blob/project2/LICENSE) license.
+The project is licensed under the [MIT](https://github.com/asvch/jobtracker/blob/project2/LICENSE) license.
 
 ## How to Contribute?
 
-Please see our [CONTRIBUTING.md](https://github.com/CSC-510-G55/project1-ats/blob/project2/Contributing.md) for instructions on how to contribute to the repository and assist us in improving the project.
+Please see our [CONTRIBUTING.md](https://github.com/asvch/jobtracker/blob/project2/Contributing.md) for instructions on how to contribute to the repository and assist us in improving the project.
 
 ## Team Members
 
