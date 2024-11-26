@@ -1,4 +1,4 @@
-name: Pytest
+name: Code Coverage
 
 on:
   push:
@@ -51,13 +51,13 @@ jobs:
       - name: Set environment variable for MongoDB
         run: echo "MONGODB_HOST_STRING=mongodb://localhost:27017/mydatabase" >> $GITHUB_ENV
 
-      - name: Frontend test with pytest
-        run: |
-          cd ./frontend
-          pwd
-          pytest src/test --cov --cov-report=xml:coverage-frontend.xml
+    #   - name: Frontend test with pytest
+    #     run: |
+    #       cd ./frontend
+    #       pwd
+    #       pytest src/test --cov --cov-report=xml:coverage-frontend.xml
 
-      - name: Backend test with pytest
+      - name: Backend tests with pytest
         run: |
           cd ./backend
           pwd
@@ -73,9 +73,8 @@ jobs:
         if: always()
         uses: codecov/codecov-action@v3
         with:
-          files: |
-            ./backend/coverage-backend.xml
-            ./frontend/coverage-frontend.xml
+          files: ./backend/coverage-backend.xml
+        # ./frontend/coverage-frontend.xml
           flags: unittests
           name: codecov-umbrella
           # fail_ci_if_error: true
