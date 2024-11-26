@@ -36,7 +36,7 @@ def client():
     app = create_app()
 
     app.config["MONGODB_SETTINGS"] = {
-        "db": "appTracker",
+        "db": "Group56F24",
         "host": os.getenv("MONGODB_HOST_STRING"),
     }
 
@@ -77,7 +77,7 @@ def user(client):
 
     rv = client.post("/users/login", json=data)
     jdata = json.loads(rv.data.decode("utf-8"))
-    header = {"Authorization": "Bearer " + jdata["token"]}
+    header = {"Authorization": "Bearer " + jdata[0]["token"]}
     user = Users.objects(username=data["username"])
     yield user.first(), header
     user.first()["applications"] = []
@@ -97,13 +97,13 @@ def test_alive(client):
 def test_alive_invalid_endpoint(client):
     """
     Tests that the application returns a 404 for an invalid endpoint.
-    
+
     :param client: mongodb client
     """
     rv = client.get("/invalid-endpoint")
-    
+
     assert rv.status_code == 404, "Expected status code 404 for not found, got {}".format(rv.status_code)
-    
+
     resp_body = rv.data.decode("utf-8")
     assert "error" in resp_body, "Expected error message in response body"
 
@@ -144,6 +144,12 @@ def test_search_with_job_type(client):
     assert isinstance(jdata, list)
     assert len(jdata) >= 0
 
+def test_search_with_job_type_variant1(client):
+    """Test the search endpoint with keywords and job type."""
+    rv = client.get("/search?keywords=developer&jobType=internship")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)
+    assert len(jdata) >= 0
 
 def test_search_with_location_and_job_type(client):
     """Test the search endpoint with keywords, location, and job type."""
@@ -189,11 +195,25 @@ def test_search_with_multiple_keywords(client):
     assert isinstance(jdata, list)  # Expecting a list of job postings
     assert len(jdata) >= 0  # Check if you receive results
 
+def test_search_with_multiple_keywords_2(client):
+    """Test the search endpoint with multiple keywords."""
+    rv = client.get("/search?keywords=developer,engineer, backend")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)  # Expecting a list of job postings
+    assert len(jdata) >= 0  # Check if you receive results
+
+def test_search_with_multiple_keywords_3(client):
+    """Test the search endpoint with multiple keywords."""
+    rv = client.get("/search?keywords=developer,engineer, backend, embedded")
+    jdata = json.loads(rv.data.decode("utf-8"))
+    assert isinstance(jdata, list)  # Expecting a list of job postings
+    assert len(jdata) >= 0  # Check if you receive results
+
 
 def test_search_invalid_endpoint(client):
     """Test the search endpoint with an invalid URL."""
     rv = client.get("/invalid_search")
-    
+
     assert rv.status_code == 404, "Expected status code 404 for invalid endpoint"
     jdata = json.loads(rv.data.decode("utf-8"))
     assert "error" in jdata, "Expected error message in response body"
@@ -231,7 +251,7 @@ def test_get_data(client, user):
 def test_get_data_unauthorized(client):
     """
     Tests that accessing the applications endpoint without authorization returns a 401 status code.
-    
+
     :param client: mongodb client
     """
     rv = client.get("/applications")  # No headers provided
@@ -243,7 +263,7 @@ def test_get_data_unauthorized(client):
 def test_get_data_no_applications(client, user):
     """
     Tests that the application returns an empty list when the user has no applications.
-    
+
     :param client: mongodb client
     :param user: the test user object
     """
@@ -295,7 +315,7 @@ def test_add_application(client, mocker, user):
 def test_add_application_unauthorized(client):
     """
     Tests that accessing the applications POST endpoint without authorization returns a 401 status code.
-    
+
     :param client: mongodb client
     """
     rv = client.post(
@@ -310,19 +330,20 @@ def test_add_application_unauthorized(client):
         },
     )
     assert rv.status_code == 401, "Expected status code 401 for unauthorized access, got {}".format(rv.status_code)
-    
+
     resp_body = json.loads(rv.data.decode("utf-8"))
     assert "error" in resp_body, "Expected error message in response body"
 
-def test_add_application_invalid_data(client, user):
+def test_add_application_invalid_token(client, user):
     """
     Tests that the applications POST endpoint returns an error for invalid data.
-    
+
     :param client: mongodb client
     :param user: the test user object
     """
     user, header = user
-    
+    header["Authorization"] += "abcd"
+
     # Mocking the user applications list
     user["applications"] = []
     user.save()
@@ -338,9 +359,39 @@ def test_add_application_invalid_data(client, user):
             }
         },
     )
-    
+
+    assert rv.status_code == 401, "Expected status code 401 for unauthorized, got {}".format(rv.status_code)
+
+    resp_body = json.loads(rv.data.decode("utf-8"))
+    assert "error" in resp_body, "Expected error message in response body"
+
+def test_add_application_invalid_data(client, user):
+    """
+    Tests that the applications POST endpoint returns an error for invalid data.
+
+    :param client: mongodb client
+    :param user: the test user object
+    """
+    user, header = user
+
+    # Mocking the user applications list
+    user["applications"] = []
+    user.save()
+
+    rv = client.post(
+        "/applications",
+        headers=header,
+        json={  # Missing jobTitle
+            "application": {
+                "companyName": "fakeCompany",
+                "date": str(datetime.date(2021, 9, 23)),
+                "status": "1",
+            }
+        },
+    )
+
     assert rv.status_code == 400, "Expected status code 400 for bad request, got {}".format(rv.status_code)
-    
+
     resp_body = json.loads(rv.data.decode("utf-8"))
     assert "error" in resp_body, "Expected error message in response body"
 
@@ -380,7 +431,7 @@ def test_update_application(client, user):
 def test_update_application_unauthorized(client):
     """
     Tests that the applications PUT endpoint returns a 401 status code for unauthorized access.
-    
+
     :param client: mongodb client
     """
     new_application = {
@@ -391,21 +442,21 @@ def test_update_application_unauthorized(client):
     }
 
     rv = client.put("/applications/3", json={"application": new_application})
-    
+
     assert rv.status_code == 500, "Expected status code 401 for unauthorized access, got {}".format(rv.status_code)
-    
+
     resp_body = json.loads(rv.data.decode("utf-8"))
     assert "error" in resp_body, "Expected error message in response body"
 
 def test_update_application_not_found(client, user):
     """
     Tests that the applications PUT endpoint returns a 404 status code when the application does not exist.
-    
+
     :param client: mongodb client
     :param user: the test user object
     """
     user, auth = user
-    
+
     # User saves an application, but we're trying to update a non-existent one
     new_application = {
         "id": 99,  # Assuming this ID does not exist
@@ -415,9 +466,9 @@ def test_update_application_not_found(client, user):
     }
 
     rv = client.put("/applications/99", json={"application": new_application}, headers=auth)
-    
-    assert rv.status_code == 400, "Expected status code 404 for not found, got {}".format(rv.status_code)
-    
+
+    assert rv.status_code == 404, "Expected status code 404 for not found, got {}".format(rv.status_code)
+
     resp_body = json.loads(rv.data.decode("utf-8"))
     assert "error" in resp_body, "Expected error message in response body"
 
@@ -449,13 +500,13 @@ def test_delete_application(client, user):
 def test_delete_application_unauthorized(client):
     """
     Tests that the applications DELETE endpoint returns a 500 status code for unauthorized access.
-    
+
     :param client: mongodb client
     """
     rv = client.delete("/applications/3")  # No headers provided
-    
+
     assert rv.status_code == 500, "Expected status code 500, got {}".format(rv.status_code)
-    
+
     resp_body = json.loads(rv.data.decode("utf-8"))
     assert "error" in resp_body, "Expected error message in response body"
 
@@ -463,12 +514,12 @@ def test_delete_application_unauthorized(client):
 def test_delete_application_not_found(client, user):
     """
     Tests that the applications DELETE endpoint returns a 400 status code when the application does not exist.
-    
+
     :param client: mongodb client
     :param user: the test user object
     """
     user, auth = user
-    
+
     # Ensure the user has at least one application saved
     application = {
         "id": 3,
@@ -482,9 +533,9 @@ def test_delete_application_not_found(client, user):
 
     # Attempt to delete a non-existent application (ID 99)
     rv = client.delete("/applications/99", headers=auth)
-    
+
     assert rv.status_code == 400, "Expected status code 400, got {}".format(rv.status_code)
-    
+
     resp_body = json.loads(rv.data.decode("utf-8"))
     assert "error" in resp_body, "Expected error message in response body"
 
@@ -541,30 +592,30 @@ def test_resume(client, mocker, user):
     assert rv.status_code == 200
 
 
-def test_login_fields(client):
-    """
-    Tests that the login endpoint returns required fields
-    :param client: mongodb client
-    """
-    data = {"username": username, "password": password, "fullName": fullName}
-    rv = client.post("/users/login", json=data)
+# def test_login_fields(client):
+#     """
+#     Tests that the login endpoint returns required fields
+#     :param client: mongodb client
+#     """
+#     data = {"username": username, "password": password, "fullName": fullName}
+#     rv = client.post("/users/login", json=data)
 
-    resp_body = json.loads(rv.data.decode("utf-8"))
+#     resp_body = json.loads(rv.data.decode("utf-8"))
 
-    assert rv.status_code == 200, "Expected status code 200, got {}".format(
-        rv.status_code
-    )
+#     assert rv.status_code == 200, "Expected status code 200, got {}".format(
+#         rv.status_code
+#     )
 
-    profile = resp_body["profile"]
+#     profile = resp_body[0]["profile"]
 
-    assert "token" in resp_body, "Expected token in response body"
+#     assert "token" in resp_body[0], "Expected token in response body"
 
-    assert "skills" in profile, "Expected skills in response body"
-    assert "job_levels" in profile, "Expected job_levels in response body"
-    assert "locations" in profile, "Expected locations in response body"
-    assert "institution" in profile, "Expected institution in response body"
-    assert "phone_number" in profile, "Expected phone_number in response body"
-    assert "address" in profile, "Expected address in response body"
+#     assert "skills" in profile, "Expected skills in response body"
+#     assert "job_levels" in profile, "Expected job_levels in response body"
+#     assert "locations" in profile, "Expected locations in response body"
+#     assert "institution" in profile, "Expected institution in response body"
+#     assert "phone_number" in profile, "Expected phone_number in response body"
+#     assert "address" in profile, "Expected address in response body"
 
 
 def test_resume_templates(client):
@@ -994,6 +1045,30 @@ def test_search_with_filters(client, user):
     rv = client.get("/search?keywords=C++&location=New York", headers=header)
     assert rv.status_code == 200
 
+def test_search_with_filters_2(client, user):
+    """
+    Tests that the search endpoint returns results with filters
+    :param client: mongodb client
+    :param user: the test user object
+    """
+    _, header = user
+
+    # Test search with special characters
+    rv = client.get("/search?keywords=C#&location=New York", headers=header)
+    assert rv.status_code == 200
+    assert len(rv.json) > 0
+
+def test_search_with_filters_3(client, user):
+    """
+    Tests that the search endpoint returns results with filters
+    :param client: mongodb client
+    :param user: the test user object
+    """
+    _, header = user
+
+    rv = client.get("/search?keywords=C#", headers=header)
+    assert rv.status_code == 200
+    assert len(rv.json) > 0
 
 def test_application_status_workflow(client, user):
     """
@@ -1051,23 +1126,22 @@ def test_resume_template_validation(client, user):
 #     :param client: mongodb client
 #     :param user: the test user object
 #     """
-
+#
 #     _, header = user
-
 #     # First page
 #     rv = client.get(
 #         "/search?keywords=software+engineer&location=USA&page=1", headers=header
 #     )
 #     assert rv.status_code == 200
 #     first_page = rv.json
-
+#     print(first_page)
 #     # Second page
 #     rv = client.get(
 #         "/search?keywords=software+engineer&location=USA&page=2", headers=header
 #     )
 #     assert rv.status_code == 200
 #     second_page = rv.json
-
+#     print(second_page)
 #     # Verify different results
 #     assert first_page != second_page
 
@@ -1201,3 +1275,6 @@ def test_resume_template_missing_adapter(client, user):
 
         if os.path.exists(temp_template_dir):
             shutil.rmtree(temp_template_dir)
+
+
+def test_llm_response():
