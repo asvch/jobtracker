@@ -40,10 +40,10 @@ jobs:
       run: |
         pip install pytest pytest-selenium selenium
     
-    - name: Install Latex
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y texlive-full 
+    # - name: Install Latex
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt-get install -y texlive-full 
 
     - name: Run frontend Selenium tests
       run: |
