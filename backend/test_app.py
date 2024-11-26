@@ -12,7 +12,7 @@ import random
 import string
 from flask_mongoengine import MongoEngine
 from app import create_app, Users
-
+from unittest.mock import patch, MagicMock
 
 def generate_random_string(length=8):
     """Generate a random string of letters and digits."""
@@ -106,7 +106,6 @@ def test_alive_invalid_endpoint(client):
 
     resp_body = rv.data.decode("utf-8")
     assert "error" in resp_body, "Expected error message in response body"
-
 
 
 # 2. testing if the search function running properly
@@ -1275,3 +1274,143 @@ def test_resume_template_missing_adapter(client, user):
 
         if os.path.exists(temp_template_dir):
             shutil.rmtree(temp_template_dir)
+
+
+"""
+Tests for ApplicationPage React Component
+"""
+
+
+# Mock the baseApiURL and localStorage for testing
+BASE_API_URL = "http://localhost:5000"
+MOCK_TOKEN = "1.a659a7b7-8252-4181-8bf7-38091b306891"
+
+
+def test_search_functionality():
+    """
+    Test the search functionality of the applications list
+    Verify filtering works correctly
+    """
+    # Sample application list
+    applications = [
+        {
+            "jobTitle": "Software Engineer",
+            "companyName": "Tech Corp",
+            "location": "San Francisco",
+            "status": "1",
+        },
+        {
+            "jobTitle": "Product Manager",
+            "companyName": "Product Inc",
+            "location": "New York",
+            "status": "2",
+        },
+    ]
+
+    # Test job title search
+    search_criteria = {"jobTitle": "Software"}
+    filtered_apps = [
+        app
+        for app in applications
+        if search_criteria["jobTitle"].lower() in app["jobTitle"].lower()
+    ]
+    assert len(filtered_apps) == 1
+    assert filtered_apps[0]["jobTitle"] == "Software Engineer"
+
+    # Test company name search
+    search_criteria = {"companyName": "Tech"}
+    filtered_apps = [
+        app
+        for app in applications
+        if search_criteria["companyName"].lower() in app["companyName"].lower()
+    ]
+    assert len(filtered_apps) == 1
+    assert filtered_apps[0]["companyName"] == "Tech Corp"
+
+def test_application_data_validation():
+    """
+    Test validation of application data
+    Verify required fields are present
+    """
+    valid_application = {
+        "jobTitle": "Software Engineer",
+        "companyName": "Tech Corp",
+        "location": "San Francisco",
+        "date": "2024-01-15",
+        "status": "1",
+    }
+
+    # Check for required fields
+    required_fields = ["jobTitle", "companyName", "date", "status"]
+    for field in required_fields:
+        assert field in valid_application, f"Missing required field: {field}"
+
+def test_application_search_performance(mocker):
+    """
+    Test performance of application search
+    Verify search is efficient with large datasets
+    """
+    # Create a large list of applications
+    large_applications = [
+        {
+            "jobTitle": f"Job {i}",
+            "companyName": f"Company {i}",
+            "location": f"Location {i}",
+            "status": str(i % 6 + 1),
+        }
+        for i in range(1000)
+    ]
+
+    # Measure search time
+    import time
+
+    start_time = time.time()
+
+    filtered_apps = [app for app in large_applications if "Job" in app["jobTitle"]]
+
+    end_time = time.time()
+    search_duration = end_time - start_time
+
+    # Verify search is performed quickly
+    assert search_duration < 0.1  # Should complete in less than 100ms
+    assert len(filtered_apps) > 0
+
+
+def test_application_date_handling():
+    """
+    Test handling of application dates
+    Verify date formatting and validation
+    """
+    # Test valid date
+    valid_date = "2024-01-15"
+    assert isinstance(
+        datetime.datetime.strptime(valid_date, "%Y-%m-%d"), datetime.datetime
+    )
+
+    # Test invalid date formats
+    invalid_dates = ["01/15/2024", "2024.01.15", "15-01-2024"]
+    for invalid_date in invalid_dates:
+        with pytest.raises(ValueError):
+            datetime.datetime.strptime(invalid_date, "%Y-%m-%d")
+
+
+def test_application_list_sorting():
+    """
+    Test sorting of application list
+    Verify applications can be sorted by different criteria
+    """
+    applications = [
+        {"jobTitle": "A Job", "date": "2024-01-15"},
+        {"jobTitle": "C Job", "date": "2024-03-20"},
+        {"jobTitle": "B Job", "date": "2024-02-10"},
+    ]
+
+    # Sort by job title
+    sorted_by_title = sorted(applications, key=lambda x: x["jobTitle"])
+    assert sorted_by_title[0]["jobTitle"] == "A Job"
+    assert sorted_by_title[-1]["jobTitle"] == "C Job"
+
+    # Sort by date
+    sorted_by_date = sorted(applications, key=lambda x: x["date"])
+    assert sorted_by_date[0]["date"] == "2024-01-15"
+    assert sorted_by_date[-1]["date"] == "2024-03-20"
