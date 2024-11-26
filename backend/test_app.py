@@ -36,7 +36,7 @@ def client():
     app = create_app()
 
     app.config["MONGODB_SETTINGS"] = {
-        "db": "appTracker",
+        "db": "Group56F24",
         "host": os.getenv("MONGODB_HOST_STRING"),
     }
 

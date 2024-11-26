@@ -64,7 +64,6 @@ const CustomProfileModal = (props) => {
 					{
 						headers: {
 							userid: profile.id,
-							Authorization: `Bearer ${localStorage.getItem('token')}`
 						}
 					}
 				);
