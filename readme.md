@@ -19,7 +19,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 - [Basic Design](#basic-design)
 - [Demo Video](#demo-video)
-- [Improvements and Feature Additions](#improvements-and-feature-additions)
+- [Improvements and Feature Additions](https://github.com/asvch/jobtracker?tab=readme-ov-file#improvements-and-feature-additions-fall-2024-csc-510-g56)
 - [Future Scope](#future-scope)
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
@@ -43,7 +43,7 @@ Our application keeps track of the jobs you've added to your wish list. It also 
 
 https://www.canva.com/design/DAGXnn0mqe4/Wh2PcCvbZVNBjhWoCMuC4g/watch
 
-## Improvements and Feature Additions Fall 2024 CSC-510-G55
+## Improvements and Feature Additions Fall 2024 CSC-510-G56
 
 ## 1) A New Home Page:
 
