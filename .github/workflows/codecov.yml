@@ -39,7 +39,7 @@ jobs:
 
     - name: Run frontend Selenium tests
       run: |
-        cd frontend/src/test
+        cd ./frontend/src/test
         pytest src/test 
 
     - name: Kill frontend server
