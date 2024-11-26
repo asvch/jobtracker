@@ -115,6 +115,16 @@ def test_signup_tab_clickable(driver):
 
     assert signup_button.is_enabled()
 
+def is_element_obstructed(driver, element):
+    bounding_rect = driver.execute_script(""" return arguments[0].getBoundingClientRect(); """, element)
+
+    center_x = (bounding_rect['left'] + bounding_rect['right']) / 2
+    center_y = (bounding_rect['top'] + bounding_rect['bottom']) / 2
+
+    obstructing_element = driver.execute_script(""" var x = arguments[0]; var y = arguments[1]; return document.elementFromPoint(x, y); """, center_x, center_y)
+
+    return obstructing_element != element
+
 def test_signup_tab_clickit(driver):
 
     signup_tab = driver.find_element(By.XPATH, "/html/body/div/div/div/div/div[2]/div/nav/a[2]")
@@ -125,10 +135,17 @@ def test_signup_tab_clickit(driver):
     signup_button = driver.find_element(By.XPATH, '//button[contains(text(),"Sign Up")]')
     driver.execute_script("arguments[0].scrollIntoView();", signup_button)
 
-    if signup_button.is_displayed():
+    if is_element_obstructed(driver, signup_button):
+        print("Sign Up button is obstructed by another element.")
+    else: 
+        print("button not obstructed")
         signup_button.click()
-    else:
-        print("Signup button displayed")
+
+    # if signup_button.is_displayed():
+    #     signup_button.click()
+    # else:
+    #     print("Signup button displayed")
+
     time.sleep(3)
 
     alert = driver.switch_to.alert
