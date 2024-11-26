@@ -2,9 +2,9 @@ name: Pytest
 
 on:
   push:
-    branches: [project2]
-  pull_request:
-    branches: [project2]
+    branches: [project3]
+  # pull_request:
+  #   branches: [project3]
 
 jobs:
   test:
@@ -25,10 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python 3.13
+      - name: Set up Python 3.11
         uses: actions/setup-python@v2
         with:
-          python-version: 3.13
+          python-version: 3.11
 
       - name: Install dependencies
         run: |
@@ -55,6 +55,13 @@ jobs:
           files: ./backend/coverage.xml
           flags: unittests
           name: codecov-umbrella
-          fail_ci_if_error: false
+          fail_ci_if_error: true
+          # fail_ci_if_error: false
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      
+      - name: Debug Coverage
+        run: |
+          ls -R
+          find . -name coverage.xml
+        
