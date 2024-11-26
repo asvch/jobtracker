@@ -1275,6 +1275,3 @@ def test_resume_template_missing_adapter(client, user):
 
         if os.path.exists(temp_template_dir):
             shutil.rmtree(temp_template_dir)
-
-
-def test_llm_response():
