@@ -56,13 +56,13 @@ jobs:
         pkill -f "npm start"
 
 
-    - name: Upload coverage to Codecov
+    - name: Upload coverage to Codecov Frontend
       if: always()
       uses: codecov/codecov-action@v3
       with:
           files: ./frontend/coverage-frontend.xml
-          flags: unittests
-          name: codecov-umbrella
+          flags: frontend
+          name: codecov-frontend
           fail_ci_if_error: false
     env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -129,13 +129,13 @@ jobs:
           pwd
           pytest --cov . --cov-report=xml:coverage-backend.xml
         
-      - name: Upload coverage to Codecov
+      - name: Upload coverage to Codecov Backend
         if: always()
         uses: codecov/codecov-action@v3
         with:
             files: ./backend/coverage-backend.xml
-            flags: unittests
-            name: codecov-umbrella
+            flags: backend
+            name: codecov-backend
             fail_ci_if_error: false
         env:
             CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
