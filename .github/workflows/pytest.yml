@@ -49,23 +49,13 @@ jobs:
       run: |
         cd ./frontend/src/test
         pwd
-        pytest --cov . --cov-report=xml:coverage-frontend.xml
+        pytest
 
     - name: Kill frontend server
       run: |
         pkill -f "npm start"
 
 
-    - name: Upload coverage to Codecov Frontend
-      if: always()
-      uses: codecov/codecov-action@v3
-      with:
-          file: ./frontend/coverage-frontend.xml
-          flags: frontend
-          name: codecov-frontend
-          fail_ci_if_error: false
-    env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       
     #   - name: Debug Coverage
     #    run: |
