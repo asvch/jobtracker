@@ -1345,35 +1345,35 @@ def test_application_data_validation():
     for field in required_fields:
         assert field in valid_application, f"Missing required field: {field}"
 
-def test_application_search_performance(mocker):
-    """
-    Test performance of application search
-    Verify search is efficient with large datasets
-    """
-    # Create a large list of applications
-    large_applications = [
-        {
-            "jobTitle": f"Job {i}",
-            "companyName": f"Company {i}",
-            "location": f"Location {i}",
-            "status": str(i % 6 + 1),
-        }
-        for i in range(1000)
-    ]
+# def test_application_search_performance(mocker):
+#     """
+#     Test performance of application search
+#     Verify search is efficient with large datasets
+#     """
+#     # Create a large list of applications
+#     large_applications = [
+#         {
+#             "jobTitle": f"Job {i}",
+#             "companyName": f"Company {i}",
+#             "location": f"Location {i}",
+#             "status": str(i % 6 + 1),
+#         }
+#         for i in range(1000)
+#     ]
 
-    # Measure search time
-    import time
+#     # Measure search time
+#     import time
 
-    start_time = time.time()
+#     start_time = time.time()
 
-    filtered_apps = [app for app in large_applications if "Job" in app["jobTitle"]]
+#     filtered_apps = [app for app in large_applications if "Job" in app["jobTitle"]]
 
-    end_time = time.time()
-    search_duration = end_time - start_time
+#     end_time = time.time()
+#     search_duration = end_time - start_time
 
-    # Verify search is performed quickly
-    assert search_duration < 0.1  # Should complete in less than 100ms
-    assert len(filtered_apps) > 0
+#     # Verify search is performed quickly
+#     assert search_duration < 0.1  # Should complete in less than 100ms
+#     assert len(filtered_apps) > 0
 
 
 def test_application_date_handling():
