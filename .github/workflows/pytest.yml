@@ -60,7 +60,7 @@ jobs:
       if: always()
       uses: codecov/codecov-action@v3
       with:
-          files: ./frontend/coverage-frontend.xml
+          file: ./frontend/coverage-frontend.xml
           flags: frontend
           name: codecov-frontend
           fail_ci_if_error: false
@@ -133,7 +133,7 @@ jobs:
         if: always()
         uses: codecov/codecov-action@v3
         with:
-            files: ./backend/coverage-backend.xml
+            file: ./backend/coverage-backend.xml
             flags: backend
             name: codecov-backend
             fail_ci_if_error: false
